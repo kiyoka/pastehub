@@ -5,8 +5,7 @@ require 'net/http'
 require 'uri'
 require 'open-uri'
 require 'fileutils'
-require 'libdb'
-require 'libutil'
+require 'synchrobase'
 
 SERVER_HOST='localhost'
 

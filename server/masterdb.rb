@@ -6,8 +6,7 @@ require 'date'
 require 'memcache'
 
 $LOAD_PATH.push( File.dirname(__FILE__) + "/../lib" )
-require 'libutil'
-require 'libdb'
+require 'synchrobase'
 
 notifyHash = Memcache.new( :server => "localhost:11211" )
 

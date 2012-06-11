@@ -5,15 +5,14 @@ require 'net/http'
 require 'uri'
 require 'open-uri'
 require 'fileutils'
-require 'libdb'
-require 'libutil'
+require 'synchrobase'
 require 'json'
 
 SERVER_HOST='localhost'
 
 def makeKv( data )
   require 'pp'
-  util = SyncroBase::Util.new
+  util = SynchroBase::Util.new
   h = { util.currentTime( ) + "=" + util.digest( data )  =>  data }
   h.to_json
 end
