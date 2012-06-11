@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+require 'net/http'
+require 'uri'
+require 'open-uri'
+require 'fileutils'
+require 'libdb'
+require 'libutil'
+require 'json'
+
+SERVER_HOST='localhost'
+
+def makeKv( data )
+  require 'pp'
+  util = DBSync::Util.new
+  h = { util.currentTime( ) + "=" + util.digest( data )  =>  data }
+  h.to_json
+end
+
+def postData( username, data )
+  uri = URI.parse("http://#{SERVER_HOST}:8081/insertValue?username=#{username}")
+  Net::HTTP.start(uri.host, uri.port) do |http|
+    http.post(uri.request_uri, makeKv(data), {"content-type" => "application/json"}) { |str|
+      puts str
+    }
+  end
+end
+
+def main
+  if 1 > ARGV.length
+    puts "usage: clientPost [USERNAME]"
+    puts "       Post data will read from STDIN..."
+    exit 1
+  end
+  data = STDIN.read
+  postData( ARGV[0], data )
+end
+
+main
