@@ -19,17 +19,16 @@ require 'rake'
 begin
   require 'jeweler2'
   Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "RealtimeDbSync"
-    gemspec.summary = "RealtimeDbSync is a dialect of Lisp."
-    gemspec.description = "RealtimeDbSync is a programming language written in Ruby."
+    gemspec.name = "SynchroBase"
+    gemspec.summary = "SynchroBase is real time db sync framework."
+    gemspec.description = "SynchroBase is real time db sync framework powered by Vert.x."
     gemspec.email = "kiyoka@sumibi.org"
-    gemspec.homepage = "http://github.com/kiyoka/RealtimeDbSync"
+    gemspec.homepage = "http://github.com/kiyoka/SynchroBase"
     gemspec.authors = ["Kiyoka Nishiyama"]
     gemspec.files = FileList['Rakefile',
                              '.gemtest',
-                             'History.txt',
                              'VERSION.yml',
-                             'README',
+                             'README.txt',
                              'COPYING'
                             ].to_a
     gemspec.add_development_dependency "rspec"
