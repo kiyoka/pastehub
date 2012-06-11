@@ -22,7 +22,7 @@ masterdb_server.request_handler do |req|
     query = CGI::parse( req.query )
     username = query[ 'username' ].first
 
-    masterdb = DBSync::MasterDB.new
+    masterdb = SynchroBase::MasterDB.new
     masterdb.open( username )
 
     case req.path

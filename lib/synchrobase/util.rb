@@ -2,7 +2,7 @@ require 'digest'
 require 'date'
 require 'set'
 
-module DBSync
+module SynchroBase
   class Util
     def initialize()
     end

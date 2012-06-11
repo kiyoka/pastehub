@@ -33,7 +33,7 @@
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 require 'synchrobase'
-include DBSync
+include SynchroBase
 
 
 describe MasterDB, "masterDB API operations are " do

@@ -28,12 +28,12 @@ def sync_db( username )
     f.readlines.map { |x| x.chomp }
   }
   # open local db
-  localdb = DBSync::LocalDB.new( File.expand_path( "~/.localdb/" ) + "/" )
+  localdb = SynchroBase::LocalDB.new( File.expand_path( "~/.localdb/" ) + "/" )
   localdb.open( username )
 
   # calc difference between master and local.
   localList = localdb.getList() 
-  util = DBSync::Util.new
+  util = SynchroBase::Util.new
   diffList = util.diffList( masterList, localList )
 
   diffList.each {|key|
@@ -47,7 +47,7 @@ end
 
 def record_exist?( username, key )
   # open local db
-  localdb = DBSync::LocalDB.new( File.expand_path( "~/.localdb/" ) + "/" )
+  localdb = SynchroBase::LocalDB.new( File.expand_path( "~/.localdb/" ) + "/" )
   localdb.open( username )
   ret = localdb.getValue( key, nil )
   localdb.close()

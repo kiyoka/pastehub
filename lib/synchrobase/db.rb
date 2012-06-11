@@ -1,6 +1,6 @@
 require 'gdbm'
 
-module DBSync
+module SynchroBase
   class BaseDB
     def initialize( basepath = "/tmp/")
       @basepath = basepath
