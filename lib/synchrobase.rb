@@ -1,9 +1,8 @@
-#!/usr/bin/env ruby
-# -*- encoding: utf-8 -*-
 #
-# libutil_spec.rb -  "RSpec file for libutil"
+#                            SyncrhoBase
 #
-#   Copyright (c) 2012-2012  Kiyoka Nishiyama  <kiyoka@sumibi.org>
+#
+#   Copyright (c) 2012  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #
 #   Redistribution and use in source and binary forms, with or without
 #   modification, are permitted provided that the following conditions
@@ -32,55 +31,8 @@
 #   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-require 'synchrobase'
-include DBSync
+#
+require 'synchrobase/util'
+require 'synchrobase/db'
 
 
-describe Util, "When message digest util is called...  " do
-
-  before do
-    @util = Util.new
-  end
-
-  it "should" do
-    @util.digest( "text data1" ).should   == "f0c62da87f30bff2543cbd44733c17ea9ba84f68"
-    @util.digest( "line 1
-line 2
-line 3
-line 4
-"
-                  ).should                == "0a95120b8f964aed834e1781898d5243f6878a69"
-  end
-end
-
-
-describe Util, "When key util is called...  " do
-
-  before do
-    @util = Util.new
-
-    @key1 = "1338738983=06/04/12:00:56:22=f0c62da87f30bff2543cbd44733c17ea9ba84f68"
-    @key2 = "1338814085=06/04/12:21:48:04=0a95120b8f964aed834e1781898d5243f6878a69"
-  end
-
-  it "should" do
-    @util.key_seconds( @key1 ).should    == 1338738983
-    @util.key_timestamp( @key1 ).should  == '06/04/12:00:56:22'
-    @util.key_digest( @key1 ).should     == 'f0c62da87f30bff2543cbd44733c17ea9ba84f68'
-  end
-end
-
-
-describe Util, "When diffList util is called...  " do
-
-  before do
-    @util = Util.new
-
-    @masterList = [ "a", "b", "c", "d" ]
-    @localList  = [      "b", "c"      ] 
-  end
-
-  it "should" do
-    @util.diffList( @masterList, @localList ) == [ "a", "d" ]
-  end
-end
