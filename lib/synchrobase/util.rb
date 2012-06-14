@@ -25,7 +25,7 @@ module SynchroBase
 
     def key_seconds( key )
       arr = _splitKey( key )
-      if 2 < arr.size
+      if 1 < arr.size
         arr[0].to_i
       else
         nil
@@ -34,7 +34,7 @@ module SynchroBase
 
     def key_timestamp( key )
       arr = _splitKey( key )
-      if 2 < arr.size
+      if 1 < arr.size
         arr[1]
       else
         nil

@@ -36,62 +36,98 @@ require 'synchrobase'
 include SynchroBase
 
 
-describe Auth, "When auth libraries used (OK)...  " do
+describe Auth, "When client auth library is used (OK)...  " do
 
   before do
-    @auth = Auth.new( 'ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==' )
-    @auth.currentTime( 1339639491 )
+    @secretKey = 'ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg=='
+    @auth = Auth.new
+  end
+
+  it "should" do
+    @auth.addElement( 'x-synchrobase-username', 'userA'      )
+    @auth.calcSignature( @secretKey ).should                        == :NotEnoughKeys
+    @auth.addElement( 'x-synchrobase-date',     '1339639491' )
+    @auth.calcSignature( @secretKey ).should                        == :NotEnoughKeys
+    @auth.addElement( 'x-synchrobase-version',  '2012-06-16' )
+    @auth.calcSignature( @secretKey ).should                        == "hQWqiHcvbykjQ2gLpS4qaqGTeTXtOrIyMwLj+0qX4aw="
+
+    authForClient = AuthForClient.new( 'userA', @secretKey )
+    authForClient._addElement( 'x-synchrobase-date', '10000000' )
+    authForClient.getAuthHash( ).should == {
+      "x-synchrobase-username"=>"userA",
+      "x-synchrobase-date"=>"10000000",
+      "x-synchrobase-version"=>"2012-06-16",
+      "authorization"=>"ZeF2je500R5sfbGAi+/js9ExwrSrEHiU/waS+Ea61Sc="
+    }
+    authForClient.username.should == "userA"
+  end
+end
+
+describe Auth, "When server auth library is used ...  " do
+  before do
+    @secretKey = 'ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg=='
+    @auth = Auth.new( )
+    open( "/tmp/users.tsv", "w" ) {|f|
+      f.puts( "userA\t#{@secretKey}" )
+    }
+    @authForServer = AuthForServer.new( "/tmp/" )
   end
 
   it "should" do
     @auth.addElement( 'x-synchrobase-username', 'userA' )
-    @auth.calcSignature( ).should                                    == :NotEnoughKeys
-    @auth.addElement( 'x-synchrobase-date',     '1339639491' )
-    @auth.calcSignature( ).should                                    == :NotEnoughKeys
+    @auth.addElement( 'x-synchrobase-date',     '10000000' )
     @auth.addElement( 'x-synchrobase-version',  '2012-06-16' )
-    @auth.calcSignature( ).should                                    == "BucjEIGUhZkSUy+w3m4h9W+mOJx4zfj/XAo6kroNTpM="
-  end
-end
+    @auth.calcSignature( @secretKey ).should                       == "ZeF2je500R5sfbGAi+/js9ExwrSrEHiU/waS+Ea61Sc=" 
 
-describe Auth, "When auth libraries used (Illegal access)...  " do
-  before do
-    @auth = Auth.new( 'ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==' )
-    @auth.currentTime( 1339639491 )
-  end
 
-  it "should" do
+    @authForServer.invoke( {
+                             "x-synchrobase-username"=>"userA",
+                             "x-synchrobase-date"=>"10000000",
+                             "x-synchrobase-version"=>"2012-06-16",
+                             "authorization"=>"ZeF2je500R5sfbGAi+/js9ExwrSrEHiU/waS+Ea61Sc=" 
+                           }, 10000000
+                           ).should  == [ true, "userA" ]
+
     @auth.addElement( 'x-synchrobase-username', 'unknownUser' )
-    @auth.addElement( 'x-synchrobase-date',     '1339639491' )
+    @auth.addElement( 'x-synchrobase-date',     '10000000' )
     @auth.addElement( 'x-synchrobase-version',  '2012-06-16' )
-    @auth.calcSignature( ).should_not                                == "BucjEIGUhZkSUy+w3m4h9W+mOJx4zfj/XAo6kroNTpM="
+    @auth.calcSignature( @secretKey ).should_not                   == "ZeF2je500R5sfbGAi+/js9ExwrSrEHiU/waS+Ea61Sc=" 
+
+    @authForServer.invoke( {
+                             'x-synchrobase-username' => 'unknownUser',
+                             "x-synchrobase-date"=>"10000000",
+                             'x-synchrobase-version'=>'2012-06-16'
+                           }, 10000000
+                           ).should  == [ false, :unknown_user ]
+
+    @authForServer.invoke( {
+                             "x-synchrobase-username"=>"userA",
+                             "x-synchrobase-date"=>"10000000",
+                             "x-synchrobase-version"=>"2012-06-16",
+                             "authorization"=>"XXXXXXXXXXXX"
+                           }, 10000000
+                           ).should  == [ false, :illegal_signature ]
   end
 end
 
-describe Auth, "When auth libraries used (time expired)...  " do
+describe Auth, "When server auth library invokes time expire check ...  " do
   before do
-    @auth = Auth.new( 'ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==' )
+    @authForServer = AuthForServer.new( "/tmp/" )
+    @headers = {
+      "x-synchrobase-username"=>"userA",
+      "x-synchrobase-date"=>"1339639491",
+      "x-synchrobase-version"=>"2012-06-16",
+      "authorization"=>"hQWqiHcvbykjQ2gLpS4qaqGTeTXtOrIyMwLj+0qX4aw="
+    }
   end
 
   it "should" do
-    @auth.currentTime( 1339639491 + 60 )       # after 1 minutes
-
-    @auth.addElement( 'x-synchrobase-username', 'userA' )
-    @auth.addElement( 'x-synchrobase-date',     '1339639491' )
-    @auth.addElement( 'x-synchrobase-version',  '2012-06-16' )
-    @auth.calcSignature( ).should                                    == "BucjEIGUhZkSUy+w3m4h9W+mOJx4zfj/XAo6kroNTpM="
-
-    @auth.currentTime( 1339639491 + (60 * 6) ) # after 6 minutes
-
-    @auth.addElement( 'x-synchrobase-username', 'userA' )
-    @auth.addElement( 'x-synchrobase-date',     '1339639491' )
-    @auth.addElement( 'x-synchrobase-version',  '2012-06-16' )
-    @auth.calcSignature( ).should                                    == :Expired
-
-    @auth.currentTime( 1339639491 - (60 * 6) ) # before 6 minutes
-
-    @auth.addElement( 'x-synchrobase-username', 'userA' )
-    @auth.addElement( 'x-synchrobase-date',     '1339639491' )
-    @auth.addElement( 'x-synchrobase-version',  '2012-06-16' )
-    @auth.calcSignature( ).should                                    == :Expired
+    @authForServer.invoke( @headers, 1339639491            ).should          == [ true,  "userA" ]
+    # after  1 minutes
+    @authForServer.invoke( @headers, 1339639491 + 60       ).should          == [ true,  "userA" ]
+    # after  6 minutes
+    @authForServer.invoke( @headers, 1339639491 + (60 * 6) ).should          == [ false, :expired_client_request ]
+    # before 6 minutes
+    @authForServer.invoke( @headers, 1339639491 - (60 * 6) ).should          == [ false, :expired_client_request ]
   end
 end

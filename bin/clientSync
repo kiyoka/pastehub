@@ -9,22 +9,26 @@ require 'synchrobase'
 
 SERVER_HOST='localhost'
 
-def getValue( username, key )
-  uri = URI.parse("http://#{SERVER_HOST}:8081/getValue?username=#{username}")
+def getValue( auth, key )
+  uri = URI.parse("http://#{SERVER_HOST}:8081/getValue")
   ret = ""
   Net::HTTP.start(uri.host, uri.port) do |http|
-    http.post(uri.request_uri, key, {"content-type" => "plain/text"}) { |str|
+    http.post(uri.request_uri, key, {"content-type" => "plain/text"} + auth.getAuthHash()) { |str|
       ret = str
     }
   end
   ret
 end
 
-def sync_db( username )
+def sync_db( auth )
   puts "synchronizing..."
-  masterList = open( sprintf( "http://#{SERVER_HOST}:8081/getList?username=%s", username ), "r" ) {|f|
-    f.readlines.map { |x| x.chomp }
-  }
+  uri = URI.parse("http://localhost:8081/getList")
+  masterList = []
+  Net::HTTP.start(uri.host, uri.port) do |http|
+    http.get(uri.request_uri, {"content-type" => "plain/text"} + auth.getAuthHash()) { |str|
+      masterList = str.split( /\n/ )
+    }
+  end
   # open local db
   localdb = SynchroBase::LocalDB.new( File.expand_path( "~/.localdb/" ) + "/" )
   localdb.open( username )
@@ -52,17 +56,19 @@ def record_exist?( username, key )
   ret
 end
 
-def wait_notify( username )
+def wait_notify( auth )
   begin
-    uri = URI.parse("http://localhost:8080/?username=#{username}")
+    uri = URI.parse("http://localhost:8080/")
     Net::HTTP.start(uri.host, uri.port) do |http|
-      request = Net::HTTP::Get.new(uri.request_uri)
+      request = Net::HTTP::Get.new(uri.request_uri, auth.getAuthHash())
       http.request(request) do |response|
         raise 'Response is not chuncked' unless response.chunked?
         response.read_body do |chunk|
           key = chunk.chomp
-          if not record_exist?( username, key )
-            puts "Info: sync-key: #{key}"
+          if record_exist?( auth.username, key )
+            puts "Info: exist-key: #{key}"
+          else
+            puts "Info: sync-key:  #{key}"
             return chunk.chomp
           end
         end
@@ -75,17 +81,25 @@ end
 
 
 def main
-  if 1 > ARGV.length
-    puts "usage: clientdb.rb [USERNAME]"
+  username  = ENV['SYNC_USER']
+  if not username 
+    STDERR.puts( "clientSync needs environment var `SYNC_USER'" )
     exit 1
   end
+
+  secretKey = ENV['SYNC_SECRET_KEY']
+  if not secretKey
+    STDERR.puts( "clientSync needs environment var `SYNC_SECRET_KEY'" )
+  end
+
+  auth = SynchroBase::AuthForClient.new( username, secretKey )
   while true
-    result = wait_notify( ARGV[0] )
+    result = wait_notify( auth )
     case result
     when :timeout
       puts "timeout..."
     else
-      sync_db( ARGV[0] )
+      sync_db( auth )
     end
   end
 end

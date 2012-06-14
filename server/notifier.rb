@@ -1,6 +1,9 @@
 require 'vertx'
 require 'cgi'
 require 'memcache'
+require 'pp'
+$LOAD_PATH.push( File.dirname(__FILE__) + "/../lib" )
+require 'synchrobase'
 
 # use http://en.wikipedia.org/wiki/Chunked_transfer_encoding
 
@@ -15,13 +18,25 @@ end
 
 notifier = Vertx::HttpServer.new
 notifier.request_handler do |req|
-  query = CGI::parse( req.query )
-  username = query[ 'username' ].first
-  puts "Connected from user [#{username}]"
+  util = SynchroBase::Util.new
+  auth = SynchroBase::AuthForServer.new( "/var/synchrobase/" )
 
+  curTime = util.key_seconds( util.currentTime())
+  ret = auth.invoke( req.headers, curTime )
   # Now send back a response
   req.response.chunked = true
-  
+
+  if ret[0]
+    username = ret[1]
+    puts "Connected from user [#{username}]"
+  else 
+    puts "Error: " + ret[1].to_s
+    req.response.status_code = 403
+    req.response.status_message = "Authorization failure."
+    req.response.end
+    return
+  end
+
   got         = nil
   timer_count = 0
 

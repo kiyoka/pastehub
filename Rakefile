@@ -14,7 +14,6 @@ NTF_URL='http://localhost:8080'
 USERNAME_A='userA'
 USERNAME_B='userB'
 
-
 require 'rake'
 begin
   require 'jeweler2'
@@ -58,11 +57,11 @@ task :n do
 end
 
 task :syncA do
-  sh "ruby -I ./lib bin/clientSync  #{USERNAME_A}"
+  sh "ruby -I ./lib bin/clientSync"
 end
 
 task :syncB do
-  sh "ruby -I ./lib bin/clientSync  #{USERNAME_B}"
+  sh "ruby -I ./lib bin/clientSync"
 end
 
 task :postA1 do
