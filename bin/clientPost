@@ -11,7 +11,6 @@ require 'json'
 SERVER_HOST='localhost'
 
 def makeKv( data )
-  require 'pp'
   util = SynchroBase::Util.new
   h = { util.currentTime( ) + "=" + util.digest( data )  =>  data }
   h.to_json

@@ -1,6 +1,5 @@
 require 'vertx'
 require 'json/pure'
-require 'pp'
 require 'cgi'
 require 'date'
 require 'memcache'
@@ -13,11 +12,7 @@ notifyHash = Memcache.new( :server => "localhost:11211" )
 masterdb_server = Vertx::HttpServer.new
 masterdb_server.request_handler do |req|
 
-  puts "MasterDB: An HTTP request has been received"
-
   req.body_handler do |body|
-    puts "The total body received was #{body.length} bytes, path is #{req.path}."
-
     query = CGI::parse( req.query )
     username = query[ 'username' ].first
 
@@ -27,7 +22,7 @@ masterdb_server.request_handler do |req|
     case req.path
     when "/insertValue"
       kv = JSON::parse( body.to_s )
-      pp ["insertValue", kv ]
+      puts "[#{username}]:insertValue: " + kv.keys[0]
       
       # update db
       kv.each { |k,v|
@@ -41,7 +36,8 @@ masterdb_server.request_handler do |req|
 
     when "/getList"
       str = masterdb.getList( ).join( "\n" )
-      pp ["getList", str ]
+      puts "[#{username}]:getList's response: "
+      puts str
       masterdb.close()
       req.response.end( str )
 
@@ -53,7 +49,7 @@ masterdb_server.request_handler do |req|
       else
         ""
       end
-      pp ["getValue", k, str ]
+      puts "[#{username}]:getValue:" + k
       masterdb.close()
       req.response.end( str )
     end

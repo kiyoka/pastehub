@@ -14,7 +14,6 @@ def getValue( username, key )
   ret = ""
   Net::HTTP.start(uri.host, uri.port) do |http|
     http.post(uri.request_uri, key, {"content-type" => "plain/text"}) { |str|
-      puts [ "getValue's posponse is", str ]
       ret = str
     }
   end
@@ -22,7 +21,7 @@ def getValue( username, key )
 end
 
 def sync_db( username )
-  puts "sync db..."
+  puts "synchronizing..."
   masterList = open( sprintf( "http://#{SERVER_HOST}:8081/getList?username=%s", username ), "r" ) {|f|
     f.readlines.map { |x| x.chomp }
   }
@@ -35,12 +34,12 @@ def sync_db( username )
   util = SynchroBase::Util.new
   diffList = util.diffList( masterList, localList )
 
+  # get diff data
   diffList.each {|key|
-    puts "key: #{key}"
     value = getValue( username, key )
-    puts "value: #{value}"
     localdb.insertValue( key.dup, value.dup )
   }
+  puts "Info: got #{diffList.size} records."
   localdb.close()
 end
 
@@ -62,10 +61,8 @@ def wait_notify( username )
         raise 'Response is not chuncked' unless response.chunked?
         response.read_body do |chunk|
           key = chunk.chomp
-          if record_exist?( username, key )
-            puts "exist:#{key}"
-          else
-            puts "sync!:#{key}"
+          if not record_exist?( username, key )
+            puts "Info: sync-key: #{key}"
             return chunk.chomp
           end
         end
