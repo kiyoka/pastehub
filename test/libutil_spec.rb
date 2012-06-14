@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # -*- encoding: utf-8 -*-
 #
-# libutil_spec.rb -  "RSpec file for libutil"
+# libutil_spec.rb -  "RSpec file for util.rb"
 #
 #   Copyright (c) 2012-2012  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #

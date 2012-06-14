@@ -33,6 +33,7 @@
 #
 #
 require 'synchrobase/util'
+require 'synchrobase/auth'
 require 'synchrobase/db'
 
 

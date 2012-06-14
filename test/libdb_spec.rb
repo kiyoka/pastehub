@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # -*- encoding: utf-8 -*-
 #
-# libdb_spec.rb -  "RSpec file for libdb"
+# libdb_spec.rb -  "RSpec file for db.rb"
 #
 #   Copyright (c) 2012-2012  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #

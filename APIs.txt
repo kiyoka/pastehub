@@ -7,8 +7,8 @@ Realtime db sync sample APIs
 
  1) x-synchrobase-username  : userA
  2) x-synchrobase-date      : 913279782384         (epoc time by seconds)
- 3) version                 : 2012-06-16           (fixed string)
- 4) Authorization           : "sigunature"
+ 3) x-synchrobase-version   : 2012-06-16           (fixed string)
+ 4) Authorization           : "signature"
     
  4) "signature" is HMAC-SHA256 of concat string of 1) and 2) and 3) .
     HMAC-SHA256 of concat string like "key:value,key:value:key:value"
