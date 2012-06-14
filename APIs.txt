@@ -3,20 +3,21 @@ Realtime db sync sample APIs
 
 ## authentication
 
- All API method must use this user authentication logic
+ All API method must use this user authentication header
 
  1) x-synchrobase-username  : userA
  2) x-synchrobase-date      : 913279782384         (epoc time by seconds)
- 3) x-synchrobase-key       : 2987SDFHASDF828SX
- 4) x-signature             : 9283740FADB341DA213153
+ 3) version                 : 2012-06-16           (fixed string)
+ 4) Authorization           : "sigunature"
+    
+ 4) "signature" is HMAC-SHA256 of concat string of 1) and 2) and 3) .
+    HMAC-SHA256 of concat string like "key:value,key:value:key:value"
+    then base64 encoding
 
- 4) is HMAC-SHA-256 of concat string of 1) and 2) and 3) .
-    HMAC-SHA-256 of concat string like "key:value,key:value:key:value"
-
- A) if x-synchrobase-date and current time differs over 5 minute,
+ A) if x-synchrobase-date and current time differs over 5 minutes,
     authentication will fail.
 
- B) if x-signature calced by local-side and calced by server-site differs,
+ B) if Authorization calced by local-side and calced by server-site differs,
     authentication will fail.
 
 
