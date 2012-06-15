@@ -92,8 +92,8 @@ def main
     STDERR.puts( "clientSync needs environment var `SYNC_SECRET_KEY'" )
   end
 
-  auth = SynchroBase::AuthForClient.new( username, secretKey )
   while true
+    auth = SynchroBase::AuthForClient.new( username, secretKey )
     result = wait_notify( auth )
     case result
     when :timeout
