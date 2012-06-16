@@ -58,28 +58,28 @@ task :n do
 end
 
 task :syncA do
-  sh SETENV_A + "; ruby -I ./lib bin/clientSync"
+  sh SETENV_A + "; ruby -I ./lib bin/sb-clientSync"
 end
 
 task :syncB do
-  sh "ruby -I ./lib bin/clientSync"
+  sh "ruby -I ./lib bin/sb-clientSync"
 end
 
 task :postA1 do
-  sh SETENV_A + "; echo 'aaa1' | ruby -I ./lib bin/clientPost  #{USERNAME_A}"
+  sh SETENV_A + "; echo 'aaa1' | ruby -I ./lib bin/sb-clientPost  #{USERNAME_A}"
 end
 
 task :postA2 do
-  sh SETENV_A + "; echo 'aaa2' | ruby -I ./lib bin/clientPost  #{USERNAME_A}"
+  sh SETENV_A + "; echo 'aaa2' | ruby -I ./lib bin/sb-clientPost  #{USERNAME_A}"
 end
 
 task :postB1 do
-  sh "echo 'bbb1' | ruby -I ./lib bin/clientPost  #{USERNAME_B}"
+  sh "echo 'bbb1' | ruby -I ./lib bin/sb-clientPost  #{USERNAME_B}"
 end
 
 task :dumpA do
-  open( "|" + SETENV_A + "; ruby -I ./lib bin/clientDump list" ) {|f|
+  open( "|" + SETENV_A + "; ruby -I ./lib bin/sb-clientDump list" ) {|f|
     firstKey = f.readline.chomp
-    sh SETENV_A + "; ruby -I ./lib bin/clientDump get '#{firstKey}'"
+    sh SETENV_A + "; ruby -I ./lib bin/sb-clientDump get '#{firstKey}'"
   }
 end
