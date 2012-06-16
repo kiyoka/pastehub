@@ -71,7 +71,7 @@ describe Util, "When key util is called...  " do
 end
 
 
-describe Util, "When diffList util is called...  " do
+describe Util, "When master's diffList is larger " do
 
   before do
     @util = Util.new
@@ -81,6 +81,22 @@ describe Util, "When diffList util is called...  " do
   end
 
   it "should" do
-    @util.diffList( @masterList, @localList ) == [ "a", "d" ]
+    @util.diffList( @masterList, @localList  ).should == [ "a", "d" ]
+    @util.diffList( @localList,  @masterList ).should == [ ]
+  end
+end
+
+describe Util, "When local's diffList is larger " do
+
+  before do
+    @util = Util.new
+
+    @masterList = [      "2",      "4" ] 
+    @localList  = [ "1", "2", "3", "4" ]
+  end
+
+  it "should" do
+    @util.diffList( @masterList, @localList  ).should == [ ]
+    @util.diffList( @localList,  @masterList ).should == [ "1", "3" ]
   end
 end
