@@ -21,8 +21,7 @@ notifier.request_handler do |req|
   util = SynchroBase::Util.new
   auth = SynchroBase::AuthForServer.new( "/var/synchrobase/" )
 
-  curTime = util.key_seconds( util.currentTime())
-  ret = auth.invoke( req.headers, curTime )
+  ret = auth.invoke( req.headers, util.currentSeconds() )
   # Now send back a response
   req.response.chunked = true
 

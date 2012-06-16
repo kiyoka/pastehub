@@ -13,7 +13,7 @@ def getValue( auth, key )
   uri = URI.parse("http://#{SERVER_HOST}:8081/getValue")
   ret = ""
   Net::HTTP.start(uri.host, uri.port) do |http|
-    http.post(uri.request_uri, key, {"content-type" => "plain/text"} + auth.getAuthHash()) { |str|
+    http.post(uri.request_uri, key, auth.getAuthHash().merge( {"content-type" => "plain/text"} )) { |str|
       ret = str
     }
   end
@@ -25,13 +25,13 @@ def sync_db( auth )
   uri = URI.parse("http://localhost:8081/getList")
   masterList = []
   Net::HTTP.start(uri.host, uri.port) do |http|
-    http.get(uri.request_uri, {"content-type" => "plain/text"} + auth.getAuthHash()) { |str|
+    http.get(uri.request_uri, auth.getAuthHash().merge( {"content-type" => "plain/text"} )) { |str|
       masterList = str.split( /\n/ )
     }
   end
   # open local db
   localdb = SynchroBase::LocalDB.new( File.expand_path( "~/.localdb/" ) + "/" )
-  localdb.open( username )
+  localdb.open( auth.username )
 
   # calc difference between master and local.
   localList = localdb.getList() 
@@ -40,7 +40,7 @@ def sync_db( auth )
 
   # get diff data
   diffList.each {|key|
-    value = getValue( username, key )
+    value = getValue( auth, key )
     localdb.insertValue( key.dup, value.dup )
   }
   puts "Info: got #{diffList.size} records."

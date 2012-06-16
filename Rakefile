@@ -13,6 +13,7 @@ MDB_URL='http://localhost:8081'
 NTF_URL='http://localhost:8080'
 USERNAME_A='userA'
 USERNAME_B='userB'
+SETENV_A="export SYNC_USER=userA ; export SYNC_SECRET_KEY='ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg=='"
 
 require 'rake'
 begin
@@ -57,7 +58,7 @@ task :n do
 end
 
 task :syncA do
-  sh "export SYNC_USER=userA ; SYNC_SECRET_KEY='ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==' ; ruby -I ./lib bin/clientSync"
+  sh SETENV_A + "; ruby -I ./lib bin/clientSync"
 end
 
 task :syncB do
@@ -65,11 +66,11 @@ task :syncB do
 end
 
 task :postA1 do
-  sh "echo 'aaa1' | ruby -I ./lib bin/clientPost  #{USERNAME_A}"
+  sh SETENV_A + "; echo 'aaa1' | ruby -I ./lib bin/clientPost  #{USERNAME_A}"
 end
 
 task :postA2 do
-  sh "echo 'aaa2' | ruby -I ./lib bin/clientPost  #{USERNAME_A}"
+  sh SETENV_A + "; echo 'aaa2' | ruby -I ./lib bin/clientPost  #{USERNAME_A}"
 end
 
 task :postB1 do

@@ -13,24 +13,35 @@ masterdb_server = Vertx::HttpServer.new
 masterdb_server.request_handler do |req|
 
   req.body_handler do |body|
-    query = CGI::parse( req.query )
-    username = query[ 'username' ].first
+    util = SynchroBase::Util.new
+    auth = SynchroBase::AuthForServer.new( "/var/synchrobase/" )
+    ret = auth.invoke( req.headers, util.currentSeconds() )
+
+    if ret[0]
+      username = ret[1]
+      puts "Connected from user [#{username}]"
+    else 
+      puts "Error: " + ret[1].to_s
+      req.response.status_code = 403
+      req.response.status_message = "Authorization failure."
+      req.response.end
+      return
+    end
 
     masterdb = SynchroBase::MasterDB.new
     masterdb.open( username )
 
     case req.path
     when "/insertValue"
-      kv = JSON::parse( body.to_s )
-      puts "[#{username}]:insertValue: " + kv.keys[0]
+      data = body.to_s.dup
+      puts "[#{username}]:insertValue: " + data
       
       # update db
-      kv.each { |k,v|
-        masterdb.insertValue( k.dup, v.dup )
+      key = util.currentTime( ) + "=" + util.digest( data )
+      masterdb.insertValue( key, data )
       
-        # notify to all client
-        notifyHash[ username ] = k
-      }
+      # notify to all client
+      notifyHash[ username ] = key
       masterdb.close()
       req.response.end()
 

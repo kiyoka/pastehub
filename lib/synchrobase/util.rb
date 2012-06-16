@@ -19,6 +19,10 @@ module SynchroBase
       currentDate
     end
 
+    def currentSeconds( )
+      self.key_seconds( self.currentTime() )
+    end
+
     def _splitKey( key )
       key.split( /[=]/ )
     end
