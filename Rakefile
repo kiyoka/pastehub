@@ -57,7 +57,7 @@ task :n do
 end
 
 task :syncA do
-  sh "ruby -I ./lib bin/clientSync"
+  sh "export SYNC_USER=userA ; SYNC_SECRET_KEY='ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==' ; ruby -I ./lib bin/clientSync"
 end
 
 task :syncB do
