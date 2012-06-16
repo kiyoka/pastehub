@@ -2,7 +2,7 @@
 #                                          Rakefile for Realtime DB Sync
 # Release Engineering
 #   1. edit the VERSION.yml file
-#   2. rake compile  &&   rake test
+#   2. rake test
 #   3. rake gemspec  &&   rake build
 #      to generate realtimedbsync-x.x.x.gem
 #   4. install realtimedbsync-x.x.x.gem to clean environment and test
@@ -19,7 +19,7 @@ require 'rake'
 begin
   require 'jeweler2'
   Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "SynchroBase"
+    gemspec.name = "synchro-base"
     gemspec.summary = "SynchroBase is real time db sync framework."
     gemspec.description = "SynchroBase is real time db sync framework powered by Vert.x."
     gemspec.email = "kiyoka@sumibi.org"
@@ -29,7 +29,9 @@ begin
                              '.gemtest',
                              'VERSION.yml',
                              'README.txt',
-                             'COPYING'
+                             'bin/*',
+                             'lib/*/*.rb',
+                             'server/*.rb'
                             ].to_a
     gemspec.add_development_dependency "rspec"
     gemspec.add_development_dependency "rake"

@@ -1,3 +1,4 @@
 /.gitignore~
 /libdb_spec.rb~
 /nendo_spec.rb
+/pkg
