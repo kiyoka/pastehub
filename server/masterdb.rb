@@ -45,6 +45,19 @@ masterdb_server.request_handler do |req|
       masterdb.close()
       req.response.end()
 
+    when "/putValue"
+      data = body.to_s.dup
+
+      # update db
+      key = req.headers[ 'X-Syncrhobase-Key' ].dup
+      puts "[#{username}]:putValue: key=[#{key}] : " + data
+      masterdb.insertValue( key, data )
+
+      # notify to all client
+      notifyHash[ username ] = key
+      masterdb.close()
+      req.response.end()
+
     when "/getList"
       str = masterdb.getList( ).join( "\n" )
       puts "[#{username}]:getList's response: "

@@ -8,12 +8,29 @@ require 'fileutils'
 require 'synchrobase'
 
 SERVER_HOST='localhost'
+LOCALDB_PATH=File.expand_path( "~/.localdb/" ) + "/"
+ONLINE_STATE_KEY='__ONLINE_STATE'
 
 def getValue( auth, key )
   uri = URI.parse("http://#{SERVER_HOST}:8081/getValue")
   ret = ""
   Net::HTTP.start(uri.host, uri.port) do |http|
     http.post(uri.request_uri, key, auth.getAuthHash().merge( {"content-type" => "plain/text"} )) { |str|
+      ret = str
+    }
+  end
+  ret
+end
+
+def putValue( auth, key, value )
+  uri = URI.parse("http://#{SERVER_HOST}:8081/putValue")
+  ret = ""
+  Net::HTTP.start(uri.host, uri.port) do |http|
+    http.post(uri.request_uri, value,
+              auth.getAuthHash().merge(
+                                       { "content-type" => "plain/text",
+                                         "x-syncrhobase-key" => key    }
+                                       )) { |str|
       ret = str
     }
   end
@@ -30,30 +47,46 @@ def sync_db( auth )
     }
   end
   # open local db
-  localdb = SynchroBase::LocalDB.new( File.expand_path( "~/.localdb/" ) + "/" )
+  localdb = SynchroBase::LocalDB.new( LOCALDB_PATH )
   localdb.open( auth.username )
 
   # calc difference between master and local.
   localList = localdb.getList() 
   util = SynchroBase::Util.new
-  diffList = util.diffList( masterList, localList )
+  downList = util.diffList( masterList, localList ).reject{|x| x.match( /^_/ )}
+  upList   = util.diffList( localList, masterList ).reject{|x| x.match( /^_/ )}
 
-  # get diff data
-  diffList.each {|key|
+  # donwload
+  downList.each {|key|
     value = getValue( auth, key )
     localdb.insertValue( key.dup, value.dup )
   }
-  puts "Info: got #{diffList.size} records."
+  # upload
+  upList.each {|key|
+    value = localdb.getValue( key )
+    putValue( auth,      key.dup, value.dup )
+  }
+
+  puts "Info: download #{downList.size} records."
+  puts "Info:   upload #{upList.size} records."
   localdb.close()
 end
 
 def record_exist?( username, key )
   # open local db
-  localdb = SynchroBase::LocalDB.new( File.expand_path( "~/.localdb/" ) + "/" )
+  localdb = SynchroBase::LocalDB.new( LOCALDB_PATH )
   localdb.open( username )
   ret = localdb.getValue( key, nil )
   localdb.close()
   ret
+end
+
+def setOnlineState( username, online )
+  # open local db
+  localdb = SynchroBase::LocalDB.new( LOCALDB_PATH )
+  localdb.open( username )
+  localdb.insertValue( ONLINE_STATE_KEY, online ? "1" : "0" )
+  localdb.close()
 end
 
 def wait_notify( auth )
@@ -102,12 +135,14 @@ def main
     STDERR.puts( "clientSync needs environment var `SYNC_SECRET_KEY'" )
   end
 
+  setOnlineState( username, false )
   while true
     auth = SynchroBase::AuthForClient.new( username, secretKey )
     result = wait_notify( auth )
     case result
     when :timeout
       STDERR.puts "waiting..."
+      setOnlineState( username, true )
     when :retry
       STDERR.puts "retrying...."
       sleep 60
