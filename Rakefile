@@ -30,6 +30,7 @@ begin
                              'VERSION.yml',
                              'README.txt',
                              'bin/*',
+                             'lib/*.rb',
                              'lib/*/*.rb',
                              'server/*.rb'
                             ].to_a
@@ -68,15 +69,15 @@ task :syncB do
 end
 
 task :postA1 do
-  sh SETENV_A + "; echo 'aaa1' | ruby -I ./lib bin/sb-clientPost  #{USERNAME_A}"
+  sh SETENV_A + "; echo 'aaa1' | ruby -I ./lib bin/sb-clientPost"
 end
 
 task :postA2 do
-  sh SETENV_A + "; echo 'aaa2' | ruby -I ./lib bin/sb-clientPost  #{USERNAME_A}"
+  sh SETENV_A + "; echo 'aaa2' | ruby -I ./lib bin/sb-clientPost"
 end
 
 task :postB1 do
-  sh "echo 'bbb1' | ruby -I ./lib bin/sb-clientPost  #{USERNAME_B}"
+  sh "echo 'bbb1' | ruby -I ./lib bin/sb-clientPost"
 end
 
 task :dumpA do

@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
     "bin/sb-clientDump",
     "bin/sb-clientPost",
     "bin/sb-clientSync",
+    "lib/synchrobase.rb",
     "lib/synchrobase/auth.rb",
     "lib/synchrobase/db.rb",
     "lib/synchrobase/util.rb",
