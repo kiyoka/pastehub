@@ -72,8 +72,18 @@ def wait_notify( auth )
             return chunk.chomp
           end
         end
+        if "200" != response.code
+          STDERR.puts "Error: request error result=[#{response.code}]"
+          return :retry
+        end
       end
     end
+  rescue EOFError => e
+    STDERR.puts "Error: disconnected by server."
+    return :retry
+  rescue Errno::ECONNREFUSED => e
+    STDERR.puts "Error: can't connect server."
+    return :retry
   rescue Timeout::Error => e
     return :timeout
   end
@@ -97,7 +107,10 @@ def main
     result = wait_notify( auth )
     case result
     when :timeout
-      puts "timeout..."
+      STDERR.puts "waiting..."
+    when :retry
+      STDERR.puts "retrying...."
+      sleep 60
     else
       sync_db( auth )
     end
