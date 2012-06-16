@@ -34,12 +34,12 @@ masterdb_server.request_handler do |req|
     case req.path
     when "/insertValue"
       data = body.to_s.dup
-      puts "[#{username}]:insertValue: " + data
-      
+
       # update db
       key = util.currentTime( ) + "=" + util.digest( data )
+      puts "[#{username}]:insertValue: key=[#{key}] : " + data
       masterdb.insertValue( key, data )
-      
+
       # notify to all client
       notifyHash[ username ] = key
       masterdb.close()
