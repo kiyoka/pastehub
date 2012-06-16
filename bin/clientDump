@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+require 'synchrobase'
+
+def dumpDb( username, command, key )
+  # open local db
+  localdb = SynchroBase::LocalDB.new( File.expand_path( "~/.localdb/" ) + "/" )
+  localdb.open( username )
+
+  case command
+  when "list"
+    # calc difference between master and local.
+    localList = localdb.getList() 
+    localList.each { |x|
+      puts x
+    }
+
+  when "get"
+    print localdb.getValue( key )
+  end
+  localdb.close()
+end
+
+def main
+  username  = ENV['SYNC_USER']
+  if not username 
+    STDERR.puts "clientDump needs environment var `SYNC_USER'"
+    exit 1
+  end
+
+  if 0 == ARGV.length 
+    STDERR.puts "clientDump [command] [arg]"
+    STDERR.puts "  1) clientDump list"
+    STDERR.puts "  2) clientDump get  key"
+    exit 1
+  end
+
+  command = ARGV[0]
+  case command
+  when "list"
+    dumpDb( username, command, "" )
+  when "get"
+    if 2 > ARGV.length
+      STDERR.puts "Error: please spacify key."
+      exit 1
+    end
+    dumpDb( username, command, ARGV[1] )
+  else
+    STDERR.puts "unknown command [#{command}]"
+  end
+end
+
+main

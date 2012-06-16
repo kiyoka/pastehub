@@ -76,3 +76,10 @@ end
 task :postB1 do
   sh "echo 'bbb1' | ruby -I ./lib bin/clientPost  #{USERNAME_B}"
 end
+
+task :dumpA do
+  open( "|" + SETENV_A + "; ruby -I ./lib bin/clientDump list" ) {|f|
+    firstKey = f.readline.chomp
+    sh SETENV_A + "; ruby -I ./lib bin/clientDump get '#{firstKey}'"
+  }
+end
