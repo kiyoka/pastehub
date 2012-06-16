@@ -10,18 +10,21 @@
   :type  'string
   :group 'pastehub)
 
-
-;; memo: x-select-text must be called on X-window system...
-
-(defun pastehub-select-text (text &optional push)
-  "wrapper funciton for pastehub client"
-
+(defun posthub-post-internal ()
   (with-temp-buffer
-    (insert text)
+    (insert (substring-no-properties (car kill-ring)))
     (call-process-region (point-min) (point-max)
 			 pastehub-client)))
 
-(setq interprogram-cut-function 'pastehub-select-text)
+(defadvice kill-new (after pastehub-post activate)
+  "Post the lastest killed text to pastehub cloud service."
+  (posthub-post-internal))
+
+(ad-activate 'kill-new)
 
 
-;;(pastehub-select-text "a\nb\nc\n")
+
+
+
+
+
