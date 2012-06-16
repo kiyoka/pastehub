@@ -1,12 +1,9 @@
-Realtime db sync sample
+PasteHub
 =======================
 
 ## Concept
 
-I want to synchronize local DBs.
-I think it can be done to implement the cloud based storage system 
-and realtime notifier.
-
+Cloud-based cross-platform clipboard (copy and paste) synchronization.
 
 ## Architecture
 

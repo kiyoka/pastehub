@@ -5,7 +5,7 @@ require 'net/http'
 require 'uri'
 require 'open-uri'
 require 'fileutils'
-require 'synchrobase'
+require 'pastehub'
 
 SERVER_HOST='localhost'
 LOCALDB_PATH=File.expand_path( "~/.localdb/" ) + "/"
@@ -29,7 +29,7 @@ def putValue( auth, key, value )
     http.post(uri.request_uri, value,
               auth.getAuthHash().merge(
                                        { "content-type" => "plain/text",
-                                         "x-syncrhobase-key" => key    }
+                                         "x-pastehub-key" => key    }
                                        )) { |str|
       ret = str
     }
@@ -47,12 +47,12 @@ def sync_db( auth )
     }
   end
   # open local db
-  localdb = SynchroBase::LocalDB.new( LOCALDB_PATH )
+  localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
   localdb.open( auth.username )
 
   # calc difference between master and local.
   localList = localdb.getList() 
-  util = SynchroBase::Util.new
+  util = PasteHub::Util.new
   downList = util.diffList( masterList, localList ).reject{|x| x.match( /^_/ )}
   upList   = util.diffList( localList, masterList ).reject{|x| x.match( /^_/ )}
 
@@ -74,7 +74,7 @@ end
 
 def record_exist?( username, key )
   # open local db
-  localdb = SynchroBase::LocalDB.new( LOCALDB_PATH )
+  localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
   localdb.open( username )
   ret = localdb.getValue( key, nil )
   localdb.close()
@@ -83,7 +83,7 @@ end
 
 def setOnlineState( username, online )
   # open local db
-  localdb = SynchroBase::LocalDB.new( LOCALDB_PATH )
+  localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
   localdb.open( username )
   localdb.insertValue( ONLINE_STATE_KEY, online ? "1" : "0" )
   localdb.close()
@@ -124,20 +124,20 @@ end
 
 
 def main
-  username  = ENV['SYNC_USER']
+  username  = ENV['PASTEHUB_USER']
   if not username 
-    STDERR.puts( "clientSync needs environment var `SYNC_USER'" )
+    STDERR.puts( "clientSync needs environment var `PASTEHUB_USER'" )
     exit 1
   end
 
-  secretKey = ENV['SYNC_SECRET_KEY']
+  secretKey = ENV['PASTEHUB_SECRET_KEY']
   if not secretKey
-    STDERR.puts( "clientSync needs environment var `SYNC_SECRET_KEY'" )
+    STDERR.puts( "clientSync needs environment var `PASTEHUB_SECRET_KEY'" )
   end
 
   setOnlineState( username, false )
   while true
-    auth = SynchroBase::AuthForClient.new( username, secretKey )
+    auth = PasteHub::AuthForClient.new( username, secretKey )
     result = wait_notify( auth )
     case result
     when :timeout

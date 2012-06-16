@@ -3,7 +3,7 @@ require 'cgi'
 require 'memcache'
 require 'pp'
 $LOAD_PATH.push( File.dirname(__FILE__) + "/../lib" )
-require 'synchrobase'
+require 'pastehub'
 
 # use http://en.wikipedia.org/wiki/Chunked_transfer_encoding
 
@@ -18,8 +18,8 @@ end
 
 notifier = Vertx::HttpServer.new
 notifier.request_handler do |req|
-  util = SynchroBase::Util.new
-  auth = SynchroBase::AuthForServer.new( "/var/synchrobase/" )
+  util = PasteHub::Util.new
+  auth = PasteHub::AuthForServer.new( "/var/pastehub/" )
 
   ret = auth.invoke( req.headers, util.currentSeconds() )
   # Now send back a response

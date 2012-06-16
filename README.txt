@@ -1,13 +1,14 @@
-SynchroBase
+PasteHub
 =======================
 
 ## Concept
 
-Base system for local db synchronizing service.
-masterdb is on the cloud.
+This is prototype system.
+Cloud-based cross-platform clipboard (copy and paste) synchronization.
 
 ## Open Source
 
 This is open source software under licensed BSD-style LICENSE.
+
 
 

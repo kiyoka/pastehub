@@ -2,7 +2,7 @@ require 'digest'
 require 'date'
 require 'set'
 
-module SynchroBase
+module PasteHub
   class Util
     def initialize()
     end

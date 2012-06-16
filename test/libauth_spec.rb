@@ -32,8 +32,8 @@
 #   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-require 'synchrobase'
-include SynchroBase
+require 'pastehub'
+include PasteHub
 
 
 describe Auth, "When client auth library is used (OK)...  " do
@@ -44,20 +44,20 @@ describe Auth, "When client auth library is used (OK)...  " do
   end
 
   it "should" do
-    @auth.addElement( 'x-synchrobase-username', 'userA'      )
+    @auth.addElement( 'x-pastehub-username', 'userA'      )
     @auth.calcSignature( @secretKey ).should                        == :NotEnoughKeys
-    @auth.addElement( 'x-synchrobase-date',     '1339639491' )
+    @auth.addElement( 'x-pastehub-date',     '1339639491' )
     @auth.calcSignature( @secretKey ).should                        == :NotEnoughKeys
-    @auth.addElement( 'x-synchrobase-version',  '2012-06-16' )
-    @auth.calcSignature( @secretKey ).should                        == "hQWqiHcvbykjQ2gLpS4qaqGTeTXtOrIyMwLj+0qX4aw="
+    @auth.addElement( 'x-pastehub-version',  '2012-06-16' )
+    @auth.calcSignature( @secretKey ).should                        == "Nzvcsfnkbu/mlM+r5/YaZ676j08WiPikoS7KrpZf/RM="
 
     authForClient = AuthForClient.new( 'userA', @secretKey )
-    authForClient._addElement( 'x-synchrobase-date', '10000000' )
+    authForClient._addElement( 'x-pastehub-date', '10000000' )
     authForClient.getAuthHash( ).should == {
-      "x-synchrobase-username"=>"userA",
-      "x-synchrobase-date"=>"10000000",
-      "x-synchrobase-version"=>"2012-06-16",
-      "authorization"=>"ZeF2je500R5sfbGAi+/js9ExwrSrEHiU/waS+Ea61Sc="
+      "x-pastehub-username"=>"userA",
+      "x-pastehub-date"=>"10000000",
+      "x-pastehub-version"=>"2012-06-16",
+      "authorization"=>"JdBdwsmcJ7jIy3EQ0lX5MjlKUprYump10UDxr0fxnRA="
     }
     authForClient.username.should == "userA"
   end
@@ -74,36 +74,36 @@ describe Auth, "When server auth library is used ...  " do
   end
 
   it "should" do
-    @auth.addElement( 'x-synchrobase-username', 'userA' )
-    @auth.addElement( 'x-synchrobase-date',     '10000000' )
-    @auth.addElement( 'x-synchrobase-version',  '2012-06-16' )
-    @auth.calcSignature( @secretKey ).should                       == "ZeF2je500R5sfbGAi+/js9ExwrSrEHiU/waS+Ea61Sc=" 
+    @auth.addElement( 'x-pastehub-username', 'userA' )
+    @auth.addElement( 'x-pastehub-date',     '10000000' )
+    @auth.addElement( 'x-pastehub-version',  '2012-06-16' )
+    @auth.calcSignature( @secretKey ).should                       == "JdBdwsmcJ7jIy3EQ0lX5MjlKUprYump10UDxr0fxnRA="
 
 
     @authForServer.invoke( {
-                             "x-synchrobase-username"=>"userA",
-                             "x-synchrobase-date"=>"10000000",
-                             "x-synchrobase-version"=>"2012-06-16",
-                             "authorization"=>"ZeF2je500R5sfbGAi+/js9ExwrSrEHiU/waS+Ea61Sc=" 
+                             "x-pastehub-username"=>"userA",
+                             "x-pastehub-date"=>"10000000",
+                             "x-pastehub-version"=>"2012-06-16",
+                             "authorization"=>"JdBdwsmcJ7jIy3EQ0lX5MjlKUprYump10UDxr0fxnRA="
                            }, 10000000
                            ).should  == [ true, "userA" ]
 
-    @auth.addElement( 'x-synchrobase-username', 'unknownUser' )
-    @auth.addElement( 'x-synchrobase-date',     '10000000' )
-    @auth.addElement( 'x-synchrobase-version',  '2012-06-16' )
-    @auth.calcSignature( @secretKey ).should_not                   == "ZeF2je500R5sfbGAi+/js9ExwrSrEHiU/waS+Ea61Sc=" 
+    @auth.addElement( 'x-pastehub-username', 'unknownUser' )
+    @auth.addElement( 'x-pastehub-date',     '10000000' )
+    @auth.addElement( 'x-pastehub-version',  '2012-06-16' )
+    @auth.calcSignature( @secretKey ).should_not                   == "JdBdwsmcJ7jIy3EQ0lX5MjlKUprYump10UDxr0fxnRA="
 
     @authForServer.invoke( {
-                             'x-synchrobase-username' => 'unknownUser',
-                             "x-synchrobase-date"=>"10000000",
-                             'x-synchrobase-version'=>'2012-06-16'
+                             'x-pastehub-username' => 'unknownUser',
+                             "x-pastehub-date"=>"10000000",
+                             'x-pastehub-version'=>'2012-06-16'
                            }, 10000000
                            ).should  == [ false, :unknown_user ]
 
     @authForServer.invoke( {
-                             "x-synchrobase-username"=>"userA",
-                             "x-synchrobase-date"=>"10000000",
-                             "x-synchrobase-version"=>"2012-06-16",
+                             "x-pastehub-username"=>"userA",
+                             "x-pastehub-date"=>"10000000",
+                             "x-pastehub-version"=>"2012-06-16",
                              "authorization"=>"XXXXXXXXXXXX"
                            }, 10000000
                            ).should  == [ false, :illegal_signature ]
@@ -114,10 +114,10 @@ describe Auth, "When server auth library invokes time expire check ...  " do
   before do
     @authForServer = AuthForServer.new( "/tmp/" )
     @headers = {
-      "x-synchrobase-username"=>"userA",
-      "x-synchrobase-date"=>"1339639491",
-      "x-synchrobase-version"=>"2012-06-16",
-      "authorization"=>"hQWqiHcvbykjQ2gLpS4qaqGTeTXtOrIyMwLj+0qX4aw="
+      "x-pastehub-username"=>"userA",
+      "x-pastehub-date"=>"1339639491",
+      "x-pastehub-version"=>"2012-06-16",
+      "authorization"=>"Nzvcsfnkbu/mlM+r5/YaZ676j08WiPikoS7KrpZf/RM="
     }
   end
 

@@ -1,5 +1,5 @@
 #
-#                            SyncrhoBase
+#                            PasteHub
 #
 #
 #   Copyright (c) 2012  Kiyoka Nishiyama  <kiyoka@sumibi.org>
@@ -32,8 +32,8 @@
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 #
-require 'synchrobase/util'
-require 'synchrobase/auth'
-require 'synchrobase/db'
+require 'pastehub/util'
+require 'pastehub/auth'
+require 'pastehub/db'
 
 

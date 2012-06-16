@@ -2,11 +2,11 @@ require "openssl"
 require "base64"
 require 'pp'
 
-module SynchroBase
+module PasteHub
   MANDATORY_KEYS = [
-                    'x-synchrobase-username',
-                    'x-synchrobase-date',
-                    'x-synchrobase-version'
+                    'x-pastehub-username',
+                    'x-pastehub-date',
+                    'x-pastehub-version'
                    ]
 
 
@@ -40,11 +40,11 @@ module SynchroBase
     end
 
     def username()
-      @elements['x-synchrobase-username']
+      @elements['x-pastehub-username']
     end
 
     def curTime()
-      @elements['x-synchrobase-date']
+      @elements['x-pastehub-date']
     end
   end
 
@@ -52,9 +52,9 @@ module SynchroBase
     def initialize( username, secretKey )
       util = Util.new
       @token = Auth.new( )
-      @token.addElement( 'x-synchrobase-username', username )
-      @token.addElement( 'x-synchrobase-date',     util.key_seconds( util.currentTime( )).to_s )
-      @token.addElement( 'x-synchrobase-version',  '2012-06-16' )
+      @token.addElement( 'x-pastehub-username', username )
+      @token.addElement( 'x-pastehub-date',     util.key_seconds( util.currentTime( )).to_s )
+      @token.addElement( 'x-pastehub-version',  '2012-06-16' )
       @secretKey = secretKey
     end
 
@@ -80,7 +80,7 @@ module SynchroBase
   end
 
   class AuthForServer
-    def initialize( basepath = "/var/synchrobase/" )
+    def initialize( basepath = "/var/pastehub/" )
       @basepath = basepath
       @secretKeys = Hash.new
       open( @basepath + "users.tsv" ) {|f|

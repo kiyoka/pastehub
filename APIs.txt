@@ -1,20 +1,20 @@
-Realtime db sync sample APIs
+PastHub Web API
 =======================
 
 ## authentication
 
- All API method must use this user authentication header
+ All API method must include this user authentication header
 
- 1) x-synchrobase-username  : userA
- 2) x-synchrobase-date      : 913279782384         (epoc time by seconds)
- 3) x-synchrobase-version   : 2012-06-16           (fixed string)
+ 1) x-pastehub-username  : userA
+ 2) x-pastehub-date      : 913279782384         (epoc time by seconds)
+ 3) x-pastehub-version   : 2012-06-16           (fixed string)
  4) Authorization           : "signature"
     
  4) "signature" is HMAC-SHA256 of concat string of 1) and 2) and 3) .
     HMAC-SHA256 of concat string like "key:value,key:value:key:value"
     then base64 encoding
 
- A) if x-synchrobase-date and current time differs over 5 minutes,
+ A) if x-pastehub-date and current time differs over 5 minutes,
     authentication will fail.
 
  B) if Authorization calced by local-side and calced by server-site differs,

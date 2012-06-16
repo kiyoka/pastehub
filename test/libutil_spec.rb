@@ -32,8 +32,8 @@
 #   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-require 'synchrobase'
-include SynchroBase
+require 'pastehub'
+include PasteHub
 
 
 describe Util, "When message digest util is called...  " do

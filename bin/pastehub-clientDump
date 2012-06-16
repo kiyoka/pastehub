@@ -1,22 +1,22 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
-require 'synchrobase'
+require 'pastehub'
 
 def dumpDb( username, command, key )
   # open local db
-  localdb = SynchroBase::LocalDB.new( File.expand_path( "~/.localdb/" ) + "/" )
+  localdb = PasteHub::LocalDB.new( File.expand_path( "~/.localdb/" ) + "/" )
   localdb.open( username )
 
   case command
   when "list"
-    localList = localdb.getList() 
+    localList = localdb.getList().reject{|x| x.match( /^_/ )}
     localList.each { |x|
       puts x
     }
 
   when "top"
-    localList = localdb.getList() 
+    localList = localdb.getList().reject{|x| x.match( /^_/ )}
     if 0 < localList.size
       print localdb.getValue( localList.first )
     end
@@ -28,9 +28,9 @@ def dumpDb( username, command, key )
 end
 
 def main
-  username  = ENV['SYNC_USER']
+  username  = ENV['PASTEHUB_USER']
   if not username 
-    STDERR.puts "clientDump needs environment var `SYNC_USER'"
+    STDERR.puts "clientDump needs environment var `PASTEHUB_USER'"
     exit 1
   end
 

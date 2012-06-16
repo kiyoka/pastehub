@@ -1,6 +1,6 @@
 require 'gdbm'
 
-module SynchroBase
+module PasteHub
   class BaseDB
     def initialize( basepath = "/tmp/")
       @basepath = basepath

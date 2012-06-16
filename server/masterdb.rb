@@ -5,7 +5,7 @@ require 'date'
 require 'memcache'
 
 $LOAD_PATH.push( File.dirname(__FILE__) + "/../lib" )
-require 'synchrobase'
+require 'pastehub'
 
 notifyHash = Memcache.new( :server => "localhost:11211" )
 
@@ -13,8 +13,8 @@ masterdb_server = Vertx::HttpServer.new
 masterdb_server.request_handler do |req|
 
   req.body_handler do |body|
-    util = SynchroBase::Util.new
-    auth = SynchroBase::AuthForServer.new( "/var/synchrobase/" )
+    util = PasteHub::Util.new
+    auth = PasteHub::AuthForServer.new( "/var/pastehub/" )
     ret = auth.invoke( req.headers, util.currentSeconds() )
 
     if ret[0]
@@ -28,7 +28,7 @@ masterdb_server.request_handler do |req|
       return
     end
 
-    masterdb = SynchroBase::MasterDB.new
+    masterdb = PasteHub::MasterDB.new
     masterdb.open( username )
 
     case req.path
@@ -49,7 +49,7 @@ masterdb_server.request_handler do |req|
       data = body.to_s.dup
 
       # update db
-      key = req.headers[ 'X-Syncrhobase-Key' ].dup
+      key = req.headers[ 'X-Pastehub-Key' ].dup
       puts "[#{username}]:putValue: key=[#{key}] : " + data
       masterdb.insertValue( key, data )
 

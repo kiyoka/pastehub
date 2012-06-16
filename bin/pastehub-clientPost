@@ -5,7 +5,7 @@ require 'net/http'
 require 'uri'
 require 'open-uri'
 require 'fileutils'
-require 'synchrobase'
+require 'pastehub'
 require 'json'
 
 SERVER_HOST='localhost'
@@ -24,19 +24,19 @@ def postData( auth, data )
 end
 
 def main
-  username  = ENV['SYNC_USER']
+  username  = ENV['PASTEHUB_USER']
   if not username 
-    STDERR.puts( "clientSync needs environment var `SYNC_USER'" )
+    STDERR.puts( "clientSync needs environment var `PASTEHUB_USER'" )
     exit 1
   end
 
-  secretKey = ENV['SYNC_SECRET_KEY']
+  secretKey = ENV['PASTEHUB_SECRET_KEY']
   if not secretKey
-    STDERR.puts( "clientSync needs environment var `SYNC_SECRET_KEY'" )
+    STDERR.puts( "clientSync needs environment var `PASTEHUB_SECRET_KEY'" )
   end
 
   data = STDIN.read
-  auth = SynchroBase::AuthForClient.new( username, secretKey )
+  auth = PasteHub::AuthForClient.new( username, secretKey )
   postData( auth, data )
 end
 

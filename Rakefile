@@ -13,17 +13,17 @@ MDB_URL='http://localhost:8081'
 NTF_URL='http://localhost:8080'
 USERNAME_A='userA'
 USERNAME_B='userB'
-SETENV_A="export SYNC_USER=userA ; export SYNC_SECRET_KEY='ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg=='"
+SETENV_A="export PASTEHUB_USER=userA ; export PASTEHUB_SECRET_KEY='ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg=='"
 
 require 'rake'
 begin
   require 'jeweler2'
   Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "synchro-base"
-    gemspec.summary = "SynchroBase is real time db sync framework."
-    gemspec.description = "SynchroBase is real time db sync framework powered by Vert.x."
+    gemspec.name = "pastehub"
+    gemspec.summary = "PasteHub is cloud-based cross-platform clipboard sync."
+    gemspec.description = "PasteHub is cloud-based cross-platform clipboard sync."
     gemspec.email = "kiyoka@sumibi.org"
-    gemspec.homepage = "http://github.com/kiyoka/SynchroBase"
+    gemspec.homepage = "http://github.com/kiyoka/pastehub"
     gemspec.authors = ["Kiyoka Nishiyama"]
     gemspec.files = FileList['Rakefile',
                              '.gemtest',
@@ -61,29 +61,29 @@ task :n do
 end
 
 task :syncA do
-  sh SETENV_A + "; ruby -I ./lib bin/sb-clientSync"
+  sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientSync"
 end
 
 task :syncB do
-  sh "ruby -I ./lib bin/sb-clientSync"
+  sh "ruby -I ./lib bin/pastehub-clientSync"
 end
 
 task :postA1 do
-  sh SETENV_A + "; echo 'aaa1' | ruby -I ./lib bin/sb-clientPost"
+  sh SETENV_A + "; echo 'aaa1' | ruby -I ./lib bin/pastehub-clientPost"
 end
 
 task :postA2 do
-  sh SETENV_A + "; echo 'aaa2' | ruby -I ./lib bin/sb-clientPost"
+  sh SETENV_A + "; echo 'aaa2' | ruby -I ./lib bin/pastehub-clientPost"
 end
 
 task :postB1 do
-  sh "echo 'bbb1' | ruby -I ./lib bin/sb-clientPost"
+  sh "echo 'bbb1' | ruby -I ./lib bin/pastehub-clientPost"
 end
 
 task :dumpA do
-  open( "|" + SETENV_A + "; ruby -I ./lib bin/sb-clientDump list" ) {|f|
+  open( "|" + SETENV_A + "; ruby -I ./lib bin/pastehub-clientDump list" ) {|f|
     firstKey = f.readline.chomp
-    sh SETENV_A + "; ruby -I ./lib bin/sb-clientDump get '#{firstKey}'"
+    sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientDump get '#{firstKey}'"
   }
-  sh SETENV_A + "; ruby -I ./lib bin/sb-clientDump top"
+  sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientDump top"
 end
