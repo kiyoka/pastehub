@@ -85,4 +85,5 @@ task :dumpA do
     firstKey = f.readline.chomp
     sh SETENV_A + "; ruby -I ./lib bin/sb-clientDump get '#{firstKey}'"
   }
+  sh SETENV_A + "; ruby -I ./lib bin/sb-clientDump top"
 end

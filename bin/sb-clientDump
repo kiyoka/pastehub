@@ -10,11 +10,16 @@ def dumpDb( username, command, key )
 
   case command
   when "list"
-    # calc difference between master and local.
     localList = localdb.getList() 
     localList.each { |x|
       puts x
     }
+
+  when "top"
+    localList = localdb.getList() 
+    if 0 < localList.size
+      print localdb.getValue( localList.first )
+    end
 
   when "get"
     print localdb.getValue( key )
@@ -33,12 +38,15 @@ def main
     STDERR.puts "clientDump [command] [arg]"
     STDERR.puts "  1) clientDump list"
     STDERR.puts "  2) clientDump get  key"
+    STDERR.puts "  2) clientDump top"
     exit 1
   end
 
   command = ARGV[0]
   case command
   when "list"
+    dumpDb( username, command, "" )
+  when "top"
     dumpDb( username, command, "" )
   when "get"
     if 2 > ARGV.length
