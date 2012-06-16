@@ -9,7 +9,6 @@ require 'pastehub'
 
 SERVER_HOST='localhost'
 LOCALDB_PATH=File.expand_path( "~/.localdb/" ) + "/"
-ONLINE_STATE_KEY='__ONLINE_STATE'
 
 def getValue( auth, key )
   uri = URI.parse("http://#{SERVER_HOST}:8081/getValue")
@@ -69,6 +68,11 @@ def sync_db( auth )
 
   puts "Info: download #{downList.size} records."
   puts "Info:   upload #{upList.size} records."
+
+  if 0 < downList.size
+    localdb.insertValue( PasteHub::LATEST_DATE_KEY, util.currentTime( ) )
+  end
+
   localdb.close()
 end
 
@@ -85,7 +89,7 @@ def setOnlineState( username, online )
   # open local db
   localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
   localdb.open( username )
-  localdb.insertValue( ONLINE_STATE_KEY, online ? "1" : "0" )
+  localdb.insertValue( PasteHub::ONLINE_STATE_KEY, online ? "1" : "0" )
   localdb.close()
 end
 

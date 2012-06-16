@@ -1,6 +1,10 @@
 require 'gdbm'
 
 module PasteHub
+
+  ONLINE_STATE_KEY='__ONLINE_STATE'
+  LATEST_DATE_KEY='__LATEST_DATE'
+
   class BaseDB
     def initialize( basepath = "/tmp/")
       @basepath = basepath

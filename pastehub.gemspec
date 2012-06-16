@@ -4,15 +4,15 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = "synchro-base"
+  s.name = "pastehub"
   s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kiyoka Nishiyama"]
   s.date = "2012-06-16"
-  s.description = "SynchroBase is real time db sync framework powered by Vert.x."
+  s.description = "PasteHub is cloud-based cross-platform clipboard sync."
   s.email = "kiyoka@sumibi.org"
-  s.executables = ["sb-clientDump", "sb-clientPost", "sb-clientSync"]
+  s.executables = ["pastehub-clientDump", "pastehub-clientPost", "pastehub-clientSync"]
   s.extra_rdoc_files = [
     "README.txt"
   ]
@@ -20,20 +20,20 @@ Gem::Specification.new do |s|
     "README.txt",
     "Rakefile",
     "VERSION.yml",
-    "bin/sb-clientDump",
-    "bin/sb-clientPost",
-    "bin/sb-clientSync",
-    "lib/synchrobase.rb",
-    "lib/synchrobase/auth.rb",
-    "lib/synchrobase/db.rb",
-    "lib/synchrobase/util.rb",
+    "bin/pastehub-clientDump",
+    "bin/pastehub-clientPost",
+    "bin/pastehub-clientSync",
+    "lib/pastehub.rb",
+    "lib/pastehub/auth.rb",
+    "lib/pastehub/db.rb",
+    "lib/pastehub/util.rb",
     "server/masterdb.rb",
     "server/notifier.rb"
   ]
-  s.homepage = "http://github.com/kiyoka/SynchroBase"
+  s.homepage = "http://github.com/kiyoka/pastehub"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"
-  s.summary = "SynchroBase is real time db sync framework."
+  s.summary = "PasteHub is cloud-based cross-platform clipboard sync."
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

@@ -21,6 +21,9 @@ def dumpDb( username, command, key )
       print localdb.getValue( localList.first )
     end
 
+  when "latestdate"
+    puts localdb.getValue( PasteHub::LATEST_DATE_KEY )
+
   when "get"
     print localdb.getValue( key )
   end
@@ -38,15 +41,18 @@ def main
     STDERR.puts "clientDump [command] [arg]"
     STDERR.puts "  1) clientDump list"
     STDERR.puts "  2) clientDump get  key"
-    STDERR.puts "  2) clientDump top"
+    STDERR.puts "  3) clientDump top"
+    STDERR.puts "  4) clientDump latestdate"
     exit 1
   end
 
-  command = ARGV[0]
+  command = ARGV[0].downcase
   case command
   when "list"
     dumpDb( username, command, "" )
   when "top"
+    dumpDb( username, command, "" )
+  when "latestdate"
     dumpDb( username, command, "" )
   when "get"
     if 2 > ARGV.length
