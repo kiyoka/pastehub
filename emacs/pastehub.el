@@ -1,31 +1,27 @@
 ;; -*- coding: utf-8 -*-
 ;;
-;; "synchrobase.el" is a client program for SynchroBase server
+;; "pastehub.el" is a client program for PasteHub cloud service
 ;;
 ;;   Copyright (C) 2012 Kiyoka Nishiyama
 ;;
 
-(defcustom synchrobase-client "sb-clientPost"
+(defcustom pastehub-client "pastehub-clientPost"
   "client program name."
   :type  'string
-  :group 'synchrobase)
+  :group 'pastehub)
 
 
 ;; memo: x-select-text must be called on X-window system...
 
-(defun sb-select-text (text &optional push)
-  "wrapper funciton for syncro-base client"
+(defun pastehub-select-text (text &optional push)
+  "wrapper funciton for pastehub client"
 
-  (let ((tmp-outbuf)
-	(with-temp-buffer))
-    (with-temp-buffer
-      (insert text)
-      (call-process-region (point-min) (point-max)
-			   synchrobase-client))))
+  (with-temp-buffer
+    (insert text)
+    (call-process-region (point-min) (point-max)
+			 pastehub-client)))
 
-(setq interprogram-cut-function 'sb-select-text)
+(setq interprogram-cut-function 'pastehub-select-text)
 
 
-
-;;(sx-select-text "a\nb\nc\n")
-
+;;(pastehub-select-text "a\nb\nc\n")
