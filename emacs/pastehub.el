@@ -78,8 +78,8 @@
 	   (lambda (key)
 	     (pastehub-call-process pastehub-client-dump "get" key))
 	   keys))
-    (current-kill 1)
-  (message nil)))
+    (setq kill-ring-yank-pointer kill-ring))
+  (message nil))
 
 
 (defun pastehub-timer-handler ()
