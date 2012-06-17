@@ -6,7 +6,7 @@ require 'pastehub'
 def dumpDb( username, command, key )
   # open local db
   localdb = PasteHub::LocalDB.new( File.expand_path( "~/.localdb/" ) + "/" )
-  localdb.open( username )
+  localdb.open( username, true )
 
   case command
   when "list"

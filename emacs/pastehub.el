@@ -15,9 +15,17 @@
   :type  'string
   :group 'pastehub)
 
-(defvar pastehub-lastest-key ""       "lastest synced database key.")
+(defcustom pastehub-sync-items 10
+  "number of paste items to sync."
+  :type 'integer
+  :group 'pastehub)
+
+(defvar pastehub-lastest-date ""       "lastest synced date.")
 
 
+;;
+;; Paste
+;;
 (defun posthub-post-internal ()
   (when (car kill-ring)
     (with-temp-buffer
@@ -32,28 +40,58 @@
 (ad-activate 'kill-new)
 
 
-(defun pastehub-timer-handler ()
-  "polling process handler for pastehub service."
-  (let ((outbuf (get-buffer-create "*pastehub dump*")))
+;;
+;; Poll & Sync
+;;
+(defun pastehub-call-process (process-name arg1 arg2)
+  "call-process and return output string of the command."
+  (let ((outbuf (get-buffer-create "*pastehub output*")))
     (with-current-buffer (buffer-name outbuf)
       (delete-region (point-min) (point-max)))
     (with-temp-buffer
-      (call-process  pastehub-client-dump
-		     nil ;; infile
-		     outbuf
-		     nil ;; display
-		     "top"))
+      (call-process process-name
+		    nil ;; infile
+		    outbuf
+		    nil ;; display
+		    arg1
+		    arg2))
     (with-current-buffer (buffer-name outbuf)
-      (let ((str (buffer-substring-no-properties (point-min) (point-max))))
-	(setq kill-ring (list str))))))
+      (let ((result-str (buffer-substring-no-properties (point-min) (point-max))))
+	result-str))))
 
+;; like scheme's `take'
+(defun pastehub-take (lst n)
+  (reverse (last (reverse lst)
+		 n)))
+
+(defun pastehub-sync-kill-ring ()
+  "sync kill-ring"
+  (message "syncing kill-ring...")
+  (let* ((keys-string (pastehub-call-process pastehub-client-dump "list" ""))
+	 (keys
+	  (pastehub-take (split-string 
+			  keys-string
+			  "\n")
+			 pastehub-sync-items)))
+    (setq kill-ring
+	  (mapcar
+	   (lambda (key)
+	     (pastehub-call-process pastehub-client-dump "get" key))
+	   keys))
+    (current-kill 1)
+  (message nil)))
+
+
+(defun pastehub-timer-handler ()
+  "polling process handler for pastehub service."
+  (let ((latest-date
+	 (pastehub-call-process pastehub-client-dump "latestdate" "")))
+    (if (not (string-equal pastehub-lastest-date latest-date))
+	(progn
+	  (setq pastehub-lastest-date latest-date)
+	  (pastehub-sync-kill-ring)))))
+	    
 (pastehub-timer-handler)
 
 (run-at-time t 1.0 'pastehub-timer-handler)
-
-
-
-
-
-
 

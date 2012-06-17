@@ -10,8 +10,13 @@ module PasteHub
       @basepath = basepath
     end
 
-    def open( username )
-      @db = GDBM.new( @basepath + username + ".db" )
+    def open( username, reader = false )
+      if reader
+        @db = GDBM.new( @basepath + username + ".db", nil, GDBM::READER )
+      else
+        @db = GDBM.new( @basepath + username + ".db" )
+      end
+
       if not @db
         raise RuntimeError, sprintf( "DBM.new error: file=%s", username + ".db" )
       end

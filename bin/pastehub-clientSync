@@ -79,7 +79,7 @@ end
 def record_exist?( username, key )
   # open local db
   localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
-  localdb.open( username )
+  localdb.open( username, true )
   ret = localdb.getValue( key, nil )
   localdb.close()
   ret
