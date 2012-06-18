@@ -150,8 +150,10 @@ def main
         setOnlineState( username, true )
       when :retry
         STDERR.puts "retrying...."
+        setOnlineState( username, false )
         sleep 60
       else
+        setOnlineState( username, true )
         sync_db( auth )
       end
     rescue Errno::EAGAIN => e

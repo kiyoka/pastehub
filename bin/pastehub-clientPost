@@ -6,9 +6,9 @@ require 'uri'
 require 'open-uri'
 require 'fileutils'
 require 'pastehub'
-require 'json'
 
 SERVER_HOST='localhost'
+LOCALDB_PATH=File.expand_path( "~/.localdb/" ) + "/"
 
 def postData( auth, data )
   begin
@@ -21,6 +21,27 @@ def postData( auth, data )
   rescue Errno::ECONNREFUSED => e
     STDERR.puts "Error: can't connect server."
   end
+end
+
+def online?( username )
+  # open local db
+  localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
+  localdb.open( username, true )
+  printf( "[%s]", localdb.getValue( PasteHub::ONLINE_STATE_KEY ))
+  ret = ("1" == localdb.getValue( PasteHub::ONLINE_STATE_KEY ))
+  localdb.close()
+  ret
+end
+
+def saveValue( username, data )
+  # open local db
+  util = PasteHub::Util.new( )
+  key = util.currentTime( ) + "=" + util.digest( data )
+
+  localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
+  localdb.open( username )
+  localdb.insertValue( key, data.dup )
+  localdb.close()
 end
 
 def main
@@ -36,8 +57,12 @@ def main
   end
 
   data = STDIN.read
-  auth = PasteHub::AuthForClient.new( username, secretKey )
-  postData( auth, data )
+  if online?( username )
+    auth = PasteHub::AuthForClient.new( username, secretKey )
+    postData( auth, data )
+  else
+    saveValue( username, data )
+  end
 end
 
 main
