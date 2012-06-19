@@ -1,8 +1,9 @@
+#!/usr/bin/env ruby
+# -*- encoding: utf-8 -*-
 #
-#                            PasteHub
+# libconfig_spec.rb -  "RSpec file for config.rb"
 #
-#
-#   Copyright (c) 2012  Kiyoka Nishiyama  <kiyoka@sumibi.org>
+#   Copyright (c) 2012-2012  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #
 #   Redistribution and use in source and binary forms, with or without
 #   modification, are permitted provided that the following conditions
@@ -31,10 +32,37 @@
 #   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-#
-require 'pastehub/config'
-require 'pastehub/util'
-require 'pastehub/auth'
-require 'pastehub/db'
+require 'pastehub'
+
+describe PasteHub::Config, "When use config object...  " do
+
+  before do
+    @config = PasteHub::Config.instance
+  end
+
+  it "should" do
+    @config.dbPath.should              == "/var/pastehub/"
+    @config.memcacheHost.should        == "localhost:11211"
+    @config.targetApiHost.should       == "pastehub.org:8000"
+    @config.targetNotifierHost.should  == "pastehub.org:8001"
+    @config.localDbPath.should         == File.expand_path( "~/.pastehub/" ) + "/"
+  end
+end
 
 
+describe PasteHub::Config, "When use config object...  " do
+
+  before do
+    @config = PasteHub::Config.instance
+    @config.setupServer( "/tmp/", "memcache.example.com:11211" )
+    @config.setupClient( "localhost:8000", "localhost:8001", "/tmp/local/" )
+  end
+
+  it "should" do
+    @config.dbPath.should              == "/tmp/"
+    @config.memcacheHost.should        == "memcache.example.com:11211"
+    @config.targetApiHost.should       == "localhost:8000"
+    @config.targetNotifierHost.should  == "localhost:8001"
+    @config.localDbPath.should         == "/tmp/local/"
+  end
+end

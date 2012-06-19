@@ -4,8 +4,11 @@
 require 'pastehub'
 
 def dumpDb( username, command, key )
+  config = PasteHub::Config.instance
+  config.loadClient
+
   # open local db
-  localdb = PasteHub::LocalDB.new( File.expand_path( "~/.localdb/" ) + "/" )
+  localdb = PasteHub::LocalDB.new( config.localDbPath )
   localdb.open( username, true )
 
   case command

@@ -4,13 +4,14 @@ require 'memcache'
 require 'pp'
 $LOAD_PATH.push( File.dirname(__FILE__) + "/../lib" )
 require 'pastehub'
+PasteHub::Config.instance.loadServer
 
 # use http://en.wikipedia.org/wiki/Chunked_transfer_encoding
 
 INTERVAL    = 0.5
 POLLING_SEC = 60
 
-notifyHash = Memcache.new( :server => "localhost:11211" )
+notifyHash = Memcache.new( :server => PasteHub::Config.instance.memcacheHost )
 
 def notify( res, str )
   res.write_str( "#{str}\n"  )
@@ -19,7 +20,7 @@ end
 notifier = Vertx::HttpServer.new
 notifier.request_handler do |req|
   util = PasteHub::Util.new
-  auth = PasteHub::AuthForServer.new( "/var/pastehub/" )
+  auth = PasteHub::AuthForServer.new( PasteHub::Config.instance.dbPath )
 
   ret = auth.invoke( req.headers, util.currentSeconds() )
   # Now send back a response
@@ -53,4 +54,4 @@ notifier.request_handler do |req|
       Vertx::cancel_timer(timer_id)
     end
   }
-end.listen(8080, 'localhost')
+end.listen(8001, 'localhost')

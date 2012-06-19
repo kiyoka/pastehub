@@ -6,15 +6,16 @@ require 'memcache'
 
 $LOAD_PATH.push( File.dirname(__FILE__) + "/../lib" )
 require 'pastehub'
+PasteHub::Config.instance.loadServer
 
-notifyHash = Memcache.new( :server => "localhost:11211" )
+notifyHash = Memcache.new( :server => PasteHub::Config.instance.memcacheHost )
 
 masterdb_server = Vertx::HttpServer.new
 masterdb_server.request_handler do |req|
 
   req.body_handler do |body|
     util = PasteHub::Util.new
-    auth = PasteHub::AuthForServer.new( "/var/pastehub/" )
+    auth = PasteHub::AuthForServer.new( PasteHub::Config.instance.dbPath )
     ret = auth.invoke( req.headers, util.currentSeconds() )
 
     if ret[0]
@@ -79,4 +80,4 @@ masterdb_server.request_handler do |req|
     end
 
   end
-end.listen(8081, 'localhost')
+end.listen(8000, 'localhost')

@@ -6,12 +6,13 @@ require 'uri'
 require 'open-uri'
 require 'fileutils'
 require 'pastehub'
-
-SERVER_HOST='localhost'
-LOCALDB_PATH=File.expand_path( "~/.localdb/" ) + "/"
+PasteHub::Config.instance.loadClient
+SERVER_API_HOST      = PasteHub::Config.instance.targetApiHost
+SERVER_NOTIFIER_HOST = PasteHub::Config.instance.targetNotifierHost
+LOCALDB_PATH         = PasteHub::Config.instance.localDbPath
 
 def getValue( auth, key )
-  uri = URI.parse("http://#{SERVER_HOST}:8081/getValue")
+  uri = URI.parse("http://#{SERVER_API_HOST}/getValue")
   ret = ""
   Net::HTTP.start(uri.host, uri.port) do |http|
     http.post(uri.request_uri, key, auth.getAuthHash().merge( {"content-type" => "plain/text"} )) { |str|
@@ -22,7 +23,7 @@ def getValue( auth, key )
 end
 
 def putValue( auth, key, value )
-  uri = URI.parse("http://#{SERVER_HOST}:8081/putValue")
+  uri = URI.parse("http://#{SERVER_API_HOST}/putValue")
   ret = ""
   Net::HTTP.start(uri.host, uri.port) do |http|
     http.post(uri.request_uri, value,
@@ -38,7 +39,7 @@ end
 
 def sync_db( auth )
   puts "synchronizing..."
-  uri = URI.parse("http://localhost:8081/getList")
+  uri = URI.parse("http://#{SERVER_API_HOST}/getList")
   masterList = []
   Net::HTTP.start(uri.host, uri.port) do |http|
     http.get(uri.request_uri, auth.getAuthHash().merge( {"content-type" => "plain/text"} )) { |str|
@@ -95,7 +96,7 @@ end
 
 def wait_notify( auth )
   begin
-    uri = URI.parse("http://localhost:8080/")
+    uri = URI.parse("http://#{SERVER_NOTIFIER_HOST}/")
     Net::HTTP.start(uri.host, uri.port) do |http|
       request = Net::HTTP::Get.new(uri.request_uri, auth.getAuthHash())
       http.request(request) do |response|

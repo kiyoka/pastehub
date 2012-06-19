@@ -40,7 +40,7 @@ describe MasterDB, "masterDB API operations are " do
 
   before do
     @masterdb = MasterDB.new
-    @masterdb.open( "user1" )
+    @masterdb.open( "usertmp" )
     @util = Util.new
 
     ###         date,                           value
