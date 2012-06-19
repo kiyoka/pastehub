@@ -1,0 +1,19 @@
+PasteHub
+=======================
+
+## Server Sample
+
+/etc/pastehub.conf
+{
+  "dbPath":        "/var/pastehub/",
+  "memcacheHost":  "localhost:11211"
+}
+
+## Client Sample
+
+~/.pastehub.conf
+{
+  "targetApiHost":       "localhost:8000",
+  "targetNotifierHost":  "localhost:8001",
+  "localDbPath":         "/tmp/local/"
+}
