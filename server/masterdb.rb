@@ -29,7 +29,7 @@ masterdb_server.request_handler do |req|
       return
     end
 
-    masterdb = PasteHub::MasterDB.new
+    masterdb = PasteHub::MasterDB.new( PasteHub::Config.instance.dbPath )
     masterdb.open( username )
 
     case req.path
