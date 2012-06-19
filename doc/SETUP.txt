@@ -3,6 +3,12 @@ PasteHub
 
 ## Server Sample
 
+1. enviroment veriable
+
+  export JRUBY_HOME=/usr/local
+
+2. config file
+
 /etc/pastehub.conf
 {
   "dbPath":        "/var/pastehub/",
@@ -11,9 +17,22 @@ PasteHub
 
 ## Client Sample
 
+1. enviroment variable
+
+  You must get your username and secret key from cloud service
+  (pastehub.org or pastehub.net)
+  And setup these variables.
+
+  export PASTEHUB_USER="*YOUR USERNAME*"
+  export PASTEHUB_SECRET_KEY="*YOUR SECRET KEY*"
+
+2. config file
+
 ~/.pastehub.conf
 {
   "targetApiHost":       "localhost:8000",
   "targetNotifierHost":  "localhost:8001",
   "localDbPath":         "/tmp/local/"
 }
+
+
