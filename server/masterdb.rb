@@ -80,4 +80,5 @@ masterdb_server.request_handler do |req|
     end
 
   end
-end.listen(8000, 'localhost')
+end.listen(8000)
+
