@@ -141,7 +141,10 @@ def wait_notify( auth )
     STDERR.puts "Error: disconnected by server."
     return :retry
   rescue Errno::ECONNREFUSED => e
-    STDERR.puts "Error: can't connect server."
+    STDERR.puts "Error: can't connect server(ConnectionRefused)."
+    return :retry
+  rescue SocketError => e
+    STDERR.puts "Error: can't connect server(SocketError)."
     return :retry
   rescue Timeout::Error => e
     return :timeout
