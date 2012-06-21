@@ -86,6 +86,19 @@ def serverHasNew?( username, serverValue )
   return ret
 end
 
+def localHasNew?( username )
+  localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
+  localdb.open( username )
+  localValue  = localdb.getValue( PasteHub::LOCAL_DATE_KEY )
+  serverValue = localdb.getValue( PasteHub::SERVER_DATE_KEY )
+  ret = (localValue > serverValue)
+  if ret
+    localdb.insertValue( PasteHub::LOCAL_DATE_KEY, serverValue )
+  end
+  localdb.close()
+  return ret
+end
+
 def setOnlineState( username, online )
   # open local db
   localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
@@ -108,6 +121,10 @@ def wait_notify( auth )
             return chunk.chomp
           else
             puts "Info: server is stable:    #{serverValue}"
+          end
+          if localHasNew?( auth.username )
+            puts "Info: local  has new data"
+            return :local
           end
         end
         if "200" != response.code
