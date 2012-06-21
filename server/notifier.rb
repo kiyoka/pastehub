@@ -54,4 +54,4 @@ notifier.request_handler do |req|
       Vertx::cancel_timer(timer_id)
     end
   }
-end.listen(8001, 'localhost')
+end.listen(8001)
