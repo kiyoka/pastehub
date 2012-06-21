@@ -20,7 +20,7 @@
   :type 'integer
   :group 'pastehub)
 
-(defvar pastehub-lastest-date ""       "lastest synced date.")
+(defvar pastehub-latest-date ""       "latest synced date.")
 
 
 ;;
@@ -34,7 +34,7 @@
 			   pastehub-client-post))))
 
 (defadvice kill-new (after pastehub-post activate)
-  "Post the lastest killed text to pastehub cloud service."
+  "Post the latest killed text to pastehub cloud service."
   (posthub-post-internal))
 
 (ad-activate 'kill-new)
@@ -86,9 +86,9 @@
   "polling process handler for pastehub service."
   (let ((latest-date
 	 (pastehub-call-process pastehub-client-dump "latestdate" "")))
-    (if (not (string-equal pastehub-lastest-date latest-date))
+    (if (not (string-equal pastehub-latest-date latest-date))
 	(progn
-	  (setq pastehub-lastest-date latest-date)
+	  (setq pastehub-latest-date latest-date)
 	  (pastehub-sync-kill-ring)))))
 	    
 (pastehub-timer-handler)
