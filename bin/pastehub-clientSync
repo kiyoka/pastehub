@@ -91,7 +91,11 @@ def localHasNew?( username )
   localdb.open( username )
   localValue  = localdb.getValue( PasteHub::LOCAL_DATE_KEY )
   serverValue = localdb.getValue( PasteHub::SERVER_DATE_KEY )
-  ret = (localValue > serverValue)
+  ret = if localValue and serverValue
+          (localValue > serverValue)
+        else
+          false
+        end
   if ret
     localdb.insertValue( PasteHub::LOCAL_DATE_KEY, serverValue )
   end
