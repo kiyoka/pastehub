@@ -24,8 +24,9 @@ def dumpDb( username, command, key )
       print localdb.getValue( localList.first )
     end
 
-  when "latestdate"
-    puts localdb.getValue( PasteHub::LATEST_DATE_KEY )
+  when "latest"
+    puts 'server=' + localdb.getValue( PasteHub::SERVER_DATE_KEY ).to_s
+    puts 'local =' + localdb.getValue( PasteHub::LOCAL_DATE_KEY ).to_s
 
   when "get"
     print localdb.getValue( key )
@@ -45,7 +46,7 @@ def main
     STDERR.puts "  1) clientDump list"
     STDERR.puts "  2) clientDump get  key"
     STDERR.puts "  3) clientDump top"
-    STDERR.puts "  4) clientDump latestdate"
+    STDERR.puts "  4) clientDump latest"
     exit 1
   end
 
@@ -55,7 +56,7 @@ def main
     dumpDb( username, command, "" )
   when "top"
     dumpDb( username, command, "" )
-  when "latestdate"
+  when "latest"
     dumpDb( username, command, "" )
   when "get"
     if 2 > ARGV.length

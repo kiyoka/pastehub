@@ -40,9 +40,11 @@ masterdb_server.request_handler do |req|
       key = util.currentTime( ) + "=" + util.digest( data )
       puts "[#{username}]:insertValue: key=[#{key}] : " + data
       masterdb.insertValue( key, data )
+      cur = util.currentTime( )
+      masterdb.insertValue( PasteHub::SERVER_DATE_KEY, cur )
 
       # notify to all client
-      notifyHash[ username ] = key
+      notifyHash[ username ] = cur
       masterdb.close()
       req.response.end()
 
@@ -53,14 +55,16 @@ masterdb_server.request_handler do |req|
       key = req.headers[ 'X-Pastehub-Key' ].dup
       puts "[#{username}]:putValue: key=[#{key}] : " + data
       masterdb.insertValue( key, data )
+      cur = util.currentTime( )
+      masterdb.insertValue( PasteHub::SERVER_DATE_KEY, cur )
 
       # notify to all client
-      notifyHash[ username ] = key
+      notifyHash[ username ] = cur
       masterdb.close()
       req.response.end()
 
     when "/getList"
-      str = masterdb.getList( ).join( "\n" )
+      str = masterdb.getList( ).reject{|x| x.match( /^_/ )}.join( "\n" )
       puts "[#{username}]:getList's response: "
       puts str
       masterdb.close()

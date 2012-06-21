@@ -70,20 +70,20 @@ def sync_db( auth )
   puts "Info: download #{downList.size} records."
   puts "Info:   upload #{upList.size} records."
 
-  if 0 < downList.size
-    localdb.insertValue( PasteHub::LATEST_DATE_KEY, util.currentTime( ) )
-  end
-
   localdb.close()
 end
 
-def record_exist?( username, key )
+def serverHasNew?( username, serverValue )
   # open local db
   localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
-  localdb.open( username, true )
-  ret = localdb.getValue( key, nil )
+  localdb.open( username )
+  localValue = localdb.getValue( PasteHub::SERVER_DATE_KEY )
+  ret = (localValue != serverValue)
+  if ret
+    localdb.insertValue( PasteHub::SERVER_DATE_KEY, serverValue )
+  end
   localdb.close()
-  ret
+  return ret
 end
 
 def setOnlineState( username, online )
@@ -102,12 +102,12 @@ def wait_notify( auth )
       http.request(request) do |response|
         raise 'Response is not chuncked' unless response.chunked?
         response.read_body do |chunk|
-          key = chunk.chomp
-          if record_exist?( auth.username, key )
-            puts "Info: exist-key: #{key}"
-          else
-            puts "Info: sync-key:  #{key}"
+          serverValue = chunk.chomp
+          if serverHasNew?( auth.username, serverValue )
+            puts "Info: server has new data: #{serverValue}"
             return chunk.chomp
+          else
+            puts "Info: server is stable:    #{serverValue}"
           end
         end
         if "200" != response.code

@@ -41,6 +41,7 @@ def saveValue( username, data )
   localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
   localdb.open( username )
   localdb.insertValue( key, data.dup )
+  localdb.insertValue( PasteHub::LOCAL_DATE_KEY, util.currentTime( ) )
   localdb.close()
 end
 

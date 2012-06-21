@@ -87,5 +87,5 @@ task :dumpA do
     sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientDump get '#{firstKey}'"
   }
   sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientDump top"
-  sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientDump latestdate"
+  sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientDump latest"
 end
