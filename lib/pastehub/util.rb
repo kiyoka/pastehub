@@ -14,8 +14,8 @@ module PasteHub
 
     # return the currentTime in Unixtime
     def currentTime( )
-      dt = DateTime::now()
-      currentDate = dt.strftime( "%s" ) + "=" + dt.strftime( "%x:%X" )
+      dt = Time.new.gmtime.to_datetime()
+      currentDate = dt.strftime( "%s" ) + "=" + dt.strftime( "%F.%R:%S" )
       currentDate
     end
 
