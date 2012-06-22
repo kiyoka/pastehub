@@ -85,7 +85,7 @@
 (defun pastehub-timer-handler ()
   "polling process handler for pastehub service."
   (let ((latest-date
-	 (pastehub-call-process pastehub-client-dump "latestdate" "")))
+	 (pastehub-call-process pastehub-client-dump "latest" "")))
     (if (not (string-equal pastehub-latest-date latest-date))
 	(progn
 	  (setq pastehub-latest-date latest-date)
