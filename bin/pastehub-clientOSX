@@ -1,0 +1,60 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+require 'pastehub'
+PasteHub::Config.instance.loadClient
+
+POLLING_INTERVAL    = 0.5
+
+def osxHasNew?( username )
+  osxPaste = open( "|/usr/bin/pbpaste" ) { |f| 
+    f.read
+  }
+
+  begin
+    top = open( "|pastehub-clientDump top" ) { |f|
+      f.read
+    }
+  rescue IOError => e
+    STDERR.puts( "Error: program pastehub-clientDump not found." )
+    return false
+  end
+
+  pp [ "osxPaste, dbTop", osxPaste, top ]
+  if osxPaste != top
+    osxPaste
+  else
+    nil
+  end
+end
+
+def pushData( data )
+  begin
+    IO.popen("pastehub-clientPost", "r+") {|io|
+      p "pushData:" + data 
+      io.write data
+    }
+  rescue IOError => e
+    STDERR.puts( "Error: program pastehub-clientPost not found." )
+    return false
+  end
+end
+
+
+def main
+  username  = ENV['PASTEHUB_USER']
+  if not username 
+    STDERR.puts( "pastehub-clientOSX needs environment var `PASTEHUB_USER'" )
+    exit 1
+  end
+
+  while true
+    sleep POLLING_INTERVAL
+    data = osxHasNew?( username )
+    if data
+      pushData( data )
+    end
+  end
+end
+
+main

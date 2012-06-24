@@ -81,6 +81,10 @@ task :postB1 do
   sh "echo 'bbb1' | ruby -I ./lib bin/pastehub-clientPost"
 end
 
+task :osxA do
+  sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientOSX"  
+end
+
 task :dumpA do
   open( "|" + SETENV_A + "; ruby -I ./lib bin/pastehub-clientDump list" ) {|f|
     firstKey = f.readline.chomp
