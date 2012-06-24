@@ -7,31 +7,29 @@ def dumpDb( username, command, key )
   config = PasteHub::Config.instance
   config.loadClient
 
-  # open local db
-  localdb = PasteHub::LocalDB.new( config.localDbPath )
-  localdb.open( username, true )
-
+  # open local store
+  store = PasteHub::LocalStore.new( username, true )
   case command
   when "list"
-    localList = localdb.getList()
+    localList = store.getList()
     localList.each { |x|
       puts x
     }
 
   when "top"
-    localList = localdb.getList()
-    if 0 < localList.size
-      print localdb.getValue( localList.first )
-    end
+    data = store.top()
+    print data  if data
 
   when "latest"
-    puts 'server=' + localdb.getValue( PasteHub::SERVER_DATE_KEY ).to_s
-    puts 'local =' + localdb.getValue( PasteHub::LOCAL_DATE_KEY ).to_s
+    arr = store.latest()
+    puts 'server=' + arr[0]
+    puts 'local =' + arr[1]
 
   when "get"
-    print localdb.getValue( key )
+    print store.getValue( key )
   end
-  localdb.close()
+
+  store.close()
 end
 
 def main

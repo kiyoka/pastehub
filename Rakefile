@@ -47,6 +47,7 @@ end
 
 task :test do
   sh "rm -f /tmp/usertmp.db"
+  sh "time ruby -I ./lib `which rspec` -b   ./test/libstore_spec.rb       -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
   sh "time ruby -I ./lib `which rspec` -b   ./test/libconfig_spec.rb      -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
   sh "time ruby -I ./lib `which rspec` -b   ./test/libutil_spec.rb        -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
   sh "time ruby -I ./lib `which rspec` -b   ./test/libauth_spec.rb        -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
