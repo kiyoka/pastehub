@@ -37,6 +37,19 @@ def putValue( auth, key, value )
   ret
 end
 
+def pushToMacOSX( data )
+  begin
+    IO.popen("/usr/bin/pbcopy", "r+") {|io|
+      io.write data
+      io.close
+    }
+    STDERR.puts "Info: push to MacOS X clipboard."
+  rescue IOError => e
+    STDERR.puts( "Error: program /usr/bin/pbcopy not found." )
+    return false
+  end
+end
+
 def sync_db( auth )
   puts "synchronizing..."
   uri = URI.parse("http://#{SERVER_API_HOST}/getList")
@@ -55,6 +68,11 @@ def sync_db( auth )
   util = PasteHub::Util.new
   downList = util.diffList( masterList, localList )
   upList   = util.diffList( localList, masterList )
+
+  # push first element to MacOS X clipboard.
+  key = downList.first
+  value = getValue( auth, key )
+  pushToMacOSX( value.dup )
 
   # donwload
   downList.each {|key|

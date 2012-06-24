@@ -20,7 +20,6 @@ def osxHasNew?( username )
     return false
   end
 
-  pp [ "osxPaste, dbTop", osxPaste, top ]
   if 0 == osxPaste.size or 0 == top.size
     nil
   elsif osxPaste != top
@@ -33,7 +32,7 @@ end
 def pushData( data )
   begin
     IO.popen("pastehub-clientPost", "r+") {|io|
-      p "pushData:" + data 
+      STDERR.puts "Info: post from MacOS X clipboard."
       io.write data
       io.close
     }
