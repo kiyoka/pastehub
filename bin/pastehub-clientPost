@@ -14,9 +14,7 @@ def postData( auth, data )
   begin
     uri = URI.parse("http://#{SERVER_HOST}/insertValue")
     Net::HTTP.start(uri.host, uri.port) do |http|
-      http.post(uri.request_uri, data, auth.getAuthHash().merge( {"content-type" => "plain/text"} )) { |str|
-        puts str
-      }
+      http.post(uri.request_uri, data, auth.getAuthHash().merge( {"content-type" => "plain/text"} ) )
     end
   rescue Errno::ECONNREFUSED => e
     STDERR.puts "Error: can't connect server."
