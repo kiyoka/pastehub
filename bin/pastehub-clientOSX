@@ -11,13 +11,14 @@ def osxHasNew?( username )
     f.read
   }
 
+  # read top data of localDB
   begin
-    top = open( "|pastehub-clientDump top" ) { |f|
-      f.read
-    }
-  rescue IOError => e
-    STDERR.puts( "Error: program pastehub-clientDump not found." )
-    return false
+    store = PasteHub::LocalStore.new( username, true )
+    top = store.top( )
+    store.close()
+  rescue RuntimeError
+    # alreay opened the localStore
+    top = ""
   end
 
   if 0 == osxPaste.size or 0 == top.size

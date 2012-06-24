@@ -16,7 +16,7 @@ module PasteHub
       if 0 < lst.size
         @db.getValue( lst.first )
       else
-        nil
+        ""
       end
     end
 
