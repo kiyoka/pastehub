@@ -21,7 +21,9 @@ def osxHasNew?( username )
   end
 
   pp [ "osxPaste, dbTop", osxPaste, top ]
-  if osxPaste != top
+  if 0 == osxPaste.size or 0 == top.size
+    nil
+  elsif osxPaste != top
     osxPaste
   else
     nil
@@ -33,6 +35,7 @@ def pushData( data )
     IO.popen("pastehub-clientPost", "r+") {|io|
       p "pushData:" + data 
       io.write data
+      io.close
     }
   rescue IOError => e
     STDERR.puts( "Error: program pastehub-clientPost not found." )
