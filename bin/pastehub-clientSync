@@ -53,8 +53,8 @@ def sync_db( auth )
   # calc difference between master and local.
   localList = localdb.getList() 
   util = PasteHub::Util.new
-  downList = util.diffList( masterList, localList ).reject{|x| x.match( /^_/ )}
-  upList   = util.diffList( localList, masterList ).reject{|x| x.match( /^_/ )}
+  downList = util.diffList( masterList, localList )
+  upList   = util.diffList( localList, masterList )
 
   # donwload
   downList.each {|key|

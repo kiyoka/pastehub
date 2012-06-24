@@ -13,13 +13,13 @@ def dumpDb( username, command, key )
 
   case command
   when "list"
-    localList = localdb.getList().reject{|x| x.match( /^_/ )}
+    localList = localdb.getList()
     localList.each { |x|
       puts x
     }
 
   when "top"
-    localList = localdb.getList().reject{|x| x.match( /^_/ )}
+    localList = localdb.getList()
     if 0 < localList.size
       print localdb.getValue( localList.first )
     end

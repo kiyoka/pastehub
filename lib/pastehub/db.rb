@@ -25,12 +25,16 @@ module PasteHub
     end
 
     def getList( limit = nil )
-      arr = forward_match_keys( "" ).sort {|a,b| -(a <=> b) }
+      arr = self._getList().reject{|x| x.match( /^_/ )}
       if limit
         arr.take( limit )
       else
         arr
       end
+    end
+
+    def _getList( )
+      forward_match_keys( "" ).sort {|a,b| -(a <=> b) }
     end
 
     def getValue( key, fallback = false )
