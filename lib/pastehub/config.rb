@@ -84,5 +84,9 @@ module PasteHub
     def localDbPath
       @localDbPath
     end
+
+    def listItems
+      100
+    end
   end
 end

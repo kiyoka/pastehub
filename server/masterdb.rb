@@ -7,6 +7,7 @@ require 'memcache'
 $LOAD_PATH.push( File.dirname(__FILE__) + "/../lib" )
 require 'pastehub'
 PasteHub::Config.instance.loadServer
+LIST_ITEMS           = PasteHub::Config.instance.listItems
 
 notifyHash = Memcache.new( :server => PasteHub::Config.instance.memcacheHost )
 
@@ -64,7 +65,7 @@ masterdb_server.request_handler do |req|
       req.response.end()
 
     when "/getList"
-      str = masterdb.getList( ).reject{|x| x.match( /^_/ )}.join( "\n" )
+      str = masterdb.getList( ).reject{|x| x.match( /^_/ )}.take( LIST_ITEMS ).join( "\n" )
       puts "[#{username}]:getList's response: "
       puts str
       masterdb.close()

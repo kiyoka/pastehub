@@ -10,6 +10,7 @@ PasteHub::Config.instance.loadClient
 SERVER_API_HOST      = PasteHub::Config.instance.targetApiHost
 SERVER_NOTIFIER_HOST = PasteHub::Config.instance.targetNotifierHost
 LOCALDB_PATH         = PasteHub::Config.instance.localDbPath
+LIST_ITEMS           = PasteHub::Config.instance.listItems
 
 def getValue( auth, key )
   uri = URI.parse("http://#{SERVER_API_HOST}/getValue")
@@ -57,6 +58,16 @@ def sync_db( auth )
   Net::HTTP.start(uri.host, uri.port) do |http|
     http.get(uri.request_uri, auth.getAuthHash().merge( {"content-type" => "plain/text"} )) { |str|
       masterList = str.split( /\n/ )
+      STDERR.puts "Info: masterList lines = #{masterList.size}  #{str.size}Bytes"
+      masterList = masterList.map { |x|
+        okSize = "1340542369=2012-06-24.12:52:49=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".size
+        if okSize != x.size
+          STDERR.puts "Info: masterList(NG): " + x
+          false
+        else
+          x
+        end
+      }
     }
   end
   # open local db
@@ -64,9 +75,10 @@ def sync_db( auth )
   localdb.open( auth.username )
 
   # calc difference between master and local.
-  localList = localdb.getList() 
+  localList = localdb.getList().take( LIST_ITEMS )
   util = PasteHub::Util.new
   downList = util.diffList( masterList, localList )
+  localList = localList.take( LIST_ITEMS - downList.size )
   upList   = util.diffList( localList, masterList )
 
   # push first element to MacOS X clipboard.
