@@ -13,9 +13,9 @@ module PasteHub
 
     def open( username, reader = false )
       if reader
-        @db = GDBM.new( @basepath + username + ".db", nil, GDBM::READER )
+        @db = GDBM.new( @basepath + username + ".db", nil, GDBM::READER  | GDBM::NOLOCK )
       else
-        @db = GDBM.new( @basepath + username + ".db" )
+        @db = GDBM.new( @basepath + username + ".db", nil, GDBM::WRCREAT | GDBM::SYNC )
       end
 
       if not @db
