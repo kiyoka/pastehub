@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kiyoka Nishiyama"]
-  s.date = "2012-06-24"
+  s.date = "2012-06-25"
   s.description = "PasteHub is cloud-based cross-platform clipboard sync."
   s.email = "kiyoka@sumibi.org"
   s.executables = ["pastehub-clientDump", "pastehub-clientOSX", "pastehub-clientPost", "pastehub-clientSync"]

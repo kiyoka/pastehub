@@ -39,15 +39,18 @@ def putValue( auth, key, value )
 end
 
 def pushToMacOSX( data )
-  begin
-    IO.popen("/usr/bin/pbcopy", "r+") {|io|
-      io.write data
-      io.close
-    }
-    STDERR.puts "Info: push to MacOS X clipboard."
-  rescue IOError => e
-    STDERR.puts( "Error: program /usr/bin/pbcopy not found." )
-    return false
+  pbcopy = "/usr/bin/pbcopy"
+  if File.exist?( pbcopy )
+    begin
+      IO.popen(pbcopy, "r+") {|io|
+        io.write data
+        io.close
+      }
+      STDERR.puts "Info: push to MacOS X clipboard."
+    rescue IOError => e
+      STDERR.puts( "Error: program #{pbcopy} not found." )
+      return false
+    end
   end
 end
 
