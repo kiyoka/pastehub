@@ -1,11 +1,14 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
+require 'thread'
 require 'pastehub'
 PasteHub::Config.instance.loadClient
 SERVER_API_HOST      = PasteHub::Config.instance.targetApiHost
 LIST_ITEMS           = PasteHub::Config.instance.listItems
 LOCALDB_PATH         = PasteHub::Config.instance.localDbPath
+
+POLLING_INTERVAL    = 0.5
 
 def sync_db( auth )
   puts "synchronizing..."
@@ -46,18 +49,7 @@ def sync_db( auth )
 end
 
 
-def main
-  username  = ENV['PASTEHUB_USER']
-  if not username 
-    STDERR.puts( "clientSync needs environment var `PASTEHUB_USER'" )
-    exit 1
-  end
-
-  secretKey = ENV['PASTEHUB_SECRET_KEY']
-  if not secretKey
-    STDERR.puts( "clientSync needs environment var `PASTEHUB_SECRET_KEY'" )
-  end
-
+def syncMain( username, secretKey )
   auth   = PasteHub::AuthForClient.new( username, secretKey )
   client = PasteHub::Client.new( auth )
   client.setOnlineState( false )
@@ -84,6 +76,45 @@ def main
       sleep 2
     end
   end
+end
+
+
+def macosxCheck( username, secretKey )
+  while true
+    sleep POLLING_INTERVAL
+    data = PasteHub::MacOSX.hasNew?( username )
+    if data
+      auth = PasteHub::AuthForClient.new( username, secretKey )
+      client = PasteHub::Client.new( auth )
+      if client.online?(  )
+        STDERR.puts( "Info: posted data from MacOS X." )
+        if client.postData( data )
+          sleep 60
+        end
+      else
+        client.localSaveValue( data )
+      end
+    end
+  end
+end
+
+
+def main
+  username  = ENV['PASTEHUB_USER']
+  if not username 
+    STDERR.puts( "clientSync needs environment var `PASTEHUB_USER'" )
+    exit 1
+  end
+
+  secretKey = ENV['PASTEHUB_SECRET_KEY']
+  if not secretKey
+    STDERR.puts( "clientSync needs environment var `PASTEHUB_SECRET_KEY'" )
+  end
+
+  threads = []
+  threads.push(Thread.new {    syncMain( username, secretKey ) })
+  threads.push(Thread.new { macosxCheck( username, secretKey ) })
+  threads.each {|t| t.join}
 end
 
 main

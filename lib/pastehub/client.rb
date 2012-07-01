@@ -70,9 +70,12 @@ module PasteHub
         Net::HTTP.start(uri.host, uri.port) do |http|
           http.post(uri.request_uri, data, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ) )
         end
+
       rescue Errno::ECONNREFUSED => e
         STDERR.puts "Error: can't connect server."
+        return false
       end
+      true
     end
 
     def wait_notify( auth )
