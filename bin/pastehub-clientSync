@@ -4,31 +4,14 @@
 require 'pastehub'
 PasteHub::Config.instance.loadClient
 SERVER_API_HOST      = PasteHub::Config.instance.targetApiHost
-SERVER_NOTIFIER_HOST = PasteHub::Config.instance.targetNotifierHost
 LIST_ITEMS           = PasteHub::Config.instance.listItems
 LOCALDB_PATH         = PasteHub::Config.instance.localDbPath
 
 def sync_db( auth )
   puts "synchronizing..."
   client = PasteHub::Client.new( auth )
-
-  uri = URI.parse("http://#{SERVER_API_HOST}/getList")
-  masterList = []
-  Net::HTTP.start(uri.host, uri.port) do |http|
-    http.get(uri.request_uri, auth.getAuthHash().merge( {"content-type" => "plain/text"} )) { |str|
-      masterList = str.split( /\n/ )
-      STDERR.puts "Info: masterList lines = #{masterList.size}  #{str.size}Bytes"
-      masterList = masterList.map { |x|
-        okSize = "1340542369=2012-06-24.12:52:49=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".size
-        if okSize != x.size
-          STDERR.puts "Info: masterList(NG): " + x
-          false
-        else
-          x
-        end
-      }
-    }
-  end
+  masterList = client.getList()
+  
   # open local db
   localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
   localdb.open( auth.username )
@@ -62,47 +45,6 @@ def sync_db( auth )
   localdb.close()
 end
 
-def wait_notify( auth )
-  begin
-    client = PasteHub::Client.new( auth )
-    uri = URI.parse("http://#{SERVER_NOTIFIER_HOST}/")
-    Net::HTTP.start(uri.host, uri.port) do |http|
-      request = Net::HTTP::Get.new(uri.request_uri, auth.getAuthHash())
-      http.request(request) do |response|
-        raise 'Response is not chuncked' unless response.chunked?
-        response.read_body do |chunk|
-          serverValue = chunk.chomp
-          if client.serverHasNew?( serverValue )
-            puts "Info: server has new data: #{serverValue}"
-            return chunk.chomp
-          else
-            puts "Info: server is stable:    #{serverValue}"
-          end
-          if client.localHasNew?( )
-            puts "Info: local  has new data"
-            return :local
-          end
-        end
-        if "200" != response.code
-          STDERR.puts "Error: request error result=[#{response.code}]"
-          return :retry
-        end
-      end
-    end
-  rescue EOFError => e
-    STDERR.puts "Error: disconnected by server."
-    return :retry
-  rescue Errno::ECONNREFUSED => e
-    STDERR.puts "Error: can't connect server(ConnectionRefused)."
-    return :retry
-  rescue SocketError => e
-    STDERR.puts "Error: can't connect server(SocketError)."
-    return :retry
-  rescue Timeout::Error => e
-    return :timeout
-  end
-end
-
 
 def main
   username  = ENV['PASTEHUB_USER']
@@ -123,7 +65,8 @@ def main
   while true
     begin
       auth = PasteHub::AuthForClient.new( username, secretKey )
-      result = wait_notify( auth )
+      client = PasteHub::Client.new( auth )      
+      result = client.wait_notify( auth )
       case result
       when :timeout
         STDERR.puts "waiting..."

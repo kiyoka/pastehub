@@ -16,7 +16,28 @@ module PasteHub
       @server_host          = ins.targetApiHost
       @localdb_path         = ins.localDbPath
     end
-    
+
+    def getList( )
+      uri = URI.parse("http://#{@server_api_host}/getList")
+      masterList = []
+      Net::HTTP.start(uri.host, uri.port) do |http|
+        http.get(uri.request_uri, @auth.getAuthHash().merge( {"content-type" => "plain/text"} )) { |str|
+          masterList = str.split( /\n/ )
+          STDERR.puts "Info: masterList lines = #{masterList.size}  #{str.size}Bytes"
+          masterList = masterList.map { |x|
+            okSize = "1340542369=2012-06-24.12:52:49=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".size
+            if okSize != x.size
+              STDERR.puts "Info: masterList(NG): " + x
+              false
+            else
+              x
+            end
+          }
+        }
+      end
+      masterList
+    end
+
     def getValue( key )
       uri = URI.parse("http://#{@server_api_host}/getValue")
       ret = ""
@@ -51,6 +72,46 @@ module PasteHub
         end
       rescue Errno::ECONNREFUSED => e
         STDERR.puts "Error: can't connect server."
+      end
+    end
+
+    def wait_notify( auth )
+      begin
+        uri = URI.parse("http://#{@server_notifier_host}/")
+        Net::HTTP.start(uri.host, uri.port) do |http|
+          request = Net::HTTP::Get.new(uri.request_uri, auth.getAuthHash())
+          http.request(request) do |response|
+            raise 'Response is not chuncked' unless response.chunked?
+            response.read_body do |chunk|
+              serverValue = chunk.chomp
+              if serverHasNew?( serverValue )
+                puts "Info: server has new data: #{serverValue}"
+                return chunk.chomp
+              else
+                puts "Info: server is stable:    #{serverValue}"
+              end
+              if localHasNew?( )
+                puts "Info: local  has new data"
+                return :local
+              end
+            end
+            if "200" != response.code
+              STDERR.puts "Error: request error result=[#{response.code}]"
+              return :retry
+            end
+          end
+        end
+      rescue EOFError => e
+        STDERR.puts "Error: disconnected by server."
+        return :retry
+      rescue Errno::ECONNREFUSED => e
+        STDERR.puts "Error: can't connect server(ConnectionRefused)."
+        return :retry
+      rescue SocketError => e
+        STDERR.puts "Error: can't connect server(SocketError)."
+        return :retry
+      rescue Timeout::Error => e
+        return :timeout
       end
     end
 
