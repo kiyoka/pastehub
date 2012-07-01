@@ -21,18 +21,18 @@ module PasteHub
       uri = URI.parse("http://#{@server_api_host}/getList")
       masterList = []
       Net::HTTP.start(uri.host, uri.port) do |http|
-        http.get(uri.request_uri, @auth.getAuthHash().merge( {"content-type" => "plain/text"} )) { |str|
-          masterList = str.split( /\n/ )
-          STDERR.puts "Info: masterList lines = #{masterList.size}  #{str.size}Bytes"
-          masterList = masterList.select { |x|
-            okSize = "1340542369=2012-06-24.12:52:49=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".size
-            if okSize != x.size
-              STDERR.puts "Info: masterList(NG): " + x
-              false
-            else
-              x
-            end
-          }
+        resp = http.get(uri.request_uri, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ))
+        str = resp.read_body()
+        masterList = str.split( /\n/ )
+        STDERR.puts "Info: masterList lines = #{masterList.size}  #{str.size}Bytes"
+        masterList = masterList.select { |x|
+          okSize = "1340542369=2012-06-24.12:52:49=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".size
+          if okSize != x.size
+            STDERR.puts "Info: masterList(NG): " + x
+            false
+          else
+            x
+          end
         }
       end
       masterList
@@ -42,9 +42,8 @@ module PasteHub
       uri = URI.parse("http://#{@server_api_host}/getValue")
       ret = ""
       Net::HTTP.start(uri.host, uri.port) do |http|
-        http.post(uri.request_uri, key, @auth.getAuthHash().merge( {"content-type" => "plain/text"} )) { |str|
-          ret = str
-        }
+        resp = http.post(uri.request_uri, key, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ))
+        ret = resp.read_body()
       end
       ret
     end
@@ -53,13 +52,12 @@ module PasteHub
       uri = URI.parse("http://#{@server_api_host}/putValue")
       ret = ""
       Net::HTTP.start(uri.host, uri.port) do |http|
-        http.post(uri.request_uri, value,
-                  @auth.getAuthHash().merge(
-                                           { "content-type" => "plain/text",
-                                             "x-pastehub-key" => key    }
-                                           )) { |str|
-          ret = str
-        }
+        resp = http.post(uri.request_uri, value,
+                         @auth.getAuthHash().merge(
+                                                   { "content-type" => "plain/text",
+                                                     "x-pastehub-key" => key    }
+                                                   ))
+        ret = resp.read_body()
       end
       ret
     end
