@@ -20,8 +20,19 @@
   :type 'integer
   :group 'pastehub)
 
-(defvar pastehub-latest-date ""       "latest synced date.")
+(defvar pastehub-latest-date ""         "latest synced date.")
+(defvar pastehub-timer-object nil       "interval timer object.")
+(defvar pastehub-unread-count 0         "number of unread pastes")
 
+(defvar pastehub-mode nil               "pastehub toggle for mode")
+(defun pastehub-modeline-string ()
+  ;; display unread count
+  (format " Pastehub[%d]" pastehub-unread-count))
+
+(or (assq 'pastehub-mode minor-mode-alist)
+    (setq minor-mode-alist (cons
+			    '(pastehub-mode (:eval (pastehub-modeline-string)))
+			    minor-mode-alist)))
 
 ;;
 ;; Paste
@@ -38,6 +49,12 @@
   (posthub-post-internal))
 
 (ad-activate 'kill-new)
+
+(defadvice insert-for-yank-1 (after pastehub-insert-for-yank-1 activate)
+  "reset unread counter."
+  (setq pastehub-unread-count 0))
+  
+(ad-activate 'insert-for-yank-1)
 
 
 ;;
@@ -73,12 +90,17 @@
 			  keys-string
 			  "\n")
 			 pastehub-sync-items)))
-    (setq kill-ring
-	  (mapcar
-	   (lambda (key)
-	     (pastehub-call-process pastehub-client-dump "get" key))
-	   keys))
-    (setq kill-ring-yank-pointer kill-ring))
+    (let ((old (car kill-ring)))
+      (setq kill-ring
+	    (mapcar
+	     (lambda (key)
+	       (pastehub-call-process pastehub-client-dump "get" key))
+	     keys))
+      (setq kill-ring-yank-pointer kill-ring)
+      (when (and old (car kill-ring))
+	(when (not (string-equal old (car kill-ring)))
+	  (setq pastehub-unread-count 
+		(+ pastehub-unread-count 1))))))
   (message nil))
 
 
@@ -91,7 +113,8 @@
 	  (setq pastehub-latest-date latest-date)
 	  (pastehub-sync-kill-ring)))))
 	    
-(pastehub-timer-handler)
 
-(run-at-time t 1.0 'pastehub-timer-handler)
+(setq pastehub-timer-object 
+      (run-at-time t 1.0 'pastehub-timer-handler))
 
+(setq pastehub-mode t)
