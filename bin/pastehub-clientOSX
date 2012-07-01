@@ -13,13 +13,19 @@ def main
     exit 1
   end
 
+  secretKey = ENV['PASTEHUB_SECRET_KEY']
+  if not secretKey
+    STDERR.puts( "pastehub-clientOSX needs environment var `PASTEHUB_SECRET_KEY'" )
+  end
+
   while true
     sleep POLLING_INTERVAL
     data = PasteHub::MacOSX.hasNew?( username )
     if data
-      auth = PasteHub::AuthForClient.new( username, "" )
+      auth = PasteHub::AuthForClient.new( username, secretKey )
       client = PasteHub::Client.new( auth )
       if client.online?(  )
+        STDERR.puts( "Info: posted data from MacOS X." )
         client.postData( data )
       else
         client.localSaveValue( data )
