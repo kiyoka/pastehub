@@ -11,7 +11,7 @@ LOCALDB_PATH         = PasteHub::Config.instance.localDbPath
 POLLING_INTERVAL    = 0.5
 
 def sync_db( auth )
-  puts "synchronizing..."
+  STDERR.puts "synchronizing..."
   client = PasteHub::Client.new( auth )
   masterList = client.getList()
   
@@ -42,8 +42,8 @@ def sync_db( auth )
     client.putValue(     key.dup, value.dup )
   }
 
-  puts "Info: download #{downList.size} records."
-  puts "Info:   upload #{upList.size} records."
+  STDERR.puts "Info: download #{downList.size} records."
+  STDERR.puts "Info:   upload #{upList.size} records."
 
   localdb.close()
 end

@@ -24,7 +24,7 @@ module PasteHub
         http.get(uri.request_uri, @auth.getAuthHash().merge( {"content-type" => "plain/text"} )) { |str|
           masterList = str.split( /\n/ )
           STDERR.puts "Info: masterList lines = #{masterList.size}  #{str.size}Bytes"
-          masterList = masterList.map { |x|
+          masterList = masterList.select { |x|
             okSize = "1340542369=2012-06-24.12:52:49=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".size
             if okSize != x.size
               STDERR.puts "Info: masterList(NG): " + x
