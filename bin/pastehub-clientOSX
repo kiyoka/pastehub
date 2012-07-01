@@ -6,44 +6,6 @@ PasteHub::Config.instance.loadClient
 
 POLLING_INTERVAL    = 0.5
 
-def osxHasNew?( username )
-  osxPaste = open( "|/usr/bin/pbpaste" ) { |f| 
-    f.read
-  }
-
-  # read top data of localDB
-  begin
-    store = PasteHub::LocalStore.new( username, true )
-    top = store.top( )
-    store.close()
-  rescue RuntimeError
-    # alreay opened the localStore
-    top = ""
-  end
-
-  if 0 == osxPaste.size or 0 == top.size
-    nil
-  elsif osxPaste != top
-    osxPaste
-  else
-    nil
-  end
-end
-
-def pushData( data )
-  begin
-    IO.popen("pastehub-clientPost", "r+") {|io|
-      STDERR.puts "Info: post from MacOS X clipboard."
-      io.write data
-      io.close
-    }
-  rescue IOError => e
-    STDERR.puts( "Error: program pastehub-clientPost not found." )
-    return false
-  end
-end
-
-
 def main
   username  = ENV['PASTEHUB_USER']
   if not username 
@@ -53,9 +15,15 @@ def main
 
   while true
     sleep POLLING_INTERVAL
-    data = osxHasNew?( username )
+    data = PasteHub::MacOSX.hasNew?( username )
     if data
-      pushData( data )
+      auth = PasteHub::AuthForClient.new( username, "" )
+      client = PasteHub::Client.new( auth )
+      if client.online?(  )
+        client.postData( data )
+      else
+        client.localSaveValue( data )
+      end
     end
   end
 end

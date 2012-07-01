@@ -7,41 +7,6 @@ require 'open-uri'
 require 'fileutils'
 require 'pastehub'
 PasteHub::Config.instance.loadClient
-SERVER_HOST  = PasteHub::Config.instance.targetApiHost
-LOCALDB_PATH = PasteHub::Config.instance.localDbPath
-
-def postData( auth, data )
-  begin
-    uri = URI.parse("http://#{SERVER_HOST}/insertValue")
-    Net::HTTP.start(uri.host, uri.port) do |http|
-      http.post(uri.request_uri, data, auth.getAuthHash().merge( {"content-type" => "plain/text"} ) )
-    end
-  rescue Errno::ECONNREFUSED => e
-    STDERR.puts "Error: can't connect server."
-  end
-end
-
-def online?( username )
-  # open local db
-  localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
-  localdb.open( username, true )
-  # printf( "[%s]", localdb.getValue( PasteHub::ONLINE_STATE_KEY ))
-  ret = ("1" == localdb.getValue( PasteHub::ONLINE_STATE_KEY ))
-  localdb.close()
-  ret
-end
-
-def saveValue( username, data )
-  # open local db
-  util = PasteHub::Util.new( )
-  key = util.currentTime( ) + "=" + util.digest( data )
-
-  localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
-  localdb.open( username )
-  localdb.insertValue( key, data.dup )
-  localdb.insertValue( PasteHub::LOCAL_DATE_KEY, util.currentTime( ) )
-  localdb.close()
-end
 
 def main
   username  = ENV['PASTEHUB_USER']
@@ -54,13 +19,14 @@ def main
   if not secretKey
     STDERR.puts( "clientSync needs environment var `PASTEHUB_SECRET_KEY'" )
   end
-
+  
   data = STDIN.read
-  if online?( username )
-    auth = PasteHub::AuthForClient.new( username, secretKey )
-    postData( auth, data )
+  auth = PasteHub::AuthForClient.new( username, secretKey )  
+  client = PasteHub::Client.new( auth )
+  if client.online?(  )
+    client.postData( data )
   else
-    saveValue( username, data )
+    client.localSaveValue( data )
   end
 end
 

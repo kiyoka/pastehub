@@ -1,58 +1,17 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
-require 'net/http'
-require 'uri'
-require 'open-uri'
-require 'fileutils'
 require 'pastehub'
 PasteHub::Config.instance.loadClient
 SERVER_API_HOST      = PasteHub::Config.instance.targetApiHost
 SERVER_NOTIFIER_HOST = PasteHub::Config.instance.targetNotifierHost
-LOCALDB_PATH         = PasteHub::Config.instance.localDbPath
 LIST_ITEMS           = PasteHub::Config.instance.listItems
-
-def getValue( auth, key )
-  uri = URI.parse("http://#{SERVER_API_HOST}/getValue")
-  ret = ""
-  Net::HTTP.start(uri.host, uri.port) do |http|
-    http.post(uri.request_uri, key, auth.getAuthHash().merge( {"content-type" => "plain/text"} )) { |str|
-      ret = str
-    }
-  end
-  ret
-end
-
-def putValue( auth, key, value )
-  uri = URI.parse("http://#{SERVER_API_HOST}/putValue")
-  ret = ""
-  Net::HTTP.start(uri.host, uri.port) do |http|
-    http.post(uri.request_uri, value,
-              auth.getAuthHash().merge(
-                                       { "content-type" => "plain/text",
-                                         "x-pastehub-key" => key    }
-                                       )) { |str|
-      ret = str
-    }
-  end
-  ret
-end
-
-def pushToMacOSX( data )
-  begin
-    IO.popen("/usr/bin/pbcopy", "r+") {|io|
-      io.write data
-      io.close
-    }
-    STDERR.puts "Info: push to MacOS X clipboard."
-  rescue IOError => e
-    STDERR.puts( "Error: program /usr/bin/pbcopy not found." )
-    return false
-  end
-end
+LOCALDB_PATH         = PasteHub::Config.instance.localDbPath
 
 def sync_db( auth )
   puts "synchronizing..."
+  client = PasteHub::Client.new( auth )
+
   uri = URI.parse("http://#{SERVER_API_HOST}/getList")
   masterList = []
   Net::HTTP.start(uri.host, uri.port) do |http|
@@ -83,18 +42,18 @@ def sync_db( auth )
 
   # push first element to MacOS X clipboard.
   key = downList.first
-  value = getValue( auth, key )
-  pushToMacOSX( value.dup )
+  value = client.getValue( key )
+  PasteHub::MacOSX.push( value.dup )
 
   # donwload
   downList.each {|key|
-    value = getValue( auth, key )
+    value = client.getValue( key )
     localdb.insertValue( key.dup, value.dup )
   }
   # upload
   upList.each {|key|
     value = localdb.getValue( key )
-    putValue( auth,      key.dup, value.dup )
+    client.putValue(     key.dup, value.dup )
   }
 
   puts "Info: download #{downList.size} records."
@@ -103,46 +62,9 @@ def sync_db( auth )
   localdb.close()
 end
 
-def serverHasNew?( username, serverValue )
-  # open local db
-  localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
-  localdb.open( username )
-  localValue = localdb.getValue( PasteHub::SERVER_DATE_KEY )
-  ret = (localValue != serverValue)
-  if ret
-    localdb.insertValue( PasteHub::SERVER_DATE_KEY, serverValue )
-  end
-  localdb.close()
-  return ret
-end
-
-def localHasNew?( username )
-  localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
-  localdb.open( username )
-  localValue  = localdb.getValue( PasteHub::LOCAL_DATE_KEY )
-  serverValue = localdb.getValue( PasteHub::SERVER_DATE_KEY )
-  ret = if localValue and serverValue
-          (localValue > serverValue)
-        else
-          false
-        end
-  if ret
-    localdb.insertValue( PasteHub::LOCAL_DATE_KEY, serverValue )
-  end
-  localdb.close()
-  return ret
-end
-
-def setOnlineState( username, online )
-  # open local db
-  localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
-  localdb.open( username )
-  localdb.insertValue( PasteHub::ONLINE_STATE_KEY, online ? "1" : "0" )
-  localdb.close()
-end
-
 def wait_notify( auth )
   begin
+    client = PasteHub::Client.new( auth )
     uri = URI.parse("http://#{SERVER_NOTIFIER_HOST}/")
     Net::HTTP.start(uri.host, uri.port) do |http|
       request = Net::HTTP::Get.new(uri.request_uri, auth.getAuthHash())
@@ -150,13 +72,13 @@ def wait_notify( auth )
         raise 'Response is not chuncked' unless response.chunked?
         response.read_body do |chunk|
           serverValue = chunk.chomp
-          if serverHasNew?( auth.username, serverValue )
+          if client.serverHasNew?( serverValue )
             puts "Info: server has new data: #{serverValue}"
             return chunk.chomp
           else
             puts "Info: server is stable:    #{serverValue}"
           end
-          if localHasNew?( auth.username )
+          if client.localHasNew?( )
             puts "Info: local  has new data"
             return :local
           end
@@ -194,7 +116,10 @@ def main
     STDERR.puts( "clientSync needs environment var `PASTEHUB_SECRET_KEY'" )
   end
 
-  setOnlineState( username, false )
+  auth   = PasteHub::AuthForClient.new( username, secretKey )
+  client = PasteHub::Client.new( auth )
+  client.setOnlineState( false )
+
   while true
     begin
       auth = PasteHub::AuthForClient.new( username, secretKey )
@@ -202,13 +127,13 @@ def main
       case result
       when :timeout
         STDERR.puts "waiting..."
-        setOnlineState( username, true )
+        client.setOnlineState( true )
       when :retry
         STDERR.puts "retrying...."
-        setOnlineState( username, false )
+        client.setOnlineState( false )
         sleep 60
       else
-        setOnlineState( username, true )
+        client.setOnlineState( true )
         sync_db( auth )
       end
     rescue Errno::EAGAIN => e
