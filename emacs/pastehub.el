@@ -24,6 +24,8 @@
 (defvar pastehub-timer-object nil       "interval timer object.")
 (defvar pastehub-unread-count 0         "number of unread pastes")
 
+(defvar pastehub-sync-cache   '()       "cache of key-value")
+
 (defvar pastehub-mode nil               "pastehub toggle for mode")
 (defun pastehub-modeline-string ()
   ;; display unread count
@@ -76,6 +78,21 @@
       (let ((result-str (buffer-substring-no-properties (point-min) (point-max))))
 	result-str))))
 
+(defun pastehub-get-value (key)
+  "get value from localDB. ( cache feature built-in )"
+  (let ((pair (assoc key pastehub-sync-cache)))
+    (cond 
+     (pair
+      ;;(message (format "%s:%s" (car pair) (cdr pair)))
+      (cdr pair))
+     (t
+      (let ((value (pastehub-call-process pastehub-client-dump "get" key)))
+	(setq pastehub-sync-cache
+	      (cons
+	       (cons key value)
+	       pastehub-sync-cache))
+	value)))))
+
 ;; like scheme's `take'
 (defun pastehub-take (lst n)
   (reverse (last (reverse lst)
@@ -94,7 +111,7 @@
       (setq kill-ring
 	    (mapcar
 	     (lambda (key)
-	       (pastehub-call-process pastehub-client-dump "get" key))
+	       (pastehub-get-value key))
 	     keys))
       (setq kill-ring-yank-pointer kill-ring)
       (when (and old (car kill-ring))
