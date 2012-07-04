@@ -27,7 +27,7 @@
 (defvar pastehub-mode nil               "pastehub toggle for mode")
 (defun pastehub-modeline-string ()
   ;; display unread count
-  (format " Pastehub[%d]" pastehub-unread-count))
+  (format " PasteHub[%d]" pastehub-unread-count))
 
 (or (assq 'pastehub-mode minor-mode-alist)
     (setq minor-mode-alist (cons
