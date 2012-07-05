@@ -41,10 +41,12 @@ masterdb_server.request_handler do |req|
       digest = util.digest( data )
       arr = masterdb.getList( ).reject{|x| x.match( /^_/ )}
       insertFlag = true
+      key = ""
       if 0 < arr.size
         if util.key_digest( arr.first ) == digest
-          puts "[#{username}]:insertValue: canceled because data duplicate. "
+          puts "[#{username}]:insertValue: canceled because data is duplicate. "
           insertFlag = false
+          key = arr.first
         end
       end
 
@@ -56,12 +58,12 @@ masterdb_server.request_handler do |req|
         cur = util.currentTime( )
         masterdb.insertValue( PasteHub::SERVER_DATE_KEY, cur )
 
-        # notify to all client
+        # notify to client
         notifyHash[ username ] = cur
       end
 
       masterdb.close()
-      req.response.end()
+      req.response.end( key )
 
     when "/putValue"
       data = body.to_s.dup

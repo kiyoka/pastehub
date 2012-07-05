@@ -63,17 +63,22 @@ module PasteHub
     end
 
     def postData( data )
+      resp = nil
       begin
         uri = URI.parse("http://#{@server_host}/insertValue")
         Net::HTTP.start(uri.host, uri.port) do |http|
-          http.post(uri.request_uri, data, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ) )
+          resp = http.post(uri.request_uri, data, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ) )
         end
 
       rescue Errno::ECONNREFUSED => e
         STDERR.puts "Error: can't connect server."
-        return false
+        return nil
       end
-      true
+      if resp
+        resp.read_body()
+      else
+        nil
+      end
     end
 
     def wait_notify( auth )
@@ -174,6 +179,7 @@ module PasteHub
       localdb.insertValue( key, data.dup )
       localdb.insertValue( PasteHub::LOCAL_DATE_KEY, util.currentTime( ) )
       localdb.close()
+      key
     end
 
   end

@@ -24,9 +24,9 @@ def main
   auth = PasteHub::AuthForClient.new( username, secretKey )  
   client = PasteHub::Client.new( auth )
   if client.online?(  )
-    client.postData( data )
+    puts client.postData( data )
   else
-    client.localSaveValue( data )
+    puts client.localSaveValue( data )
   end
 end
 
