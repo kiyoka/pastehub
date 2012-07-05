@@ -92,9 +92,7 @@ def macosxCheck( username, secretKey )
       client = PasteHub::Client.new( auth )
       if client.online?(  )
         STDERR.puts( "Info: posted data from MacOS X." )
-        if client.postData( data )
-          sleep 60
-        end
+        client.postData( data )
       else
         client.localSaveValue( data )
       end
