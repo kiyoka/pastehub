@@ -169,10 +169,14 @@ module PasteHub
       ret
     end
 
-    def localSaveValue( data )
+    def localSaveValue( argKey = nil, data )
       # open local db
       util = PasteHub::Util.new( )
-      key = util.currentTime( ) + "=" + util.digest( data )
+      if argKey
+        key = argKey
+      else
+        key = util.currentTime( ) + "=" + util.digest( data )
+      end
       
       localdb = PasteHub::LocalDB.new( @localdb_path )
       localdb.open( @auth.username )
