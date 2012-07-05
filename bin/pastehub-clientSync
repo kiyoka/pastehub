@@ -44,8 +44,12 @@ def sync_db( auth )
 
   STDERR.puts "Info: download #{downList.size} records."
   STDERR.puts "Info:   upload #{upList.size} records."
-
   localdb.close()
+
+  if 0 < downList.size or 0 < upList.size
+    STDERR.puts "Info:   send signal to Emacs."
+    system( "killall -SIGUSR1 Emacs emacs" )
+  end
 end
 
 
