@@ -9,8 +9,6 @@
 #   5. rake release
 #   6. gem push pkg/realtimedbsync-x.x.x.gem   ( need gem version 1.3.6 or higer. Please "gem update --system" to update )
 
-MDB_URL='http://localhost:8081'
-NTF_URL='http://localhost:8080'
 USERNAME_A='userA'
 USERNAME_B='userB'
 SETENV_A="export PASTEHUB_USER=userA ; export PASTEHUB_SECRET_KEY='ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg=='"
