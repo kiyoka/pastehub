@@ -91,5 +91,29 @@ Notifier of this system use "Chunked_transfer_encoding" for it.
    client1:
 
 
+## DATABASE
 
+  User:
+    username:
+    secretKey:
+    created_datetime:
+    touched_datetime:
+    friends:
+    mail_address:    
+    twitter_acount:
+
+  Entry:
+    username:  
+    key:       hash + datetime
+    comment:
+    from:
+    to:
+    cc:
+    type       { :text, :image, ... }
+    delete:
+    delete_datetime:
+    data
+
+
+[EOF]
 
