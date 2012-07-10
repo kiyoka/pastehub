@@ -6,7 +6,7 @@ module PasteHub
   LOCAL_DATE_KEY  ='__LOCAL_DATE'
   SERVER_DATE_KEY ='__SERVER_DATE'
 
-  class BaseDB
+  class LocalDB
     def initialize( basepath = "/tmp/")
       @basepath = basepath
     end
@@ -74,11 +74,4 @@ module PasteHub
       @db.close
     end
   end
-
-  class MasterDB < BaseDB
-  end
-
-  class LocalDB < BaseDB
-  end
-
 end

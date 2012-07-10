@@ -36,11 +36,12 @@ require 'pastehub'
 include PasteHub
 
 
-describe MasterDB, "masterDB API operations are " do
+describe Entries, "masterDB API operations are " do
 
   before do
-    @masterdb = MasterDB.new
-    @masterdb.open( "usertmp" )
+    DynamoidConfig::config()  # for fake DynamoDB
+    
+    @entries = Entries.new( "usertmp" )
     @util = Util.new
 
     ###         date,                           value
@@ -49,47 +50,46 @@ describe MasterDB, "masterDB API operations are " do
   end
 
   it "should" do
-    @masterdb.clear( )
-    @masterdb.getList( ).should == []
+    @entries.getList( ).should == []
 
     @data.each { |entry|
       date  = entry[0]
       value = entry[1]
       digest = @util.digest( value )
       key = date + "=" + digest
-      @masterdb.insertValue( key, value )
+      @entries.insertValue( key, value )
     }
 
-    keys = @masterdb.getList( )
+    keys = @entries.getList( )
     keys.should == 
       ["1338814085=06/04/12:21:48:04=e2b6e6c71d8fd8f22b5a96cfc0fe797999405d59",
        "1338738983=06/04/12:00:56:22=30aac3a6f968fc5983a0f62a287e79516d701ea5"]
     
-    @masterdb.getValue( keys[0] ).should == 'second data'
-    @masterdb.getValue( keys[1] ).should == 'first  data'
+    @entries.getValue( keys[0] ).should == 'second data'
+    @entries.getValue( keys[1] ).should == 'first  data'
 
     date = "1338814090=06/04/12:21:48:09"
     key = date + "=" + @util.digest( 'last  data' )
-    @masterdb.insertValue( key, 'last  data' )
+    @entries.insertValue( key, 'last  data' )
     
-    keys = @masterdb.getList( )
+    keys = @entries.getList( )
     keys.size.should                     == 3
     keys.should                          ==
       ["1338814090=06/04/12:21:48:09=4dbccf6bf4ca71c6d1ec8f08350222c93cb23ebb",
        "1338814085=06/04/12:21:48:04=e2b6e6c71d8fd8f22b5a96cfc0fe797999405d59",
        "1338738983=06/04/12:00:56:22=30aac3a6f968fc5983a0f62a287e79516d701ea5"]
 
-    keys = @masterdb.getList( 2 )
+    keys = @entries.getList( 2 )
     keys.size.should                     == 2
     keys.should                          ==
       ["1338814090=06/04/12:21:48:09=4dbccf6bf4ca71c6d1ec8f08350222c93cb23ebb",
        "1338814085=06/04/12:21:48:04=e2b6e6c71d8fd8f22b5a96cfc0fe797999405d59"]
 
-    @masterdb.getValue( keys[0] ).should == 'last  data'
+    @entries.getValue( keys[0] ).should == 'last  data'
 
-    @masterdb.deleteValue( keys[1] ).should == true
+    @entries.deleteValue( keys[1] ).should == true
 
-    keys = @masterdb.getList( )
+    keys = @entries.getList( )
     keys.size.should                     == 2
     keys.should                          ==
       ["1338814090=06/04/12:21:48:09=4dbccf6bf4ca71c6d1ec8f08350222c93cb23ebb",
