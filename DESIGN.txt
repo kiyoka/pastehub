@@ -99,7 +99,7 @@ Notifier of this system use "Chunked_transfer_encoding" for it.
     created_datetime:
     touched_datetime:
     friends:
-    mail_address:    
+    email: 
     twitter_acount:
 
   Entry:
