@@ -34,6 +34,7 @@
 #
 require 'pastehub'
 include PasteHub
+require 'pastehub/masterdb'
 
 
 describe Entries, "masterDB API operations are " do

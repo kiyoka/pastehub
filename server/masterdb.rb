@@ -9,6 +9,11 @@ require 'pastehub'
 PasteHub::Config.instance.loadServer
 LIST_ITEMS           = PasteHub::Config.instance.listItems
 
+
+# initialize master database
+require 'pastehub/masterdb'
+
+
 notifyHash = Memcache.new( :server => PasteHub::Config.instance.memcacheHost )
 
 masterdb_server = Vertx::HttpServer.new
@@ -30,8 +35,7 @@ masterdb_server.request_handler do |req|
       return
     end
 
-    masterdb = PasteHub::MasterDB.new( PasteHub::Config.instance.dbPath )
-    masterdb.open( username )
+    entries = PasteHub::Entries.new( username )
 
     case req.path
     when "/insertValue"
@@ -39,7 +43,7 @@ masterdb_server.request_handler do |req|
 
       # duplicate check
       digest = util.digest( data )
-      arr = masterdb.getList( ).reject{|x| x.match( /^_/ )}
+      arr = entries.getList( ).reject{|x| x.match( /^_/ )}
       insertFlag = true
       key = ""
       if 0 < arr.size
@@ -54,15 +58,14 @@ masterdb_server.request_handler do |req|
         # update db
         key = util.currentTime( ) + "=" + digest
         puts "[#{username}]:insertValue: key=[#{key}] : " + data
-        masterdb.insertValue( key, data )
+        entries.insertValue( key, data )
         cur = util.currentTime( )
-        masterdb.insertValue( PasteHub::SERVER_DATE_KEY, cur )
+        entries.insertValue( PasteHub::SERVER_DATE_KEY, cur )
 
         # notify to client
         notifyHash[ username ] = cur
       end
 
-      masterdb.close()
       req.response.end( key )
 
     when "/putValue"
@@ -71,32 +74,29 @@ masterdb_server.request_handler do |req|
       # update db
       key = req.headers[ 'X-Pastehub-Key' ].dup
       puts "[#{username}]:putValue: key=[#{key}] : " + data
-      masterdb.insertValue( key, data )
+      entries.insertValue( key, data )
       cur = util.currentTime( )
-      masterdb.insertValue( PasteHub::SERVER_DATE_KEY, cur )
+      entries.insertValue( PasteHub::SERVER_DATE_KEY, cur )
 
       # notify to all client
       notifyHash[ username ] = cur
-      masterdb.close()
       req.response.end()
 
     when "/getList"
-      str = masterdb.getList( ).reject{|x| x.match( /^_/ )}.take( LIST_ITEMS ).join( "\n" )
+      str = entries.getList( ).reject{|x| x.match( /^_/ )}.take( LIST_ITEMS ).join( "\n" )
       puts "[#{username}]:getList's response: "
       puts str
-      masterdb.close()
       req.response.end( str )
 
     when "/getValue"
       k = body.to_s.chomp
-      str = masterdb.getValue( k.dup )
+      str = entries.getValue( k.dup )
       if str
         str
       else
         ""
       end
       puts "[#{username}]:getValue:" + k
-      masterdb.close()
       req.response.end( str )
     end
 
