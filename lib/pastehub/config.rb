@@ -63,7 +63,7 @@ module PasteHub
       if File.exist?( name )
         open( name ) { |f|
           json = JSON.parse( f.read )
-          self.setupServer( json[ 'aws' ], json[ 'dynamoEp' ], json[ 'memcacheEp' ], json[ 'domain' ] )
+          self.setupServer( json[ 'aws' ], json[ 'dynamoEp' ], json[ 'dynamoAccessKey' ], json[ 'dynamoSecretKey' ], json[ 'memcacheEp' ], json[ 'domain' ] )
         }
       end
     end
