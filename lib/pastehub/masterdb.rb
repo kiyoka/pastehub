@@ -7,15 +7,15 @@ module PasteHub
   Dynamoid.configure do |dynamoConfig|
     config = PasteHub::Config.instance
     dynamoConfig.adapter         = config.aws ?     'aws_sdk' : 'local'
-    dynamoConfig.namespace       = config.domain    # To namespace tables created by Dynamoid from other tables you might have.
-    dynamoConfig.warn_on_scan    = !config.aws      # Output a warning to the logger when you perform a scan rather than a query on a table.
-    dynamoConfig.partitioning    = false            # Spread writes randomly across the database. See "partitioning" below for more.
-    dynamoConfig.partition_size  = 1                # Determine the key space size that writes are randomly spread across.
-    dynamoConfig.read_capacity   = 10               # Read capacity for your tables
-    dynamoConfig.write_capacity  = 5                # Write capacity for your tables
-    dynamoConfig.access_key      = 'access_key'     # If connecting to DynamoDB, your access key is required.
-    dynamoConfig.secret_key      = 'secret_key'     # So is your secret key.
-    dynamoConfig.endpoint        = config.dynamoEp  # Set the regional endpoint
+    dynamoConfig.namespace       = config.domain            # To namespace tables created by Dynamoid from other tables you might have.
+    dynamoConfig.warn_on_scan    = !config.aws              # Output a warning to the logger when you perform a scan rather than a query on a table.
+    dynamoConfig.partitioning    = false                    # Spread writes randomly across the database. See "partitioning" below for more.
+    dynamoConfig.partition_size  = 1                        # Determine the key space size that writes are randomly spread across.
+    dynamoConfig.read_capacity   = 10                       # Read capacity for your tables
+    dynamoConfig.write_capacity  = 5                        # Write capacity for your tables
+    dynamoConfig.access_key      = config.dynamoAccessKey   # If connecting to DynamoDB, your access key is required.
+    dynamoConfig.secret_key      = config.dynamoSecretKey   # So is your secret key.
+    dynamoConfig.endpoint        = config.dynamoEp          # Set the regional endpoint
   end
 
   class User
