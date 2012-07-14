@@ -8,15 +8,15 @@ $LOAD_PATH.push( File.dirname(__FILE__) + "/../lib" )
 require 'pastehub'
 PasteHub::Config.instance.loadServer
 
-# initialize master database
-require 'pastehub/masterdb'
-
 # display config info
 ins = PasteHub::Config.instance
 printf( "Use AWS:                 %s\n", ins.aws )
 printf( "Domain:                  %s\n", ins.domain )
 printf( "Dynamo   Endpoint:       %s\n", ins.dynamoEp )
 printf( "Memcache Endpoint:       %s\n", ins.memcacheEp )
+
+# initialize master database
+require 'pastehub/masterdb'
 
 
 # setup user table for Fake DynamoDB
