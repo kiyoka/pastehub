@@ -13,6 +13,8 @@ module PasteHub
     dynamoConfig.partition_size  = 1                # Determine the key space size that writes are randomly spread across.
     dynamoConfig.read_capacity   = 10               # Read capacity for your tables
     dynamoConfig.write_capacity  = 5                # Write capacity for your tables
+    dynamoConfig.access_key      = 'access_key'     # If connecting to DynamoDB, your access key is required.
+    dynamoConfig.secret_key      = 'secret_key'     # So is your secret key.
     dynamoConfig.endpoint        = config.dynamoEp  # Set the regional endpoint
   end
 

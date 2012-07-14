@@ -15,7 +15,7 @@ module PasteHub
       @listItems = 100
     end
 
-    def setupServer( aws = false, dynamoEp = nil, memcacheEp = nil, domain = nil )
+    def setupServer( aws = false, dynamoEp = nil, dynamoAccessKey = nil, dynamoSecretKey = nil, memcacheEp = nil, domain = nil )
       @aws                 = if aws
                                aws
                              else
@@ -26,6 +26,8 @@ module PasteHub
                              else
                                dynamoEp = 'dynamodb.ap-northeast-1.amazonaws.com' # Default DynamoDB's endpoint is Tokyo Region
                              end
+      @dynamoAccessKey     = dynamoAccessKey
+      @dynamoSecretKey     = dynamoSecretKey
       @memcacheEp          = if memcacheEp
                                memcacheEp
                              else
@@ -76,6 +78,6 @@ module PasteHub
       end
     end
 
-    attr_reader :aws, :dynamoEp, :memcacheEp, :domain, :targetApiHost, :targetNotifierHost, :localDbPath, :listItems
+    attr_reader :aws, :dynamoEp, :dynamoAccessKey, :dynamoSecretKey, :memcacheEp, :domain, :targetApiHost, :targetNotifierHost, :localDbPath, :listItems
   end
 end
