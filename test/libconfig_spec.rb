@@ -41,8 +41,9 @@ describe PasteHub::Config, "When use config object...  " do
   end
 
   it "should" do
-    @config.dbPath.should              == "/var/pastehub/"
-    @config.memcacheHost.should        == "localhost:11211"
+    @config.aws.should                 == false
+    @config.dynamoEp.should            == 'dynamodb.ap-northeast-1.amazonaws.com'
+    @config.memcacheEp.should          == "localhost:11211"
     @config.targetApiHost.should       == "pastehub.org:8000"
     @config.targetNotifierHost.should  == "pastehub.org:8001"
     @config.localDbPath.should         == File.expand_path( "~/.pastehub/" ) + "/"
@@ -54,15 +55,36 @@ describe PasteHub::Config, "When use config object...  " do
 
   before do
     @config = PasteHub::Config.instance
-    @config.setupServer( "/tmp/", "memcache.example.com:11211" )
+    @config.setupServer( false, 'dynamodb.xxxxxxx.amazonaws.com', "memcache.example.com:11211" )
     @config.setupClient( "localhost:8000", "localhost:8001", "/tmp/local/" )
   end
 
   it "should" do
-    @config.dbPath.should              == "/tmp/"
-    @config.memcacheHost.should        == "memcache.example.com:11211"
+    @config.aws.should                 == false
+    @config.dynamoEp.should            == 'dynamodb.xxxxxxx.amazonaws.com'
+    @config.memcacheEp.should          == "memcache.example.com:11211"
+    @config.domain                     == "localhost"
     @config.targetApiHost.should       == "localhost:8000"
     @config.targetNotifierHost.should  == "localhost:8001"
     @config.localDbPath.should         == "/tmp/local/"
+  end
+end
+
+describe PasteHub::Config, "When use config object...  " do
+
+  before do
+    @config = PasteHub::Config.instance
+    @config.setupServer( true, false, "memcache.example.com:11211", "domain.example.com" )
+    @config.setupClient( "host.example.com:8000", "host.example.com:8001", "/tmp/tmp/tmp" )
+  end
+
+  it "should" do
+    @config.aws.should                 == true
+    @config.dynamoEp.should            == 'dynamodb.ap-northeast-1.amazonaws.com'
+    @config.memcacheEp.should          == "memcache.example.com:11211"
+    @config.domain                     == "domain.example.com"
+    @config.targetApiHost.should       == "host.example.com:8000"
+    @config.targetNotifierHost.should  == "host.example.com:8001"
+    @config.localDbPath.should         == "/tmp/tmp/tmp"
   end
 end

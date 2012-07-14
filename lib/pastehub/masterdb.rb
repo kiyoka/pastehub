@@ -1,74 +1,37 @@
-
 require 'dynamoid'
-require 'pp'
-
-# fake DynamoDB on localhost
-Dynamoid.configure do |config|
-  config.adapter         = 'local'
-  config.namespace       = 'pastehub_org'   # To namespace tables created by Dynamoid from other tables you might have.
-  config.warn_on_scan    = true          # Output a warning to the logger when you perform a scan rather than a query on a table.
-  config.partitioning    = false          # Spread writes randomly across the database. See "partitioning" below for more.
-  config.partition_size  = 1       # Determine the key space size that writes are randomly spread across.
-  config.read_capacity   = 10         # Read capacity for your tables
-  config.write_capacity  = 5         # Write capacity for your tables
-  #config.endpoint = 'dynamodb.us-east-1.amazonaws.com' # Set the regional endpoint
-end
-
-
+require 'date'
 
 module PasteHub
 
-  class DynamoidConfig
-    def self.config( domain_name = 'pastehub_org', access_key = nil, secret_key = nil )
-      if access_key
-        # real DyanamoDB on AWS
-        Dynamoid.configure do |config|
-          config.adapter = 'local'
-          config.namespace = domain_name # To namespace tables created by Dynamoid from other tables you might have.
-          config.warn_on_scan = true     # Output a warning to the logger when you perform a scan rather than a query on a table.
-          config.partitioning = true     # Spread writes randomly across the database. See "partitioning" below for more.
-          config.partition_size = 200    # Determine the key space size that writes are randomly spread across.
-          config.read_capacity = 50      # Read capacity for your tables
-          config.write_capacity = 5      # Write capacity for your tables
-          config.endpoint = 'dynamodb.us-east-1.amazonaws.com' # Set the regional endpoint
-        end
-      else
-        # fake DynamoDB on localhost
-        Dynamoid.configure do |config|
-          config.adapter = 'local'
-          config.namespace = domain_name # To namespace tables created by Dynamoid from other tables you might have.
-          config.warn_on_scan = true     # Output a warning to the logger when you perform a scan rather than a query on a table.
-          config.partitioning = true     # Spread writes randomly across the database. See "partitioning" below for more.
-          #config.partition_size = 200   # Determine the key space size that writes are randomly spread across.
-          #config.read_capacity = 100    # Read capacity for your tables
-          #config.write_capacity = 20    # Write capacity for your tables
-          #config.endpoint = 'dynamodb.us-east-1.amazonaws.com' # Set the regional endpoint
-        end
-      end
-    end
+  # fake DynamoDB on localhost
+  Dynamoid.configure do |dynamoConfig|
+    config = PasteHub::Config.instance
+    dynamoConfig.adapter         = config.aws ?     'aws_sdk' : 'local'
+    dynamoConfig.namespace       = config.domain    # To namespace tables created by Dynamoid from other tables you might have.
+    dynamoConfig.warn_on_scan    = !config.aws      # Output a warning to the logger when you perform a scan rather than a query on a table.
+    dynamoConfig.partitioning    = false            # Spread writes randomly across the database. See "partitioning" below for more.
+    dynamoConfig.partition_size  = 1                # Determine the key space size that writes are randomly spread across.
+    dynamoConfig.read_capacity   = 10               # Read capacity for your tables
+    dynamoConfig.write_capacity  = 5                # Write capacity for your tables
+    dynamoConfig.endpoint        = config.dynamoEp  # Set the regional endpoint
   end
-
 
   class User
     include Dynamoid::Document
 
-    table :name => :users, :key => :username
+    table :name => :users
 
     field :username
     field :secretKey
     field :created_datetime, :datetime
     field :touched_datetime, :datetime
-    field :email
     field :twitter_account
     #field :friends, :set
 
     index :username
-    index :email
     
     validates_presence_of :username
-    validates_format_of :email, :with => /@/
   end
-
 
   class Entry
     include Dynamoid::Document
@@ -90,6 +53,40 @@ module PasteHub
     index [:username, :userkey, :delete]
     index :delete_datetime, :range => true
   end
+
+
+  class Users
+    def addUser( username, secretKey )
+      user = User.new( :username => username, :secretKey => secretKey, :created_datetime => DateTime.new())
+      user.save
+    end
+
+    def updateSecretKey( username, secretKey )
+      arr = User.where( :username => username ).all
+      if 0 < arr.size
+        arr.first.secretKey = secretKey
+        arr.first.save
+        true
+      else
+        false
+      end
+    end
+
+    def getSecretKey( username )
+      arr = User.where( :username => username ).all
+      if 0 < arr.size
+        arr.first.secretKey
+      else
+        nil
+      end
+    end
+
+    def getList()
+      arr = User.all
+      arr.map { |x| x.username }
+    end
+  end
+
 
   class Entries
     def initialize( username )

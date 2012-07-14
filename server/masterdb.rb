@@ -7,21 +7,39 @@ require 'memcache'
 $LOAD_PATH.push( File.dirname(__FILE__) + "/../lib" )
 require 'pastehub'
 PasteHub::Config.instance.loadServer
-LIST_ITEMS           = PasteHub::Config.instance.listItems
-
 
 # initialize master database
 require 'pastehub/masterdb'
 
+# display config info
+ins = PasteHub::Config.instance
+printf( "Use AWS:                 %s\n", ins.aws )
+printf( "Domain:                  %s\n", ins.domain )
+printf( "Dynamo   Endpoint:       %s\n", ins.dynamoEp )
+printf( "Memcache Endpoint:       %s\n", ins.memcacheEp )
 
-notifyHash = Memcache.new( :server => PasteHub::Config.instance.memcacheHost )
+
+# setup user table for Fake DynamoDB
+users = PasteHub::Users.new( )
+if not ins.aws
+  open( "/var/pastehub/users.tsv", "r" ) {|f|
+    f.readlines.each { |line|
+      pair = line.chomp.split( /[\t ]+/ )
+      printf( "Added local user table:  %s\n", pair[0] )
+      users.addUser( pair[0], pair[1] )
+    }
+  }
+end
+
+
+notifyHash = Memcache.new( :server => PasteHub::Config.instance.memcacheEp )
 
 masterdb_server = Vertx::HttpServer.new
 masterdb_server.request_handler do |req|
 
   req.body_handler do |body|
     util = PasteHub::Util.new
-    auth = PasteHub::AuthForServer.new( PasteHub::Config.instance.dbPath )
+    auth = PasteHub::AuthForServer.new( users )
     ret = auth.invoke( req.headers, util.currentSeconds() )
 
     if ret[0]
@@ -83,7 +101,7 @@ masterdb_server.request_handler do |req|
       req.response.end()
 
     when "/getList"
-      str = entries.getList( ).reject{|x| x.match( /^_/ )}.take( LIST_ITEMS ).join( "\n" )
+      str = entries.getList( ).reject{|x| x.match( /^_/ )}.take( PasteHub::Config.instance.listItems ).join( "\n" )
       puts "[#{username}]:getList's response: "
       puts str
       req.response.end( str )

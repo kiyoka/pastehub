@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # -*- encoding: utf-8 -*-
 #
-# libdbmaster_spec.rb -  "RSpec file for db.rb"
+# libmasterdb_spec.rb -  "RSpec file for masterDB"
 #
 #   Copyright (c) 2012-2012  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #
@@ -34,14 +34,16 @@
 #
 require 'pastehub'
 include PasteHub
-require 'pastehub/masterdb'
 
+
+# setup fake DynamoDB
+conf = PasteHub::Config.instance
+conf.setupServer( false, 'localhost:11211', 'rspec' )
+require 'pastehub/masterdb'
 
 describe Entries, "masterDB API operations are " do
 
   before do
-    DynamoidConfig::config()  # for fake DynamoDB
-    
     @entries = Entries.new( "usertmp" )
     @util = Util.new
 

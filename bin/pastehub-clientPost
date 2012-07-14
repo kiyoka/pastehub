@@ -21,7 +21,7 @@ def main
   end
   
   data = STDIN.read
-  auth = PasteHub::AuthForClient.new( username, secretKey )  
+  auth = PasteHub::AuthForClient.new( username, secretKey )
   client = PasteHub::Client.new( auth )
   if client.online?(  )
     key = client.postData( data )

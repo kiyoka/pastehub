@@ -80,15 +80,9 @@ module PasteHub
   end
 
   class AuthForServer
-    def initialize( basepath = "/var/pastehub/" )
-      @basepath = basepath
-      @secretKeys = Hash.new
-      open( @basepath + "users.tsv" ) {|f|
-        f.readlines.each { |line|
-          arr = line.chomp.split( /\t+/ )
-          @secretKeys[ arr[0] ] = arr[1]
-        }
-      }
+    def initialize( users )
+      # db connecter of Users table
+      @users = users
     end
 
     def expired?( clientTime, serverTime )
@@ -119,8 +113,8 @@ module PasteHub
         # fail... username was unspecified
         [ false, :unspecified_user ]
       else
-        if @secretKeys[auth.username]
-          server_sign = auth.calcSignature( @secretKeys[auth.username] )
+        if @users.getSecretKey(auth.username)
+          server_sign = auth.calcSignature( @users.getSecretKey(auth.username) )
           #pp [ "server_sign", server_sign ]
           if server_sign == client_sign
 

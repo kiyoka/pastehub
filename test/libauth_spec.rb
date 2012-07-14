@@ -35,6 +35,11 @@
 require 'pastehub'
 include PasteHub
 
+# setup fake DynamoDB
+conf = PasteHub::Config.instance
+conf.setupServer( false, 'localhost:11211', 'rspec' )
+require 'pastehub/masterdb'
+
 
 describe Auth, "When client auth library is used (OK)...  " do
 
@@ -65,19 +70,21 @@ end
 
 describe Auth, "When server auth library is used ...  " do
   before do
-    @secretKey = 'ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg=='
-    @auth = Auth.new( )
-    open( "/tmp/users.tsv", "w" ) {|f|
-      f.puts( "userA\t#{@secretKey}" )
-    }
-    @authForServer = AuthForServer.new( "/tmp/" )
+    @auth = Auth.new
+
+    @userA = [ "userA",  "ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==" ]
+    users = Users.new( )
+    users.addUser( @userA[0], @userA[1] )
+    @authForServer = AuthForServer.new( users )
+
+    @ok_signature  = "JdBdwsmcJ7jIy3EQ0lX5MjlKUprYump10UDxr0fxnRA="
   end
 
   it "should" do
     @auth.addElement( 'x-pastehub-username', 'userA' )
     @auth.addElement( 'x-pastehub-date',     '10000000' )
     @auth.addElement( 'x-pastehub-version',  '2012-06-16' )
-    @auth.calcSignature( @secretKey ).should                       == "JdBdwsmcJ7jIy3EQ0lX5MjlKUprYump10UDxr0fxnRA="
+    @auth.calcSignature( @userA[1] ).should                       == @ok_signature
 
 
     @authForServer.invoke( {
@@ -91,7 +98,7 @@ describe Auth, "When server auth library is used ...  " do
     @auth.addElement( 'x-pastehub-username', 'unknownUser' )
     @auth.addElement( 'x-pastehub-date',     '10000000' )
     @auth.addElement( 'x-pastehub-version',  '2012-06-16' )
-    @auth.calcSignature( @secretKey ).should_not                   == "JdBdwsmcJ7jIy3EQ0lX5MjlKUprYump10UDxr0fxnRA="
+    @auth.calcSignature( @userA[1] ).should_not                   == @ok_signature
 
     @authForServer.invoke( {
                              'x-pastehub-username' => 'unknownUser',
@@ -112,7 +119,11 @@ end
 
 describe Auth, "When server auth library invokes time expire check ...  " do
   before do
-    @authForServer = AuthForServer.new( "/tmp/" )
+    @userA = [ "userA",  "ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==" ]
+    users = Users.new( )
+    users.addUser( @userA[0], @userA[1] )
+    @authForServer = AuthForServer.new( users )
+
     @headers = {
       "x-pastehub-username"=>"userA",
       "x-pastehub-date"=>"1339639491",

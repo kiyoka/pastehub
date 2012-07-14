@@ -12,18 +12,29 @@ module PasteHub
     def initialize( )
       self.setupServer()
       self.setupClient()
+      @listItems = 100
     end
 
-    def setupServer( dbPath = nil, memcacheHost = nil )
-      @dbPath              = if dbPath
-                               dbPath
+    def setupServer( aws = false, dynamoEp = nil, memcacheEp = nil, domain = nil )
+      @aws                 = if aws
+                               aws
                              else
-                               "/var/pastehub/"
+                               false
                              end
-      @memcacheHost        = if memcacheHost
-                               memcacheHost
+      @dynamoEp            = if dynamoEp
+                               dynamoEp
+                             else
+                               dynamoEp = 'dynamodb.ap-northeast-1.amazonaws.com' # Default DynamoDB's endpoint is Tokyo Region
+                             end
+      @memcacheEp          = if memcacheEp
+                               memcacheEp
                              else
                                "localhost:11211"
+                             end
+      @domain              = if domain
+                               domain
+                             else
+                               "localhost"
                              end
     end
 
@@ -50,7 +61,7 @@ module PasteHub
       if File.exist?( name )
         open( name ) { |f|
           json = JSON.parse( f.read )
-          self.setupServer( json[ 'dbPath' ], json[ 'memcacheHost' ] )
+          self.setupServer( json[ 'aws' ], json[ 'dynamoEp' ], json[ 'memcacheEp' ], json[ 'domain' ] )
         }
       end
     end
@@ -65,28 +76,6 @@ module PasteHub
       end
     end
 
-    def dbPath
-      @dbPath
-    end
-
-    def memcacheHost
-      @memcacheHost
-    end
-
-    def targetApiHost
-      @targetApiHost
-    end
-
-    def targetNotifierHost
-      @targetNotifierHost
-    end
-
-    def localDbPath
-      @localDbPath
-    end
-
-    def listItems
-      100
-    end
+    attr_reader :aws, :dynamoEp, :memcacheEp, :domain, :targetApiHost, :targetNotifierHost, :localDbPath, :listItems
   end
 end
