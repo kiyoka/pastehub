@@ -108,11 +108,10 @@ masterdb_server.request_handler do |req|
 
     when "/getValue"
       k = body.to_s.chomp
-      str = entries.getValue( k.dup )
-      if str
-        str
+      if 0 < k.size
+        str = entries.getValue( k.dup )
       else
-        ""
+        str = ""
       end
       puts "[#{username}]:getValue:" + k
       req.response.end( str )

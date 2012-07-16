@@ -11,7 +11,7 @@ module PasteHub
     dynamoConfig.warn_on_scan    = !config.aws              # Output a warning to the logger when you perform a scan rather than a query on a table.
     dynamoConfig.partitioning    = false                    # Spread writes randomly across the database. See "partitioning" below for more.
     dynamoConfig.partition_size  = 1                        # Determine the key space size that writes are randomly spread across.
-    dynamoConfig.read_capacity   = 10                       # Read capacity for your tables
+    dynamoConfig.read_capacity   = 5                        # Read capacity for your tables
     dynamoConfig.write_capacity  = 5                        # Write capacity for your tables
     dynamoConfig.access_key      = config.dynamoAccessKey   # If connecting to DynamoDB, your access key is required.
     dynamoConfig.secret_key      = config.dynamoSecretKey   # So is your secret key.
@@ -27,33 +27,37 @@ module PasteHub
     field :secretKey
     field :created_datetime, :datetime
     field :touched_datetime, :datetime
-    field :twitter_account
     #field :friends, :set
 
     index :username
-    
+
     validates_presence_of :username
+    validates_presence_of :secretKey
   end
 
   class Entry
     include Dynamoid::Document
 
-    table :name => :Entries
+    table :name => :entries
 
     field :userkey
     field :username
-    field :comment
-    field :from
-    field :to
-    field :cc
-    field :type
+#    field :comment
+#    field :from
+#    field :to
+#    field :cc
+#    field :type
     field :delete, :integer
     field :delete_datetime, :datetime
     field :data
 
     index :username
-    index [:username, :userkey, :delete]
-    index :delete_datetime, :range => true
+
+#    index [:username, :userkey, :delete]
+#    index :delete_datetime, :range => true
+
+    validates_presence_of :userkey
+    validates_presence_of :data
   end
 
 
@@ -107,6 +111,8 @@ module PasteHub
     end
 
     def getValue( key, fallback = false )
+      p "username=#{@holdUsername}"
+      p "key=#{key}"
       arr = Entry.where( :username => @holdUsername, :userkey => key, :delete => 0 ).all
       if 0 < arr.size
         arr[0].data.force_encoding("UTF-8")
@@ -116,7 +122,7 @@ module PasteHub
     end
 
     def insertValue( key, value )
-      entry = Entry.new( :username => @holdUsername, :userkey => key.force_encoding("ASCII-8BIT"), :data => value.force_encoding("ASCII-8BIT"), :delete => 0 )
+      entry = Entry.new( :username => @holdUsername, :userkey => key.force_encoding("UTF-8"), :data => value.force_encoding("UTF-8"), :delete => 0 )
       entry.save
     end
 
