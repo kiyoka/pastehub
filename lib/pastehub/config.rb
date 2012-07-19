@@ -12,7 +12,7 @@ module PasteHub
     def initialize( )
       self.setupServer( {} )
       self.setupClient( {} )
-      @listItems = 100
+      @listItems = 50
     end
 
     def setupServer( hash )
