@@ -105,6 +105,8 @@ describe Entries, "masterDB API operations are " do
 
   before do
     @entries = Entries.new( "usertmp" ) # create table
+    @util = Util.new
+
     ###         date,                           value
     @data = [[ "1338738983=06/04/12:00:56:22",  "first  data" ],
              [ "1338814085=06/04/12:21:48:04",  "second data" ]]
@@ -122,17 +124,17 @@ describe Entries, "masterDB API operations are " do
     }
 
     keys = @entries.getList( )
-    keys.should == 
+    keys.should ==
       ["1338814085=06/04/12:21:48:04=e2b6e6c71d8fd8f22b5a96cfc0fe797999405d59",
        "1338738983=06/04/12:00:56:22=30aac3a6f968fc5983a0f62a287e79516d701ea5"]
-    
+
     @entries.getValue( keys[0] ).should == 'second data'
     @entries.getValue( keys[1] ).should == 'first  data'
 
     date = "1338814090=06/04/12:21:48:09"
     key = date + "=" + @util.digest( 'last  data' )
     @entries.insertValue( key, 'last  data' )
-    
+
     keys = @entries.getList( )
     keys.size.should                     == 3
     keys.should                          ==

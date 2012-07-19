@@ -21,7 +21,7 @@ module PasteHub
   class User
     include Dynamoid::Document
 
-    table :name => :users
+    table :name => :users, :key => :username
 
     field :username
     field :secretKey
@@ -29,7 +29,7 @@ module PasteHub
     field :touched_datetime, :datetime
     #field :friends, :set
 
-    index :username
+#    index :username
 
     validates_presence_of :username
     validates_presence_of :secretKey
@@ -38,7 +38,7 @@ module PasteHub
   class Entry
     include Dynamoid::Document
 
-    table :name => :entries
+    table :name => :entries, :key => :userkey
 
     field :userkey
     field :username
@@ -51,7 +51,7 @@ module PasteHub
     field :delete_datetime, :datetime
     field :data
 
-    index :username
+#    index :username
 
 #    index [:username, :userkey, :delete]
 #    index :delete_datetime, :range => true
@@ -89,7 +89,7 @@ module PasteHub
 
     def getList()
       arr = User.all
-      arr.map { |x| x.username }
+      arr.map { |x| x.username }.sort
     end
   end
 
