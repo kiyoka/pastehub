@@ -53,6 +53,10 @@ task :test do
   sh "time ruby -I ./lib `which rspec` -b   ./test/libuserdb_spec.rb      -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
 end
 
+task :testaws do
+  sh "time ruby -I ./lib `which rspec` -b   ./test/aws_spec.rb            -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
+end
+
 task :m do
   sh "vertx run    server/masterdb.rb -instance 2"
 end
