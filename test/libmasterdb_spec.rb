@@ -38,7 +38,8 @@ include PasteHub
 
 # setup fake DynamoDB
 conf = PasteHub::Config.instance
-conf.setupServer( false, 'localhost:11211', 'rspec' )
+conf.setupServer( { :memcacheEp         => 'localhost:11211',
+                    :domain             => 'rspec' } )
 require 'pastehub/masterdb'
 
 describe Entries, "masterDB API operations are " do

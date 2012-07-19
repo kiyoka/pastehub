@@ -57,8 +57,13 @@ describe PasteHub::Config, "When use config object...  " do
 
   before do
     @config = PasteHub::Config.instance
-    @config.setupServer( false, 'dynamodb.xxxxxxx.amazonaws.com', 'accessKey', 'secretKey', "memcache.example.com:11211" )
-    @config.setupClient( "localhost:8000", "localhost:8001", "/tmp/local/" )
+    @config.setupServer( { :dynamoEp           => 'dynamodb.xxxxxxx.amazonaws.com',
+                           :dynamoAccessKey    => 'accessKey',
+                           :dynamoSecretKey    => 'secretKey',
+                           :memcacheEp         => 'memcache.example.com:11211' } )
+    @config.setupClient( { :targetApiHost      => "localhost:8000",
+                           :targetNotifierHost => "localhost:8001",
+                           :localDbPath        => "/tmp/local/" } )
   end
 
   it "should" do
@@ -78,8 +83,15 @@ describe PasteHub::Config, "When use config object...  " do
 
   before do
     @config = PasteHub::Config.instance
-    @config.setupServer( true, false, 'a', 'b', "memcache.example.com:11211", "domain.example.com" )
-    @config.setupClient( "host.example.com:8000", "host.example.com:8001", "/tmp/tmp/tmp" )
+    @config.setupServer( { :aws                => true,
+                           :dynamoEp           => nil,
+                           :dynamoAccessKey    => 'a',
+                           :dynamoSecretKey    => 'b',
+                           :memcacheEp         => "memcache.example.com:11211",
+                           :domain             => "domain.example.com" } )
+    @config.setupClient( { :targetApiHost      => "host.example.com:8000",
+                           :targetNotifierHost => "host.example.com:8001",
+                           :localDbPath        => "/tmp/tmp/tmp" })
   end
 
   it "should" do

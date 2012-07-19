@@ -10,49 +10,49 @@ module PasteHub
     end
 
     def initialize( )
-      self.setupServer()
-      self.setupClient()
+      self.setupServer( {} )
+      self.setupClient( {} )
       @listItems = 100
     end
 
-    def setupServer( aws = false, dynamoEp = nil, dynamoAccessKey = nil, dynamoSecretKey = nil, memcacheEp = nil, domain = nil )
-      @aws                 = if aws
-                               aws
+    def setupServer( hash )
+      @aws                 = if hash[ :aws ]
+                               hash[ :aws ]
                              else
                                false
                              end
-      @dynamoEp            = if dynamoEp
-                               dynamoEp
+      @dynamoEp            = if hash[ :dynamoEp ]
+                               hash[ :dynamoEp ]
                              else
                                dynamoEp = 'dynamodb.ap-northeast-1.amazonaws.com' # Default DynamoDB's endpoint is Tokyo Region
                              end
-      @dynamoAccessKey     = dynamoAccessKey
-      @dynamoSecretKey     = dynamoSecretKey
-      @memcacheEp          = if memcacheEp
-                               memcacheEp
+      @dynamoAccessKey     = hash[ :dynamoAccessKey ]
+      @dynamoSecretKey     = hash[ :dynamoSecretKey ]
+      @memcacheEp          = if hash[ :memcacheEp ]
+                               hash[ :memcacheEp ]
                              else
                                "localhost:11211"
                              end
-      @domain              = if domain
-                               domain
+      @domain              = if hash[ :domain ]
+                               hash[ :domain ]
                              else
                                "localhost"
                              end
     end
 
-    def setupClient( targetApiHost = nil, targetNotifierHost = nil, localDbPath = nil )
-      @targetApiHost       = if targetApiHost
-                               targetApiHost
+    def setupClient( hash )
+      @targetApiHost       = if hash[ :targetApiHost ]
+                               hash[ :targetApiHost ]
                              else
                                "pastehub.org:8000"
                              end
-      @targetNotifierHost  = if targetNotifierHost
-                               targetNotifierHost
+      @targetNotifierHost  = if hash[ :targetNotifierHost ]
+                               hash[ :targetNotifierHost ]
                              else
                                "pastehub.org:8001"
                              end
-      @localDbPath         = if localDbPath
-                               localDbPath                        
+      @localDbPath         = if hash[ :localDbPath ]
+                               hash[ :localDbPath ]
                              else
                                File.expand_path( "~/.pastehub/" ) + "/"
                              end
@@ -63,7 +63,12 @@ module PasteHub
       if File.exist?( name )
         open( name ) { |f|
           json = JSON.parse( f.read )
-          self.setupServer( json[ 'aws' ], json[ 'dynamoEp' ], json[ 'dynamoAccessKey' ], json[ 'dynamoSecretKey' ], json[ 'memcacheEp' ], json[ 'domain' ] )
+          self.setupServer( { :aws                => json[ 'aws' ],
+                              :dynamoEp           => json[ 'dynamoEp' ],
+                              :dynamoAccessKey    => json[ 'dynamoAccessKey' ],
+                              :dynamoSecretKey    => json[ 'dynamoSecretKey' ],
+                              :memcacheEp         => json[ 'memcacheEp' ],
+                              :domain             => json[ 'domain' ] } )
         }
       end
     end
@@ -73,7 +78,9 @@ module PasteHub
       if File.exist?( name )
         open( name ) { |f|
           json = JSON.parse( f.read )
-          self.setupClient( json[ 'targetApiHost' ], json[ 'targetNotifierHost' ], json[ 'localDbPath' ] )
+          self.setupClient( { :targetApiHost      => json[ 'targetApiHost' ],
+                              :targetNotifierHost => json[ 'targetNotifierHost' ],
+                              :localDbPath        => json[ 'localDbPath' ] } )
         }
       end
     end
