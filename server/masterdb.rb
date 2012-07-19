@@ -54,6 +54,7 @@ masterdb_server.request_handler do |req|
     end
 
     entries = PasteHub::Entries.new( username )
+    users   = PasteHub::Users.new( )
 
     case req.path
     when "/insertValue"
@@ -77,9 +78,7 @@ masterdb_server.request_handler do |req|
         key = util.currentTime( ) + "=" + digest
         puts "[#{username}]:insertValue: key=[#{key}] : " + data
         entries.insertValue( key, data )
-        cur = util.currentTime( )
-        entries.insertValue( PasteHub::SERVER_DATE_KEY, cur )
-
+        users.touch( username )
         # notify to client
         notifyHash[ username ] = cur
       end
@@ -93,8 +92,7 @@ masterdb_server.request_handler do |req|
       key = req.headers[ 'X-Pastehub-Key' ].dup
       puts "[#{username}]:putValue: key=[#{key}] : " + data
       entries.insertValue( key, data )
-      cur = util.currentTime( )
-      entries.insertValue( PasteHub::SERVER_DATE_KEY, cur )
+      users.touch( username )
 
       # notify to all client
       notifyHash[ username ] = cur

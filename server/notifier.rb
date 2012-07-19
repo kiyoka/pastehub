@@ -50,7 +50,7 @@ notifier.request_handler do |req|
   if ret[0]
     username = ret[1]
     puts "Connected from user [#{username}]"
-  else 
+  else
     puts "Error: " + ret[1].to_s
     req.response.status_code = 403
     req.response.status_message = "Authorization failure."

@@ -96,6 +96,8 @@ describe Users, "User Database API operations are " do
     @users.getSecretKey( "userB" )          == @userB[1]
     @users.getSecretKey( "userC" )          == "modified!"
     @users.getSecretKey( "userD" )          == nil
+
+    @users.touch( "userA" )                 == true
     end
 end
 
@@ -108,6 +110,8 @@ describe Entries, "masterDB API operations are " do
     @util = Util.new
 
     ###         date,                           value
+
+
     @data = [[ "1338738983=06/04/12:00:56:22",  "first  data" ],
              [ "1338814085=06/04/12:21:48:04",  "second data" ]]
   end

@@ -87,6 +87,17 @@ module PasteHub
       end
     end
 
+    def touch( username )
+      arr = User.where( :username => username ).all
+      if 0 < arr.size
+        arr.first.touched_datetime = DateTime.new()
+        arr.first.save
+        true
+      else
+        nil
+      end
+    end
+
     def getList()
       arr = User.all
       arr.map { |x| x.username }.sort
@@ -101,7 +112,9 @@ module PasteHub
 
     def getList( limit = nil )
       arr = Entry.where( :username => @holdUsername, :delete => 0 ).map {|x|
-        x.userkey
+        # remove username from `userkey'
+        field = x.userkey.split( /::/ )
+        field[1]
       }.sort {|a,b| -(a <=> b) }
       if limit
         arr.take( limit )
@@ -113,7 +126,9 @@ module PasteHub
     def getValue( key, fallback = false )
       p "username=#{@holdUsername}"
       p "key=#{key}"
-      arr = Entry.where( :username => @holdUsername, :userkey => key, :delete => 0 ).all
+      arr = Entry.where( :username => @holdUsername,
+                  :userkey =>  @holdUsername + "::" + key,
+                  :delete => 0 ).all
       if 0 < arr.size
         arr[0].data.force_encoding("UTF-8")
       else
@@ -122,12 +137,16 @@ module PasteHub
     end
 
     def insertValue( key, value )
-      entry = Entry.new( :username => @holdUsername, :userkey => key.force_encoding("UTF-8"), :data => value.force_encoding("UTF-8"), :delete => 0 )
+      entry = Entry.new( :username => @holdUsername,
+                    :userkey => @holdUsername + "::" + key,
+                    :data => value.force_encoding("UTF-8"), :delete => 0 )
       entry.save
     end
 
     def deleteValue( key )
-      entry = Entry.where( :username => @holdUsername, :userkey => key, :delete => 0 ).first
+      entry = Entry.where( :username => @holdUsername,
+                    :userkey => @holdUsername + "::" + key,
+                    :delete => 0 ).first
 #      pp [ "entry1", entry ]
 #      pp [ "table_name", Entry.table_name ]
 #      pp [ "id", entry.id ]
