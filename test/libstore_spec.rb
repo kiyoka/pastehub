@@ -39,6 +39,11 @@ include PasteHub
 describe LocalStore, "when LocalStore API use ... " do
 
   before do
+    # Create dbm file
+    @store1 = LocalStore.new( "usertmp" )
+    @store1.insertValue( "key1", "value1" )
+    @store1.close
+
     @store1 = LocalStore.new( "usertmp", true )
   end
 
