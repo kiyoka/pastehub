@@ -80,7 +80,7 @@ masterdb_server.request_handler do |req|
         entries.insertValue( key, data )
         users.touch( username )
         # notify to client
-        notifyHash[ username ] = cur
+        notifyHash[ username ] = util.currentTime( )
       end
 
       req.response.end( key )
@@ -95,7 +95,7 @@ masterdb_server.request_handler do |req|
       users.touch( username )
 
       # notify to all client
-      notifyHash[ username ] = cur
+      notifyHash[ username ] = util.currentTime( )
       req.response.end()
 
     when "/getList"
