@@ -84,7 +84,7 @@ def syncMain( username, secretKey )
       sleep 2
     rescue Errno::ECONNREFUSED => e
       STDERR.puts "retrying... masterdb server is down"
-      sleep 2
+      sleep 60
     end
   end
 end
@@ -105,6 +105,7 @@ def macosxCheck( username, secretKey )
           # if postData was fail, save to local.
           setOnlineState( false )
           client.localSaveValue( data )
+          sleep 60
         end
       else
         client.localSaveValue( data )

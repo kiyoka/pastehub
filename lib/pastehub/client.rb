@@ -111,10 +111,10 @@ module PasteHub
         STDERR.puts "Error: disconnected by server."
         return :retry
       rescue Errno::ECONNREFUSED => e
-        STDERR.puts "Error: can't connect server(ConnectionRefused)."
+        STDERR.puts "Error: can't connect to server(ConnectionRefused)."
         return :retry
       rescue SocketError => e
-        STDERR.puts "Error: can't connect server(SocketError)."
+        STDERR.puts "Error: can't connect to server(SocketError)."
         return :retry
       rescue Timeout::Error => e
         return :timeout
