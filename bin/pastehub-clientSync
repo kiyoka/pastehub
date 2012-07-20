@@ -80,7 +80,10 @@ def syncMain( username, secretKey )
         sync_db( auth )
       end
     rescue Errno::EAGAIN => e
-      STDERR.puts "retrying... DB locked"
+      STDERR.puts "retrying... DB is locked"
+      sleep 2
+    rescue Errno::ECONNREFUSED => e
+      STDERR.puts "retrying... masterdb server is down"
       sleep 2
     end
   end
@@ -96,7 +99,13 @@ def macosxCheck( username, secretKey )
       client = PasteHub::Client.new( auth )
       if client.online?(  )
         STDERR.puts( "Info: posted data from MacOS X." )
-        client.postData( data )
+        begin
+          client.postData( data )
+        rescue Errno::ECONNREFUSED => e
+          # if postData was fail, save to local.
+          setOnlineState( false )
+          client.localSaveValue( data )
+        end
       else
         client.localSaveValue( data )
       end
