@@ -31,20 +31,26 @@ def sync_db( auth )
   upList   = util.diffList( localList, masterList )
 
   # push first element to MacOS X clipboard.
-  key = downList.first
-  value = client.getValue( key )
-  PasteHub::MacOSX.push( value.dup )
+  if 0 < downList.size
+    key = downList.first
+    value = client.getValue( key )
+    PasteHub::MacOSX.push( value.dup )
+  end
 
   # donwload
   downList.each {|key|
     value = client.getValue( key )
     localdb.insertValue( key.dup, value.dup )
   }
-  # upload
-  upList.each {|key|
-    value = localdb.getValue( key )
-    client.putValue(     key.dup, value.dup )
-  }
+  if 0 == downList.size()
+    # upload
+    upList.each {|key|
+      value = localdb.getValue( key )
+      client.putValue(     key.dup, value.dup )
+    }
+  else
+    upList = []
+  end
 
   STDERR.puts "Info: download #{downList.size} records."
   STDERR.puts "Info:   upload #{upList.size} records."
