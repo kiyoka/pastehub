@@ -65,7 +65,7 @@ def syncMain( username, secretKey )
   while true
     begin
       auth = PasteHub::AuthForClient.new( username, secretKey )
-      client = PasteHub::Client.new( auth )      
+      client = PasteHub::Client.new( auth )
       result = client.wait_notify( auth )
       case result
       when :timeout
