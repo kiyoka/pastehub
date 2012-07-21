@@ -11,15 +11,21 @@ module PasteHub
       @basepath = basepath
     end
 
-    def open( username, reader = false )
-      if reader
-        @db = GDBM.new( @basepath + username + ".db", nil, GDBM::READER  | GDBM::NOLOCK )
-      else
-        @db = GDBM.new( @basepath + username + ".db", nil, GDBM::WRCREAT | GDBM::SYNC )
-      end
 
-      if not @db
-        raise RuntimeError, sprintf( "DBM.new error: file=%s", username + ".db" )
+      10.times { |n|
+        if reader
+          @db = GDBM.new( @basepath + username + ".db", nil, GDBM::READER )
+        else
+          @db = GDBM.new( @basepath + username + ".db", nil, GDBM::WRCREAT | GDBM::SYNC )
+        end
+        if not @db.closed?
+          break
+        end
+        STDERR.puts "Warning: DB open fail(locked) retry..."
+        sleep 0.5
+      }
+      if @db.closed?
+        raise RuntimeError, sprintf( "DBM.new open error: file=%s", username + ".db" )
       end
       @username = username
     end
