@@ -11,7 +11,7 @@ module PasteHub
       @basepath = basepath
     end
 
-
+    def open( username, reader = false )
       10.times { |n|
         if reader
           @db = GDBM.new( @basepath + username + ".db", nil, GDBM::READER )
