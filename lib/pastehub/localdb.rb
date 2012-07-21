@@ -12,16 +12,16 @@ module PasteHub
     end
 
     def open( username, reader = false )
-      10.times { |n|
+      (60*2).times { |n|
         if reader
-          @db = GDBM.new( @basepath + username + ".db", nil, GDBM::READER )
+          @db = GDBM.new( @basepath + username + ".db", nil, GDBM::READER  | GDBM::NOLOCK )
         else
           @db = GDBM.new( @basepath + username + ".db", nil, GDBM::WRCREAT | GDBM::SYNC )
         end
         if not @db.closed?
           break
         end
-        STDERR.puts "Warning: DB open fail(locked) retry..."
+        #STDERR.puts "#Warning: DB open fail(locked) retry..."
         sleep 0.5
       }
       if @db.closed?
