@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
+require 'pp'
 require 'thread'
 require 'pastehub'
 PasteHub::Config.instance.loadClient
@@ -14,6 +15,7 @@ def sync_db( auth )
   STDERR.puts "synchronizing..."
   client = PasteHub::Client.new( auth )
   masterList = client.getList()
+  #pp [ "masterList", masterList ]
 
   # open local db
   localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
@@ -21,14 +23,22 @@ def sync_db( auth )
 
   # calc difference between master and local.
   localList = localdb.getList().take( LIST_ITEMS )
+  #pp [ "localList", localList ]
+
   util = PasteHub::Util.new
-  downList = util.diffList( masterList, localList )
-  if LIST_ITEMS < downList.size
-    localList = []
-  else
-    localList = localList.take( LIST_ITEMS - downList.size )
-  end
-  upList   = util.diffList( localList, masterList )
+  tmpDownList = util.diffList( masterList, localList )
+  downList = tmpDownList.select { |x|
+    if masterList.reverse.take( tmpDownList.size ).include?( x )
+      nil
+    else
+      x
+    end
+  }
+  #pp [ "tmpDownList", tmpDownList ]
+  #pp [ "downList", downList ]
+
+  upList   = util.diffList( localList,  masterList )
+  #pp [ "upList", upList ]
 
   # push first element to MacOS X clipboard.
   if 0 < downList.size
@@ -42,18 +52,21 @@ def sync_db( auth )
     value = client.getValue( key )
     localdb.insertValue( key.dup, value.dup )
   }
-  if 0 == downList.size()
-    # upload
-    upList.each {|key|
-      value = localdb.getValue( key )
-      client.putValue(     key.dup, value.dup )
-    }
-  else
-    upList = []
-  end
+  # upload
+  upList.each {|key|
+    value = localdb.getValue( key )
+    client.putValue(     key.dup, value.dup )
+  }
 
   STDERR.puts "Info: download #{downList.size} records."
+  downList.each { |x|
+    STDERR.puts "  key=#{x}"
+  }
   STDERR.puts "Info:   upload #{upList.size} records."
+  upList.each { |x|
+    STDERR.puts "  key=#{x}"
+    STDERR.puts "  value=[#{localdb.getValue( x )}]"
+  }
   localdb.close()
 
   if 0 < downList.size or 0 < upList.size
