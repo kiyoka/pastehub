@@ -62,7 +62,7 @@ def sync_db( auth )
   STDERR.puts "Info:   upload #{upList.size} records."
   upList.each { |x|
     STDERR.puts "  key=#{x}"
-    STDERR.puts "  value=[#{localdb.getValue( x )}]"
+    ##STDERR.puts "  value=[#{localdb.getValue( x )}]"
   }
   localdb.close()
 
