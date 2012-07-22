@@ -57,7 +57,7 @@ module PasteHub
 #    index :delete_datetime, :range => true
 
     validates_presence_of :userkey
-    validates_presence_of :data
+#    validates_presence_of :data
   end
 
 
