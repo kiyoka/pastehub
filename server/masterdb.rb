@@ -76,7 +76,7 @@ masterdb_server.request_handler do |req|
       if insertFlag
         # update db
         key = util.currentTime( ) + "=" + digest
-        puts "[#{username}]:insertValue: key=[#{key}] : " + data
+        puts "[#{username}]:insertValue: key=[#{key}] : data=[#{data}]"
         entries.insertValue( key, data )
         users.touch( username )
         # notify to client
@@ -90,7 +90,7 @@ masterdb_server.request_handler do |req|
 
       # update db
       key = req.headers[ 'X-Pastehub-Key' ].dup
-      puts "[#{username}]:putValue: key=[#{key}] : " + data
+      puts "[#{username}]:putValue: key=[#{key}] : data=[#{data}]"
       entries.insertValue( key, data )
       users.touch( username )
 
