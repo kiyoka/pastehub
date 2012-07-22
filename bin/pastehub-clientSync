@@ -26,16 +26,8 @@ def sync_db( auth )
   #pp [ "localList", localList ]
 
   util = PasteHub::Util.new
-  tmpDownList = util.diffList( masterList, localList )
-  downList = tmpDownList.select { |x|
-    if masterList.reverse.take( tmpDownList.size ).include?( x )
-      nil
-    else
-      x
-    end
-  }
-  #pp [ "tmpDownList", tmpDownList ]
-  #pp [ "downList", downList ]
+  downList = util.diffList( masterList, localList )
+  #pp [ "downList(1)", downList ]
 
   upList   = util.diffList( localList,  masterList )
   #pp [ "upList", upList ]
@@ -46,6 +38,11 @@ def sync_db( auth )
     value = client.getValue( key )
     PasteHub::MacOSX.push( value.dup )
   end
+
+  upList.size.times { |i|
+    downList.pop
+  }
+  #pp [ "downList(2)", downList ]
 
   # donwload
   downList.each {|key|
@@ -136,7 +133,7 @@ end
 
 def main
   username  = ENV['PASTEHUB_USER']
-  if not username 
+  if not username
     STDERR.puts( "clientSync needs environment var `PASTEHUB_USER'" )
     exit 1
   end
