@@ -70,7 +70,7 @@ end
 
 def fetchServerList( client )
   list = client.getList()
-  pp ["list", list]
+  #pp ["list", list]
   client.setServerFlags( list )
 end
 
