@@ -11,6 +11,10 @@ module PasteHub
       @db.getList()
     end
 
+    def getServerList
+      @db.getServerList()
+    end
+
     def top
       lst = @db.getList( 1 )
       if 0 < lst.size

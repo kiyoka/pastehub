@@ -14,20 +14,21 @@ POLLING_INTERVAL    = 0.5
 def sync_db( auth )
   STDERR.puts "synchronizing..."
   client = PasteHub::Client.new( auth )
-  masterList = client.getList()
-  #pp [ "masterList", masterList ]
 
   # open local db
   localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
   localdb.open( auth.username )
 
+  masterList = localdb.getServerList()
+  #pp [ "masterList", masterList ]
+
   # calc difference between master and local.
-  localList = localdb.getList().take( LIST_ITEMS )
+  localList = localdb.getList()
   #pp [ "localList", localList ]
 
   util = PasteHub::Util.new
   downList = util.diffList( masterList, localList )
-  #pp [ "downList(1)", downList ]
+  #pp [ "downList", downList ]
 
   upList   = util.diffList( localList,  masterList )
   #pp [ "upList", upList ]
@@ -38,11 +39,6 @@ def sync_db( auth )
     value = client.getValue( key )
     PasteHub::MacOSX.push( value.dup )
   end
-
-  upList.size.times { |i|
-    downList.pop
-  }
-  #pp [ "downList(2)", downList ]
 
   # donwload
   downList.each {|key|
@@ -62,7 +58,6 @@ def sync_db( auth )
   STDERR.puts "Info:   upload #{upList.size} records."
   upList.each { |x|
     STDERR.puts "  key=#{x}"
-    ##STDERR.puts "  value=[#{localdb.getValue( x )}]"
   }
   localdb.close()
 
@@ -70,6 +65,13 @@ def sync_db( auth )
     STDERR.puts "Info:   send signal to Emacs."
     system( "killall -SIGUSR1 Emacs emacs" )
   end
+end
+
+
+def fetchServerList( client )
+  list = client.getList()
+  pp ["list", list]
+  client.setServerFlags( list )
 end
 
 
@@ -93,6 +95,7 @@ def syncMain( username, secretKey )
         sleep 60
       else
         client.setOnlineState( true )
+        fetchServerList( client )
         sync_db( auth )
       end
     rescue Errno::EAGAIN => e

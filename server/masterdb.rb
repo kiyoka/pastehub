@@ -99,8 +99,13 @@ masterdb_server.request_handler do |req|
       req.response.end()
 
     when "/getList"
-      str = entries.getList( ).reject{|x| x.match( /^_/ )}.take( PasteHub::Config.instance.listItems ).join( "\n" )
-      puts "[#{username}]:getList's response: "
+      limit = req.headers[ 'X-Pastehub-Limit' ]
+      if limit
+        str = entries.getList( ).take( limit.to_i ).join( "\n" )
+      else
+        str = entries.getList( ).join( "\n" )
+      end
+      puts "[#{username}]:getList (#{limit}) response: "
       puts str
       req.response.end( str )
 

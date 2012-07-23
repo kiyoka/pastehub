@@ -6,6 +6,9 @@ module PasteHub
   LOCAL_DATE_KEY  ='__LOCAL_DATE'
   SERVER_DATE_KEY ='__SERVER_DATE'
 
+  LOCAL_PREFIX  = "local::"
+  SERVER_PREFIX = "server::"
+
   class LocalDB
     def initialize( basepath = "/tmp/")
       @basepath = basepath
@@ -16,7 +19,8 @@ module PasteHub
         if reader
           @db = GDBM.new( @basepath + username + ".db", nil, GDBM::READER  | GDBM::NOLOCK )
         else
-          @db = GDBM.new( @basepath + username + ".db", nil, GDBM::WRCREAT | GDBM::SYNC )
+          @db = GDBM.new( @basepath + username + ".db", nil, GDBM::WRCREAT )
+#  | GDBM::SYNC )
         end
         if not @db.closed?
           break
@@ -40,11 +44,23 @@ module PasteHub
     end
 
     def _getList( )
-      forward_match_keys( "" ).sort {|a,b| -(a <=> b) }
+      forward_match_keys( LOCAL_PREFIX ).sort {|a,b| -(a <=> b) }.map {|x|
+        x[(LOCAL_PREFIX.size)...(x.size)]
+      }
+    end
+
+    def getServerList( )
+      self._getServerList().reject{|x| x.match( /^_/ )}
+    end
+
+    def _getServerList( )
+      forward_match_keys( SERVER_PREFIX ).sort {|a,b| -(a <=> b) }.map {|x|
+        x[(SERVER_PREFIX.size)...(x.size)]
+      }
     end
 
     def getValue( key, fallback = false )
-      val = @db[ key ]
+      val = @db[ LOCAL_PREFIX + key ]
       if val
         val.force_encoding("UTF-8")
       else
@@ -53,13 +69,25 @@ module PasteHub
     end
 
     def insertValue( key, value )
-      @db[ key.force_encoding("ASCII-8BIT") ] = value.force_encoding("ASCII-8BIT")
+      @db[ LOCAL_PREFIX + key.force_encoding("ASCII-8BIT") ] = value.force_encoding("ASCII-8BIT")
     end
 
     def deleteValue( key )
-      val = @db[ key ]
+      val = @db[ LOCAL_PREFIX + key ]
       if val
-        @db.delete( key )
+        @db.delete( LOCAL_PREFIX + key )
+        true
+      else
+        false
+      end
+    end
+
+    def setServerFlag( key )
+      @db[ SERVER_PREFIX + key ] = '1'
+    end
+
+    def onServer?( key )
+      if @db[ SERVER_PREFIX + key ]
         true
       else
         false

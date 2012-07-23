@@ -65,12 +65,12 @@ task :n do
   sh "vertx run    server/notifier.rb -instance 4"
 end
 
-task :syncA do
-  sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientSync"
+task :sync do
+  sh "ruby -I ./lib bin/pastehub-clientSync"
 end
 
-task :syncB do
-  sh "ruby -I ./lib bin/pastehub-clientSync"
+task :syncA do
+  sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientSync"
 end
 
 task :postA1 do
@@ -86,7 +86,7 @@ task :postB1 do
 end
 
 task :osxA do
-  sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientOSX"  
+  sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientOSX"
 end
 
 task :dumpA do

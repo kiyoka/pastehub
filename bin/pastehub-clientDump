@@ -16,6 +16,12 @@ def dumpDb( username, command, key )
       puts x
     }
 
+  when "slist"
+    serverList = store.getServerList()
+    serverList.each { |x|
+      puts x
+    }
+
   when "top"
     data = store.top()
     print data  if data
@@ -34,23 +40,26 @@ end
 
 def main
   username  = ENV['PASTEHUB_USER']
-  if not username 
+  if not username
     STDERR.puts "clientDump needs environment var `PASTEHUB_USER'"
     exit 1
   end
 
-  if 0 == ARGV.length 
+  if 0 == ARGV.length
     STDERR.puts "clientDump [command] [arg]"
-    STDERR.puts "  1) clientDump list"
-    STDERR.puts "  2) clientDump get  key"
-    STDERR.puts "  3) clientDump top"
-    STDERR.puts "  4) clientDump latest"
+    STDERR.puts "  1) clientDump  list"
+    STDERR.puts "  2) clientDump slist"
+    STDERR.puts "  3) clientDump get  key"
+    STDERR.puts "  4) clientDump top"
+    STDERR.puts "  5) clientDump latest"
     exit 1
   end
 
   command = ARGV[0].downcase
   case command
   when "list"
+    dumpDb( username, command, "" )
+  when "slist"
     dumpDb( username, command, "" )
   when "top"
     dumpDb( username, command, "" )

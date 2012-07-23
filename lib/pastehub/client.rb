@@ -17,11 +17,15 @@ module PasteHub
       @localdb_path         = ins.localDbPath
     end
 
-    def getList( )
+    def getList( limit = nil )
       uri = URI.parse("http://#{@server_api_host}/getList")
       masterList = []
       Net::HTTP.start(uri.host, uri.port) do |http|
-        resp = http.get(uri.request_uri, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ))
+        h = {"content-type" => "plain/text"}
+        if limit
+          h[ 'X-Pastehub-Limit' ] = limit.to_i
+        end
+        resp = http.get(uri.request_uri, @auth.getAuthHash().merge( h ))
         str = resp.read_body()
         masterList = str.split( /\n/ )
         STDERR.puts "Info: masterList lines = #{masterList.size}  #{str.size}Bytes"
@@ -177,7 +181,7 @@ module PasteHub
       else
         key = util.currentTime( ) + "=" + util.digest( data )
       end
-      
+
       localdb = PasteHub::LocalDB.new( @localdb_path )
       localdb.open( @auth.username )
       localdb.insertValue( key, data.dup )
@@ -186,5 +190,13 @@ module PasteHub
       key
     end
 
+    def setServerFlags( keys )
+      localdb = PasteHub::LocalDB.new( @localdb_path )
+      localdb.open( @auth.username )
+      keys.each { |key|
+        localdb.setServerFlag( key )
+      }
+      localdb.close()
+    end
   end
 end
