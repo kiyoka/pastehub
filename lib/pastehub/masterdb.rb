@@ -126,7 +126,7 @@ module PasteHub
     def getValue( key, fallback = false )
       p "username=#{@holdUsername}"
       p "key=#{key}"
-      entry = Entry.find_by_userkey( @holdUsername + "::" + key )
+      entry = Entry.find( @holdUsername + "::" + key )
       if entry
         entry.data.force_encoding("UTF-8")
       else
@@ -142,7 +142,7 @@ module PasteHub
     end
 
     def deleteValue( key )
-      entry = Entry.find_by_userkey( @holdUsername + "::" + key )
+      entry = Entry.find( @holdUsername + "::" + key )
       if entry
         entry.delete = 1
         entry.save
