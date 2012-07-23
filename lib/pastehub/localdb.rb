@@ -20,7 +20,6 @@ module PasteHub
           @db = GDBM.new( @basepath + username + ".db", nil, GDBM::READER  | GDBM::NOLOCK )
         else
           @db = GDBM.new( @basepath + username + ".db", nil, GDBM::WRCREAT )
-#  | GDBM::SYNC )
         end
         if not @db.closed?
           break
