@@ -51,7 +51,7 @@ module PasteHub
     field :delete_datetime, :datetime
     field :data
 
-#    index :username
+#    index :userkey
 
 #    index [:username, :userkey, :delete]
 #    index :delete_datetime, :range => true
@@ -126,11 +126,9 @@ module PasteHub
     def getValue( key, fallback = false )
       p "username=#{@holdUsername}"
       p "key=#{key}"
-      arr = Entry.where( :username => @holdUsername,
-                  :userkey =>  @holdUsername + "::" + key,
-                  :delete => 0 ).all
-      if 0 < arr.size
-        arr[0].data.force_encoding("UTF-8")
+      entry = Entry.find_by_userkey( @holdUsername + "::" + key )
+      if entry
+        entry.data.force_encoding("UTF-8")
       else
         fallback
       end
@@ -144,16 +142,14 @@ module PasteHub
     end
 
     def deleteValue( key )
-      entry = Entry.where( :username => @holdUsername,
-                    :userkey => @holdUsername + "::" + key,
-                    :delete => 0 ).first
-#      pp [ "entry1", entry ]
-#      pp [ "table_name", Entry.table_name ]
-#      pp [ "id", entry.id ]
-      entry.delete = 1
-      entry.save
-#      pp [ "entry2", entry ]
-      true
+      entry = Entry.find_by_userkey( @holdUsername + "::" + key )
+      if entry
+        entry.delete = 1
+        entry.save
+        true
+      else
+        false
+      end
     end
   end
 end

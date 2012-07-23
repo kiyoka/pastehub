@@ -53,8 +53,12 @@ task :test do
   sh "time ruby -I ./lib `which rspec` -b   ./test/libuserdb_spec.rb      -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
 end
 
-task :testaws do
-  sh "time ruby -I ./lib `which rspec` -b   ./test/aws_spec.rb            -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
+task :test_u do
+  sh "time ruby -I ./lib `which rspec` -b  -t users   ./test/aws_spec.rb            -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
+end
+
+task :test_e do
+  sh "time ruby -I ./lib `which rspec` -b  -t entries ./test/aws_spec.rb            -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
 end
 
 task :m do

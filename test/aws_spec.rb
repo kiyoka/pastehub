@@ -68,7 +68,7 @@ describe Users, "User Database API operations are " do
     @userC = [ "userC",  "YzlkYTliOTFiMmFhYzY0NjM5N2YzNGEyNmZkNzk5ZWEwNzQ5NDkxNg==" ]
   end
 
-  it "should" do
+  it "users", :users => true do
     @users.getList.size().should          == 0
 
     @users.addUser( @userA[0], @userA[1] ).should be_true
@@ -114,9 +114,13 @@ describe Entries, "masterDB API operations are " do
 
     @data = [[ "1338738983=06/04/12:00:56:22",  "first  data" ],
              [ "1338814085=06/04/12:21:48:04",  "second data" ]]
+
+    @entries.deleteValue( "1338814090=06/04/12:21:48:09=4dbccf6bf4ca71c6d1ec8f08350222c93cb23ebb" )
+    @entries.deleteValue( "1338738983=06/04/12:00:56:22=30aac3a6f968fc5983a0f62a287e79516d701ea5" )
+    @entries.deleteValue( "1338738983=06/04/12:00:56:22=30aac3a6f968fc5983a0f62a287e79516d701ea5" )
   end
 
-  it "should" do
+  it "entries", :entries => true do
     @entries.getList( ).should == []
 
     @data.each { |entry|
