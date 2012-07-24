@@ -15,6 +15,7 @@ module PasteHub
       @list_items           = ins.listItems
       @server_host          = ins.targetApiHost
       @localdb_path         = ins.localDbPath
+      @syncTrigger          = []
     end
 
     def getList( limit = nil )
@@ -86,6 +87,7 @@ module PasteHub
     end
 
     def wait_notify( auth )
+      puts "server_notifier_host = #{@server_notifier_host}"
       begin
         uri = URI.parse("http://#{@server_notifier_host}/")
         Net::HTTP.start(uri.host, uri.port) do |http|
@@ -105,6 +107,7 @@ module PasteHub
                 return :local
               end
             end
+            puts "response.code = #{response.code}"
             if "200" != response.code
               STDERR.puts "Error: request error result=[#{response.code}]"
               return :retry
@@ -120,12 +123,12 @@ module PasteHub
       rescue SocketError => e
         STDERR.puts "Error: can't connect to server(SocketError)."
         return :retry
-      rescue Timeout::Error => e
-        STDERR.puts "Error: can't connect to server(Timeout)."
-        return :timeout
       rescue Errno::ETIMEDOUT => e
-        STDERR.puts "Error: can't connect to server(Timeout)."
-        return :timeout
+        STDERR.puts "Error: can't connect to server(Timeout1)."
+        return :retry
+      rescue Timeout::Error => e
+        # ONLINE and notifier has no INFO.
+        return :tiemout
       end
     end
 
@@ -160,6 +163,9 @@ module PasteHub
     end
 
     def setOnlineState( online )
+      if (online?() == false) and online
+        @syncTrigger.unshift( true )
+      end
       # open local db
       localdb = PasteHub::LocalDB.new( @localdb_path )
       localdb.open( @auth.username )
@@ -175,6 +181,13 @@ module PasteHub
       ret = ("1" == localdb.getValue( PasteHub::ONLINE_STATE_KEY ))
       localdb.close()
       ret
+    end
+
+    def getTrigger()
+      if 0 < @syncTrigger.size
+        return @syncTrigger.pop
+      end
+      return false
     end
 
     def localSaveValue( argKey = nil, data )
