@@ -87,7 +87,6 @@ module PasteHub
     end
 
     def wait_notify( auth )
-      puts "server_notifier_host = #{@server_notifier_host}"
       begin
         uri = URI.parse("http://#{@server_notifier_host}/")
         Net::HTTP.start(uri.host, uri.port) do |http|
@@ -107,7 +106,6 @@ module PasteHub
                 return :local
               end
             end
-            puts "response.code = #{response.code}"
             if "200" != response.code
               STDERR.puts "Error: request error result=[#{response.code}]"
               return :retry
