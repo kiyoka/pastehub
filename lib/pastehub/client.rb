@@ -121,6 +121,10 @@ module PasteHub
         STDERR.puts "Error: can't connect to server(SocketError)."
         return :retry
       rescue Timeout::Error => e
+        STDERR.puts "Error: can't connect to server(Timeout)."
+        return :timeout
+      rescue Errno::ETIMEDOUT => e
+        STDERR.puts "Error: can't connect to server(Timeout)."
         return :timeout
       end
     end
