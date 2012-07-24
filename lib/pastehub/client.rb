@@ -161,10 +161,12 @@ module PasteHub
     end
 
     def setOnlineState( online )
-      if (online?() == false) and online
-        @syncTrigger.unshift( true )
-      end
       # open local db
+      if online
+        if online?() == false
+          @syncTrigger.unshift( true )
+        end
+      end
       localdb = PasteHub::LocalDB.new( @localdb_path )
       localdb.open( @auth.username )
       localdb.insertValue( PasteHub::ONLINE_STATE_KEY, online ? "1" : "0" )
