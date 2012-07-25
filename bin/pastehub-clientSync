@@ -113,6 +113,9 @@ def syncMain( username, secretKey )
     rescue Errno::ECONNREFUSED => e
       STDERR.puts "retrying... masterdb server is down"
       sleep 60
+    rescue Errno::ETIMEDOUT => e
+      STDERR.puts "retrying... connect timeout to server"
+      sleep 60
     end
   end
 end
