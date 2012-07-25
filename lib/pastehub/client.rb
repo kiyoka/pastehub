@@ -126,7 +126,7 @@ module PasteHub
         return :retry
       rescue Timeout::Error => e
         # ONLINE and notifier has no INFO.
-        return :tiemout
+        return :timeout
       end
     end
 
