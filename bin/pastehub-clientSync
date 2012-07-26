@@ -87,13 +87,13 @@ def syncMain( username, secretKey )
   auth   = PasteHub::AuthForClient.new( username, secretKey )
   client = PasteHub::Client.new( auth )
   client.setOnlineState( false )
+  client.setOnlineState( true )  # create Trigger token  ___-___
+  client.setOnlineState( false )
 
   while true
     begin
-      auth = PasteHub::AuthForClient.new( username, secretKey )
-      client = PasteHub::Client.new( auth )
       if client.getTrigger()
-        STDERR.puts "force sync."
+        STDERR.puts "Info: force sync."
         result = :sync
       else
         result = client.wait_notify( auth )
