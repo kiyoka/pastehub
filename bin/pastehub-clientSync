@@ -71,7 +71,8 @@ def sync_db( auth )
 end
 
 
-def fetchServerList( latestKey, client )
+def fetchServerList( latestKey, auth )
+  client = PasteHub::Client.new( auth )
   if latestKey.is_a? String
     STDERR.puts "Info: fetch one entry"
     list = [ latestKey ]
@@ -97,7 +98,6 @@ def syncMain( username, secretKey )
         result = :sync
       else
         auth   = PasteHub::AuthForClient.new( username, secretKey )
-        client = PasteHub::Client.new( auth )
         result = client.wait_notify( auth )
       end
 
@@ -111,7 +111,7 @@ def syncMain( username, secretKey )
         sleep 60
       else
         client.setOnlineState( true )
-        fetchServerList( result, client )
+        fetchServerList( result, auth )
         sync_db( auth )
       end
     rescue Errno::EAGAIN => e
