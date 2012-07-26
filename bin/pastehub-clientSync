@@ -96,6 +96,8 @@ def syncMain( username, secretKey )
         STDERR.puts "Info: force sync."
         result = :sync
       else
+        auth   = PasteHub::AuthForClient.new( username, secretKey )
+        client = PasteHub::Client.new( auth )
         result = client.wait_notify( auth )
       end
 
