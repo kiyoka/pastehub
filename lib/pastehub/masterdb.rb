@@ -111,7 +111,7 @@ module PasteHub
     end
 
     def getList( limit = nil )
-      arr = Entry.where( :username => @holdUsername, :delete => 0 ).map {|x|
+      arr = Entry.where( :username => @holdUsername, :delete => 0 ).consistent.map {|x|
         # remove username from `userkey'
         field = x.userkey.split( /::/ )
         field[1]
@@ -126,7 +126,7 @@ module PasteHub
     def getValue( key, fallback = false )
       p "username=#{@holdUsername}"
       p "key=#{key}"
-      entry = Entry.find( @holdUsername + "::" + key )
+      entry = Entry.find( @holdUsername + "::" + key, :consistent_read => true )
       if entry
         entry.data.force_encoding("UTF-8")
       else
@@ -142,6 +142,7 @@ module PasteHub
     end
 
     def deleteValue( key )
+      # caution: This method is non consistent read.
       entry = Entry.find( @holdUsername + "::" + key )
       if entry
         entry.delete = 1
