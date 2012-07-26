@@ -111,7 +111,7 @@ module PasteHub
     end
 
     def getList( limit = nil )
-      arr = Entry.where( :username => @holdUsername, :delete => 0 ).consistent.map {|x|
+      arr = Entry.where( :username => @holdUsername, :delete => 0 ).map {|x|
         # remove username from `userkey'
         field = x.userkey.split( /::/ )
         field[1]
