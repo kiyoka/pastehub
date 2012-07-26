@@ -71,9 +71,14 @@ def sync_db( auth )
 end
 
 
-def fetchServerList( client )
-  list = client.getList()
-  #pp ["list", list]
+def fetchServerList( latestKey, client )
+  if latestKey.is_a? String
+    STDERR.puts "Info: fetch one entry"
+    list = [ latestKey ]
+  else
+    STDERR.puts "Info: fetch ALL entries"
+    list = client.getList()
+  end
   client.setServerFlags( list )
 end
 
@@ -104,7 +109,7 @@ def syncMain( username, secretKey )
         sleep 60
       else
         client.setOnlineState( true )
-        fetchServerList( client )
+        fetchServerList( result, client )
         sync_db( auth )
       end
     rescue Errno::EAGAIN => e
