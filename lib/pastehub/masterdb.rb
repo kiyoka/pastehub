@@ -128,7 +128,9 @@ module PasteHub
       p "key=#{key}"
       entry = Entry.find( @holdUsername + "::" + key, :consistent_read => true )
       if entry
-        entry.data.force_encoding("UTF-8")
+        if entry.data
+          entry.data.force_encoding("UTF-8")
+        end
       else
         fallback
       end
