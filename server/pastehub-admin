@@ -25,17 +25,17 @@ if false
   users.addUser( "userA",  "ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==" )
   users.addUser( "userB",  "MjZmZDc5OWVhMDc0OTQ5MTZlOWRhOWI5MWIyYWFjNjQ2Mzk3ZjM0YQ==" )
 
-  entries = PasteHub::Entries.new( "userA" )  
+  entries = PasteHub::Entries.new( "userA" )
   entries.insertValue( "key001", "data001" )
   entries.insertValue( "key002", "data002" )
   entries.insertValue( "key003", "data003" )
   entries.insertValue( "key004", "data004" )
   entries.insertValue( "key005", "data005" )
 
-  entries = PasteHub::Entries.new( "userB" )  
+  entries = PasteHub::Entries.new( "userB" )
   (1..30).each {|i|
     printf( "i = %d\n", i )
-    entries.insertValue( 
+    entries.insertValue(
                         sprintf( "key%03d", i ),
                         sprintf( "value%03d", i ))
   }
@@ -44,6 +44,7 @@ end
 module PasteHub
   class Admin
     ALIVE_ENTRIES = 100
+    GC_INTERVAL   = 60*60
 
     def listUsers( )
       userList = Users.new( ).getList()
@@ -51,16 +52,23 @@ module PasteHub
         puts x
       }
     end
-    
+
     def getUserInfo( username )
-      entries = Entries.new( username )  
+      entries = Entries.new( username )
       list = entries.getList()
       printf( "username   : %s\n", username   )
       printf( "entries    : %d\n", list.size  )
       printf( "latestKey  : %s\n", list.first )
       printf( "oldestKey  : %s\n", list.last  )
     end
-    
+
+    def gcLoop( )
+      while true
+        self.gc()
+        STDERR.puts "Info: sleep #{GC_INTERVAL} until next gc time"
+        sleep GC_INTERVAL
+      end
+    end
 
     def gc( )
       userList = self.listUsers()
@@ -70,12 +78,12 @@ module PasteHub
     end
 
     def deleteOldValues( username )
-      entries = Entries.new( username )  
+      entries = Entries.new( username )
       len = entries.getList.size()
       printf( "username : %s\n", username )
       printf( "entries  : %d\n", len )
       if len < ALIVE_ENTRIES
-        printf( "no need to delete old entries, because not a big" )
+        printf( "no need to delete old entries, because not large" )
       else
         printf( "deleteing old entries" )
         list = entries.getList()
@@ -111,7 +119,7 @@ def main
     end
     admin.getUserInfo( ARGV[1] )
   when "gc"
-    admin.gc( )
+    admin.gcLoop( )
   else
     STDERR.puts "unknown command [#{command}]"
   end
