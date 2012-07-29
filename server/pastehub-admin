@@ -20,7 +20,7 @@ STDERR.printf( "Memcache Endpoint:       %s\n", ins.memcacheEp )
 require 'pastehub/masterdb'
 
 ## insert data for debug
-if true
+if false
   users = PasteHub::Users.new( )
   users.addUser( "userA",  "ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==" )
   users.addUser( "userB",  "MjZmZDc5OWVhMDc0OTQ5MTZlOWRhOWI5MWIyYWFjNjQ2Mzk3ZjM0YQ==" )
