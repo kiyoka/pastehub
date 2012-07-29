@@ -70,6 +70,9 @@ module PasteHub
         printf( "deleteing old entries" )
         list = entries.getList()
         deleteList = list[ALIVE_ENTRIES..(list.size)]
+        deleteList.each { |key|
+          entries.deleteValue( key )
+        end
       end
     end
   end
