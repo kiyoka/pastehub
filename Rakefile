@@ -70,6 +70,10 @@ task :n do
   sh "vertx run    server/notifier.rb -instance 4"
 end
 
+task :d do # deleter
+  sh "ruby -I ./lib server/pastehub-admin    gc   "
+end
+
 task :sync do
   sh "ruby -I ./lib bin/pastehub-clientSync"
 end

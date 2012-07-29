@@ -21,6 +21,11 @@ module PasteHub
                              else
                                false
                              end
+      @awsWarn             = if hash[ :awsWarn ]
+                               hash[ :awsWarn ]
+                             else
+                               false
+                             end
       @dynamoEp            = if hash[ :dynamoEp ]
                                hash[ :dynamoEp ]
                              else
@@ -64,6 +69,7 @@ module PasteHub
         open( name ) { |f|
           json = JSON.parse( f.read )
           self.setupServer( { :aws                => json[ 'aws' ],
+                              :awsWarn            => json[ 'awsWarn' ],
                               :dynamoEp           => json[ 'dynamoEp' ],
                               :dynamoAccessKey    => json[ 'dynamoAccessKey' ],
                               :dynamoSecretKey    => json[ 'dynamoSecretKey' ],
@@ -85,6 +91,7 @@ module PasteHub
       end
     end
 
-    attr_reader :aws, :dynamoEp, :dynamoAccessKey, :dynamoSecretKey, :memcacheEp, :domain, :targetApiHost, :targetNotifierHost, :localDbPath, :listItems
+    attr_reader   :aws, :dynamoEp, :dynamoAccessKey, :dynamoSecretKey, :memcacheEp, :domain, :targetApiHost, :targetNotifierHost, :localDbPath, :listItems
+    attr_accessor :awsWarn
   end
 end

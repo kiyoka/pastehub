@@ -8,7 +8,7 @@ module PasteHub
     config = PasteHub::Config.instance
     dynamoConfig.adapter         = config.aws ?     'aws_sdk' : 'local'
     dynamoConfig.namespace       = config.domain            # To namespace tables created by Dynamoid from other tables you might have.
-    dynamoConfig.warn_on_scan    = !config.aws              # Output a warning to the logger when you perform a scan rather than a query on a table.
+    dynamoConfig.warn_on_scan    = config.awsWarn           # Output a warning to the logger when you perform a scan rather than a query on a table.
     dynamoConfig.partitioning    = false                    # Spread writes randomly across the database. See "partitioning" below for more.
     dynamoConfig.partition_size  = 1                        # Determine the key space size that writes are randomly spread across.
     dynamoConfig.read_capacity   = 5                        # Read capacity for your tables
