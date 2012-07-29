@@ -1,0 +1,128 @@
+#!/usr/bin/env ruby
+require 'date'
+require 'memcache'
+require 'pp'
+
+$LOAD_PATH.push( File.dirname(__FILE__) + "/../lib" )
+require 'pastehub'
+PasteHub::Config.instance.loadServer
+
+# display config info
+ins = PasteHub::Config.instance
+ins.awsWarn = false  # force off, stdout is return value for deleter.sh
+STDERR.printf( "Use AWS:                 %s\n", ins.aws )
+STDERR.printf( "Use AWS Warn:            %s\n", ins.awsWarn )
+STDERR.printf( "Domain:                  %s\n", ins.domain )
+STDERR.printf( "Dynamo   Endpoint:       %s\n", ins.dynamoEp )
+STDERR.printf( "Memcache Endpoint:       %s\n", ins.memcacheEp )
+
+# initialize master database
+require 'pastehub/masterdb'
+
+## insert data for debug
+if false
+  users = PasteHub::Users.new( )
+  users.addUser( "userA",  "ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==" )
+  users.addUser( "userB",  "MjZmZDc5OWVhMDc0OTQ5MTZlOWRhOWI5MWIyYWFjNjQ2Mzk3ZjM0YQ==" )
+
+  entries = PasteHub::Entries.new( "userA" )
+  entries.insertValue( "key001", "data001" )
+  entries.insertValue( "key002", "data002" )
+  entries.insertValue( "key003", "data003" )
+  entries.insertValue( "key004", "data004" )
+  entries.insertValue( "key005", "data005" )
+
+  entries = PasteHub::Entries.new( "userB" )
+  (1..30).each {|i|
+    printf( "i = %d\n", i )
+    entries.insertValue(
+                        sprintf( "key%03d", i ),
+                        sprintf( "value%03d", i ))
+  }
+end
+
+module PasteHub
+  class Admin
+    ALIVE_ENTRIES = 100
+    GC_INTERVAL   = 60*60
+
+    def listUsers( )
+      userList = Users.new( ).getList()
+      userList.each { |x|
+        puts x
+      }
+    end
+
+    def getUserInfo( username )
+      entries = Entries.new( username )
+      list = entries.getList()
+      printf( "username   : %s\n", username   )
+      printf( "entries    : %d\n", list.size  )
+      printf( "latestKey  : %s\n", list.first )
+      printf( "oldestKey  : %s\n", list.last  )
+    end
+
+    def gcLoop( )
+      while true
+        self.gc()
+        STDERR.puts "Info: sleep #{GC_INTERVAL} until next gc time"
+        sleep GC_INTERVAL
+      end
+    end
+
+    def gc( )
+      userList = self.listUsers()
+      userList.each { |u|
+        self.deleteOldValues( u )
+      }
+    end
+
+    def deleteOldValues( username )
+      entries = Entries.new( username )
+      len = entries.getList.size()
+      printf( "username : %s\n", username )
+      printf( "entries  : %d\n", len )
+      if len < ALIVE_ENTRIES
+        printf( "no need to delete old entries, because not large" )
+      else
+        printf( "deleteing old entries" )
+        list = entries.getList()
+        deleteList = list[ALIVE_ENTRIES..(list.size)]
+        deleteList.each { |key|
+          entries.deleteValue( key )
+        }
+      end
+    end
+  end
+end
+
+
+def main
+  if 0 == ARGV.length
+    STDERR.puts "admin [command] [arg]"
+    STDERR.puts "  1) admin list             ... list registered users"
+    STDERR.puts "  2) admin get  [username]  ... get user information"
+    STDERR.puts "  3) admin gc               ... garbage collection of all user data"
+    exit 1
+  end
+
+  admin = PasteHub::Admin.new
+
+  command = ARGV[0].downcase
+  case command
+  when "list"
+    admin.listUsers()
+  when "get"
+    if 2 > ARGV.length
+      STDERR.puts "Error: please spacify username."
+      exit 1
+    end
+    admin.getUserInfo( ARGV[1] )
+  when "gc"
+    admin.gcLoop( )
+  else
+    STDERR.puts "unknown command [#{command}]"
+  end
+end
+
+main

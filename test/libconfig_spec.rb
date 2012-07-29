@@ -42,6 +42,7 @@ describe PasteHub::Config, "When use config object...  " do
 
   it "should" do
     @config.aws.should                 == false
+    @config.awsWarn.should             == false
     @config.dynamoEp.should            == 'dynamodb.ap-northeast-1.amazonaws.com'
     @config.dynamoAccessKey.should     == nil
     @config.dynamoSecretKey.should     == nil
@@ -87,6 +88,7 @@ describe PasteHub::Config, "When use config object...  " do
   before do
     @config = PasteHub::Config.instance
     @config.setupServer( { :aws                => true,
+                           :awsWarn            => true,
                            :dynamoEp           => nil,
                            :dynamoAccessKey    => 'a',
                            :dynamoSecretKey    => 'b',
@@ -100,6 +102,7 @@ describe PasteHub::Config, "When use config object...  " do
 
   it "should" do
     @config.aws.should                 == true
+    @config.awsWarn.should             == true
     @config.dynamoEp.should            == 'dynamodb.ap-northeast-1.amazonaws.com'
     @config.dynamoAccessKey.should     == 'a'
     @config.dynamoSecretKey.should     == 'b'
