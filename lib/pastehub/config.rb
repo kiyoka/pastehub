@@ -33,6 +33,11 @@ module PasteHub
                              else
                                "localhost:11211"
                              end
+      @keyCacheTime        = if hash[ :keyCacheTime ]
+                               hash[ :keyCacheTime ]
+                             else
+                               24 * 3600
+                             end
       @domain              = if hash[ :domain ]
                                hash[ :domain ]
                              else
@@ -68,6 +73,7 @@ module PasteHub
                               :dynamoAccessKey    => json[ 'dynamoAccessKey' ],
                               :dynamoSecretKey    => json[ 'dynamoSecretKey' ],
                               :memcacheEp         => json[ 'memcacheEp' ],
+                              :keyCacheTime       => json[ 'keyCacheTime' ],
                               :domain             => json[ 'domain' ] } )
         }
       end
@@ -85,6 +91,6 @@ module PasteHub
       end
     end
 
-    attr_reader :aws, :dynamoEp, :dynamoAccessKey, :dynamoSecretKey, :memcacheEp, :domain, :targetApiHost, :targetNotifierHost, :localDbPath, :listItems
+    attr_reader :aws, :dynamoEp, :dynamoAccessKey, :dynamoSecretKey, :memcacheEp, :keyCacheTime, :domain, :targetApiHost, :targetNotifierHost, :localDbPath, :listItems
   end
 end

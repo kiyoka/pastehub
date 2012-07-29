@@ -80,7 +80,7 @@ masterdb_server.request_handler do |req|
         entries.insertValue( key, data )
         users.touch( username )
         # notify to client
-        notifyHash[ username ] = key
+        notifyHash.set( username, key, PasteHub::Config.instance.keyCacheTime )
       end
 
       req.response.end( key )
@@ -95,8 +95,7 @@ masterdb_server.request_handler do |req|
       users.touch( username )
 
       # notify to all client
-      notifyHash[ username ] = key
-      req.response.end()
+      notifyHash.set( username, key, PasteHub::Config.instance.keyCacheTime )
 
     when "/getList"
       limit = req.headers[ 'X-Pastehub-Limit' ]

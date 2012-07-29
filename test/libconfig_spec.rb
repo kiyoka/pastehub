@@ -46,6 +46,7 @@ describe PasteHub::Config, "When use config object...  " do
     @config.dynamoAccessKey.should     == nil
     @config.dynamoSecretKey.should     == nil
     @config.memcacheEp.should          == "localhost:11211"
+    @config.keyCacheTime.should        == 24 * 3600
     @config.targetApiHost.should       == "pastehub.org:8000"
     @config.targetNotifierHost.should  == "pastehub.org:8001"
     @config.localDbPath.should         == File.expand_path( "~/.pastehub/" ) + "/"
@@ -60,7 +61,8 @@ describe PasteHub::Config, "When use config object...  " do
     @config.setupServer( { :dynamoEp           => 'dynamodb.xxxxxxx.amazonaws.com',
                            :dynamoAccessKey    => 'accessKey',
                            :dynamoSecretKey    => 'secretKey',
-                           :memcacheEp         => 'memcache.example.com:11211' } )
+                           :memcacheEp         => 'memcache.example.com:11211',
+                           :keyCacheTime       => 10 } )
     @config.setupClient( { :targetApiHost      => "localhost:8000",
                            :targetNotifierHost => "localhost:8001",
                            :localDbPath        => "/tmp/local/" } )
@@ -72,6 +74,7 @@ describe PasteHub::Config, "When use config object...  " do
     @config.dynamoAccessKey.should     == 'accessKey'
     @config.dynamoSecretKey.should     == 'secretKey'
     @config.memcacheEp.should          == "memcache.example.com:11211"
+    @config.keyCacheTime.should        == 10
     @config.domain                     == "localhost"
     @config.targetApiHost.should       == "localhost:8000"
     @config.targetNotifierHost.should  == "localhost:8001"
@@ -88,6 +91,7 @@ describe PasteHub::Config, "When use config object...  " do
                            :dynamoAccessKey    => 'a',
                            :dynamoSecretKey    => 'b',
                            :memcacheEp         => "memcache.example.com:11211",
+                           :keyCacheTime       => 1000,
                            :domain             => "domain.example.com" } )
     @config.setupClient( { :targetApiHost      => "host.example.com:8000",
                            :targetNotifierHost => "host.example.com:8001",
@@ -100,6 +104,7 @@ describe PasteHub::Config, "When use config object...  " do
     @config.dynamoAccessKey.should     == 'a'
     @config.dynamoSecretKey.should     == 'b'
     @config.memcacheEp.should          == "memcache.example.com:11211"
+    @config.keyCacheTime.should        == 1000
     @config.domain                     == "domain.example.com"
     @config.targetApiHost.should       == "host.example.com:8000"
     @config.targetNotifierHost.should  == "host.example.com:8001"
