@@ -148,6 +148,7 @@ module PasteHub
       entry = Entry.find( @holdUsername + "::" + key )
       if entry
         entry.delete = 1
+        entry.data = entry.data.force_encoding("UTF-8")
         entry.save
         true
       else
