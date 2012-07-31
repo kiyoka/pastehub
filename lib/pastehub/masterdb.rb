@@ -51,13 +51,14 @@ module PasteHub
     field :delete_datetime, :datetime
     field :data
 
-#    index :userkey
-
-#    index [:username, :userkey, :delete]
-#    index :delete_datetime, :range => true
+    index [:userkey, :delete]
 
     validates_presence_of :userkey
 #    validates_presence_of :data
+
+    def id
+      userkey
+    end
   end
 
 
