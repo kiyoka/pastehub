@@ -63,11 +63,11 @@ task :test_e do
 end
 
 task :m do
-  sh "vertx run    server/masterdb.rb -instance 2"
+  sh "vertx run    server/masterdb.rb -instance 8"
 end
 
 task :n do
-  sh "vertx run    server/notifier.rb -instance 4"
+  sh "vertx run    server/notifier.rb -instance 16"
 end
 
 task :d do # deleter
