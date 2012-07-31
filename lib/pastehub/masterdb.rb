@@ -51,7 +51,7 @@ module PasteHub
     field :delete_datetime, :datetime
     field :data
 
-    index [:userkey, :delete]
+    index [:username, :delete]
 
     validates_presence_of :userkey
 #    validates_presence_of :data
