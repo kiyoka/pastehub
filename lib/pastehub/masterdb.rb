@@ -47,11 +47,9 @@ module PasteHub
 #    field :to
 #    field :cc
 #    field :type
-    field :delete, :integer
-    field :delete_datetime, :datetime
     field :data
 
-    index [:username, :delete]
+    index [:username]
 
     validates_presence_of :userkey
 #    validates_presence_of :data
@@ -112,7 +110,7 @@ module PasteHub
     end
 
     def getList( limit = nil )
-      arr = Entry.where( :username => @holdUsername, :delete => 0 ).map {|x|
+      arr = Entry.where( :username => @holdUsername ).map {|x|
         # remove username from `userkey'
         field = x.userkey.split( /::/ )
         field[1]
@@ -140,7 +138,7 @@ module PasteHub
     def insertValue( key, value )
       entry = Entry.new( :username => @holdUsername,
                     :userkey => @holdUsername + "::" + key,
-                    :data => value.force_encoding("UTF-8"), :delete => 0 )
+                    :data => value.force_encoding("UTF-8") )
       entry.save
     end
 
@@ -148,9 +146,7 @@ module PasteHub
       # caution: This method is non consistent read.
       entry = Entry.find( @holdUsername + "::" + key )
       if entry
-        entry.delete = 1
-        entry.data = entry.data.force_encoding("UTF-8")
-        entry.save
+        entry.delete
         true
       else
         false
