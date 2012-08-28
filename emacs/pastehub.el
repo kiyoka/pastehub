@@ -107,7 +107,7 @@
 (defun pastehub-sync-kill-ring ()
   "sync kill-ring"
   (message "syncing kill-ring...")
-  (let* ((keys-string (pastehub-call-process pastehub-client-dump "list" ""))
+  (let* ((keys-string (pastehub-call-process pastehub-client-dump "list" (format "%d" pastehub-sync-items)))
 	 (keys
 	  (pastehub-take (split-string 
 			  keys-string

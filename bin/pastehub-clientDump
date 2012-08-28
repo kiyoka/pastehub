@@ -12,6 +12,9 @@ def dumpDb( username, command, key )
   case command
   when "list"
     localList = store.getList()
+    if key and key.match( /^[0-9]+$/ )
+      localList = localList.take( key.to_i )
+    end
     localList.each { |x|
       puts x
     }
@@ -58,7 +61,7 @@ def main
   command = ARGV[0].downcase
   case command
   when "list"
-    dumpDb( username, command, "" )
+    dumpDb( username, command, ARGV[1] )
   when "slist"
     dumpDb( username, command, "" )
   when "top"
