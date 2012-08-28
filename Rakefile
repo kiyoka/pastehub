@@ -2,12 +2,11 @@
 #                                          Rakefile for Realtime DB Sync
 # Release Engineering
 #   1. edit the VERSION.yml file
-#   2. rake test
-#   3. rake gemspec  &&   rake build
+#   2. rake test  &&  rake gemspec  &&   rake build
 #      to generate realtimedbsync-x.x.x.gem
-#   4. install realtimedbsync-x.x.x.gem to clean environment and test
-#   5. rake release
-#   6. gem push pkg/realtimedbsync-x.x.x.gem   ( need gem version 1.3.6 or higer. Please "gem update --system" to update )
+#   3. install realtimedbsync-x.x.x.gem to clean environment and test
+#   4. rake release
+#   5. gem push pkg/realtimedbsync-x.x.x.gem   ( need gem version 1.3.6 or higer. Please "gem update --system" to update )
 
 USERNAME_A='userA'
 USERNAME_B='userB'
