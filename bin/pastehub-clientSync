@@ -83,7 +83,6 @@ def gcLocalDb( auth )
   if 0 < deleteList.size
     STDERR.puts "Info:   delete #{deleteList.size} records."
     deleteList.each { |key|
-      puts "delete #{key}"
       localdb_w.deleteValue( key.dup )
     }
   end
