@@ -7,11 +7,12 @@ require 'pastehub'
 PasteHub::Config.instance.loadClient
 SERVER_API_HOST      = PasteHub::Config.instance.targetApiHost
 LIST_ITEMS           = PasteHub::Config.instance.listItems
+ALIVE_ENTRIES        = PasteHub::Config.instance.listItems
 LOCALDB_PATH         = PasteHub::Config.instance.localDbPath
 
-POLLING_INTERVAL    = 0.5
+POLLING_INTERVAL     = 0.5
 
-def sync_db( auth )
+def syncDb( auth )
   STDERR.puts "synchronizing..."
   client = PasteHub::Client.new( auth )
 
@@ -71,6 +72,25 @@ def sync_db( auth )
 end
 
 
+def gcLocalDb( auth )
+  STDERR.puts "GCing..."
+
+  # open local db
+  localdb_w = PasteHub::LocalDB.new( LOCALDB_PATH )
+  localdb_w.open( auth.username )
+  localList = localdb_w.getList()
+  deleteList = localList[ALIVE_ENTRIES..(localList.size)]
+  if 0 < deleteList.size
+    STDERR.puts "Info:   delete #{deleteList.size} records."
+    deleteList.each { |key|
+      puts "delete #{key}"
+      localdb_w.deleteValue( key.dup )
+    }
+  end
+  localdb_w.close
+end
+
+
 def fetchServerList( latestKey, auth )
   client = PasteHub::Client.new( auth )
   if latestKey.is_a? String
@@ -96,6 +116,7 @@ def syncMain( username, secretKey )
       if client.getTrigger()
         STDERR.puts "Info: force sync."
         result = :sync
+        gcLocalDb( auth )
       else
         auth   = PasteHub::AuthForClient.new( username, secretKey )
         result = client.wait_notify( auth )
@@ -112,7 +133,7 @@ def syncMain( username, secretKey )
       else
         client.setOnlineState( true )
         fetchServerList( result, auth )
-        sync_db( auth )
+        syncDb( auth )
       end
     rescue Errno::EAGAIN => e
       STDERR.puts "retrying... DB is locked"
