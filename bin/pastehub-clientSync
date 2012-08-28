@@ -80,7 +80,7 @@ def gcLocalDb( auth )
   localdb_w.open( auth.username )
   localList = localdb_w.getList()
   deleteList = localList[ALIVE_ENTRIES..(localList.size)]
-  if 0 < deleteList.size
+  if deleteList and 0 < deleteList.size
     STDERR.puts "Info:   delete #{deleteList.size} records."
     deleteList.each { |key|
       localdb_w.deleteValue( key.dup )
