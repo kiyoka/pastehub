@@ -15,6 +15,15 @@ PasteHub
   "memcacheHost":  "localhost:11211"
 }
 
+3. Create tables on DynamoDB
+  1) users
+    tablename:  pastehub--users
+    key:        username 
+
+  2) entries
+    tablename:  pastehub--entries
+    key:        userkey
+
 ## Client Sample
 
 1. enviroment variable
@@ -26,7 +35,11 @@ PasteHub
   export PASTEHUB_USER="*YOUR USERNAME*"
   export PASTEHUB_SECRET_KEY="*YOUR SECRET KEY*"
 
-2. config file
+2. mkdir for client 
+
+  mkdir ~/.pastehub
+
+3. config file
 
 ~/.pastehub.conf
 {

@@ -11,8 +11,8 @@ module PasteHub
     dynamoConfig.warn_on_scan    = config.awsWarn           # Output a warning to the logger when you perform a scan rather than a query on a table.
     dynamoConfig.partitioning    = false                    # Spread writes randomly across the database. See "partitioning" below for more.
     dynamoConfig.partition_size  = 1                        # Determine the key space size that writes are randomly spread across.
-    dynamoConfig.read_capacity   = 5                        # Read capacity for your tables
-    dynamoConfig.write_capacity  = 5                        # Write capacity for your tables
+    dynamoConfig.read_capacity   = 1                        # Read capacity for your tables
+    dynamoConfig.write_capacity  = 1                        # Write capacity for your tables
     dynamoConfig.access_key      = config.dynamoAccessKey   # If connecting to DynamoDB, your access key is required.
     dynamoConfig.secret_key      = config.dynamoSecretKey   # So is your secret key.
     dynamoConfig.endpoint        = config.dynamoEp          # Set the regional endpoint
