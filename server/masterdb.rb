@@ -62,25 +62,28 @@ masterdb_server.request_handler do |req|
 
       # duplicate check
       digest = util.digest( data )
-      arr = entries.getList( ).reject{|x| x.match( /^_/ )}
       insertFlag = true
-      key = ""
-      if 0 < arr.size
-        if util.key_digest( arr.first ) == digest
+      prevKey = notifyHash.get( username )
+      if prevKey
+        if util.key_digest( prevKey ) == digest
           puts "[#{username}]:insertValue: canceled because data is duplicate. "
           insertFlag = false
-          key = arr.first
+          key = prevKey
         end
       end
 
       if insertFlag
-        # update db
         key = util.currentTime( ) + "=" + digest
-        puts "[#{username}]:insertValue: key=[#{key}] "
-        entries.insertValue( key, data )
-        users.touch( username )
-        # notify to client
-        notifyHash.set( username, key, PasteHub::Config.instance.keyCacheTime )
+        Vertx.set_timer(1000) do
+          puts "    START: delayed job"
+          # update db
+          puts "[#{username}]:insertValue: key=[#{key}] "
+          entries.insertValue( key, data )
+          users.touch( username )
+          # notify to client
+          notifyHash.set( username, key, PasteHub::Config.instance.keyCacheTime )
+          puts "    END:   delayed job"
+        end
       end
       req.response.end( key )
 
