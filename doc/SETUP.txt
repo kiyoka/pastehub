@@ -17,11 +17,11 @@ PasteHub
 
 3. Create tables on DynamoDB
   1) users
-    tablename:  pastehub--users
+    tablename:  pastehub.org_users
     key:        username 
 
   2) entries
-    tablename:  pastehub--entries
+    tablename:  pastehub.org_entries
     key:        userkey
 
 ## Client Sample
