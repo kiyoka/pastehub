@@ -10,7 +10,7 @@ PasteHub::Config.instance.loadClient
 
 def main
   username  = ENV['PASTEHUB_USER']
-  if not username 
+  if not username
     STDERR.puts( "clientSync needs environment var `PASTEHUB_USER'" )
     exit 1
   end
@@ -19,7 +19,7 @@ def main
   if not secretKey
     STDERR.puts( "clientSync needs environment var `PASTEHUB_SECRET_KEY'" )
   end
-  
+
   data = STDIN.read
   auth = PasteHub::AuthForClient.new( username, secretKey )
   client = PasteHub::Client.new( auth )
