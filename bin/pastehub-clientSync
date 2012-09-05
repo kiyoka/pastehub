@@ -6,7 +6,7 @@ require 'thread'
 require 'pastehub'
 PasteHub::Config.instance.loadClient
 SERVER_API_HOST      = PasteHub::Config.instance.targetApiHost
-ALIVE_ENTRIES        = PasteHub::Config.instance.listItems
+ALIVE_ENTRIES        = PasteHub::Config.instance.listItems / 2
 LOCALDB_PATH         = PasteHub::Config.instance.localDbPath
 
 POLLING_INTERVAL     = 0.5
