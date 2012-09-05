@@ -98,5 +98,45 @@ describe Entries, "masterDB API operations are " do
     keys.should                          ==
       ["1338814090=06/04/12:21:48:09=4dbccf6bf4ca71c6d1ec8f08350222c93cb23ebb",
        "1338738983=06/04/12:00:56:22=30aac3a6f968fc5983a0f62a287e79516d701ea5"]
+
+
+    date = "1338814090=09/04/10:00:00:00"
+    key = date + "=" + @util.digest( '10' )
+    @entries.insertValue( key, '10' )
+
+    date = "1338814090=09/04/11:00:00:00"
+    key = date + "=" + @util.digest( '11' )
+    @entries.insertValue( key, '11' )
+
+    date = "1338814090=09/04/12:00:00:00"
+    key = date + "=" + @util.digest( '12' )
+    @entries.insertValue( key, '12' )
+
+    keys = @entries.getList( )
+    keys.size.should                     == 5
+    keys.should                          ==
+      ["1338814090=09/04/12:00:00:00=7b52009b64fd0a2a49e6d8a939753077792b0554",
+       "1338814090=09/04/11:00:00:00=17ba0791499db908433b80f37c5fbc89b870084b",
+       "1338814090=09/04/10:00:00:00=b1d5781111d84f7b3fe45a0852e59758cd7a87e5",
+       "1338814090=06/04/12:21:48:09=4dbccf6bf4ca71c6d1ec8f08350222c93cb23ebb",
+       "1338738983=06/04/12:00:56:22=30aac3a6f968fc5983a0f62a287e79516d701ea5"]
+
+    @entries.deleteLast( )
+    @entries.getList( )                  ==
+      ["1338814090=09/04/12:00:00:00=7b52009b64fd0a2a49e6d8a939753077792b0554",
+       "1338814090=09/04/11:00:00:00=17ba0791499db908433b80f37c5fbc89b870084b",
+       "1338814090=09/04/10:00:00:00=b1d5781111d84f7b3fe45a0852e59758cd7a87e5",
+       "1338814090=06/04/12:21:48:09=4dbccf6bf4ca71c6d1ec8f08350222c93cb23ebb"]
+
+    @entries.deleteLast( )
+    @entries.getList( )                  ==
+      ["1338814090=09/04/12:00:00:00=7b52009b64fd0a2a49e6d8a939753077792b0554",
+       "1338814090=09/04/11:00:00:00=17ba0791499db908433b80f37c5fbc89b870084b",
+       "1338814090=09/04/10:00:00:00=b1d5781111d84f7b3fe45a0852e59758cd7a87e5"]
+
+    @entries.deleteLast( )
+    @entries.deleteLast( )
+    @entries.deleteLast( )
+    @entries.getList( )                  == []
   end
 end

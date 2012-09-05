@@ -142,6 +142,13 @@ module PasteHub
       entry.save
     end
 
+    def deleteLast( )
+      arr = getList( )
+      if 0 < arr.size
+        deleteValue( arr[arr.size-1] )
+      end
+    end
+
     def deleteValue( key )
       # caution: This method is non consistent read.
       entry = Entry.find( @holdUsername + "::" + key )
