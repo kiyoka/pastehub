@@ -72,13 +72,45 @@ describe Util, "When key util is called...  " do
 end
 
 
+describe Util, "When use list utils " do
+
+  before do
+    @util = Util.new
+
+    @list1 = [ 1,2,3,4,5,6,7,8,9,10 ]
+  end
+
+  it "should" do
+    @util.takeList( @list1, -2 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
+    @util.takeList( @list1, -1 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
+    @util.takeList( @list1,  0 ).should     == [                      ]
+    @util.takeList( @list1,  1 ).should     == [ 1                    ]
+    @util.takeList( @list1,  2 ).should     == [ 1,2                  ]
+    @util.takeList( @list1,  3 ).should     == [ 1,2,3                ]
+    @util.takeList( @list1,  8 ).should     == [ 1,2,3,4,5,6,7,8      ]
+    @util.takeList( @list1,  9 ).should     == [ 1,2,3,4,5,6,7,8,9    ]
+    @util.takeList( @list1, 10 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
+    @util.takeList( @list1, 11 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
+
+    @util.dropList( @list1, -2 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
+    @util.dropList( @list1, -1 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
+    @util.dropList( @list1,  0 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
+    @util.dropList( @list1,  1 ).should     == [   2,3,4,5,6,7,8,9,10 ]
+    @util.dropList( @list1,  2 ).should     == [     3,4,5,6,7,8,9,10 ]
+    @util.dropList( @list1,  9 ).should     == [                   10 ]
+    @util.dropList( @list1, 10 ).should     == [                      ]
+    @util.dropList( @list1, 11 ).should     == [                      ]
+  end
+end
+
+
 describe Util, "When master's diffList is larger " do
 
   before do
     @util = Util.new
 
     @masterList = [ "a", "b", "c", "d" ]
-    @localList  = [      "b", "c"      ] 
+    @localList  = [      "b", "c"      ]
   end
 
   it "should" do
@@ -92,7 +124,7 @@ describe Util, "When local's diffList is larger " do
   before do
     @util = Util.new
 
-    @masterList = [      "2",      "4" ] 
+    @masterList = [      "2",      "4" ]
     @localList  = [ "1", "2", "3", "4" ]
   end
 
@@ -101,3 +133,19 @@ describe Util, "When local's diffList is larger " do
     @util.diffList( @localList,  @masterList ).should == [ "1", "3" ]
   end
 end
+
+describe Util, "When differs in first 5 entries " do
+
+  before do
+    @util = Util.new
+
+    @masterList = [      "2", "3",      "5", "6", "7", "8", "9", "10", "11", "12", "13", "7", "8", "9", "10", "11", "12", "13" ]
+    @localList  = [ "1",      "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13" ]
+  end
+
+  it "should" do
+    @util.diffList( @masterList, @localList  ).should == [ "2" ]
+    @util.diffList( @localList,  @masterList ).should == [ "1", "4" ]
+  end
+end
+

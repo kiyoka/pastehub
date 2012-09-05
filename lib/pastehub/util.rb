@@ -61,5 +61,27 @@ module PasteHub
       list2.each { |e| set2.add(e) }
       set1.difference( set2 ).to_a
     end
+
+    # Same as Gauche's take* function
+    def takeList( list1, num )
+      if ( num < 0 )
+        list1
+      elsif num <= list1.size
+        list1[ 0 ... num ]
+      else
+        list1
+      end
+    end
+
+    # Same as Gauche's drop* function
+    def dropList( list1, num )
+      if num < 0
+        list1
+      elsif num <= list1.size
+        list1[ num .. list1.size ]
+      else
+        []
+      end
+    end
   end
 end

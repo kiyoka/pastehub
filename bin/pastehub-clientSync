@@ -6,33 +6,38 @@ require 'thread'
 require 'pastehub'
 PasteHub::Config.instance.loadClient
 SERVER_API_HOST      = PasteHub::Config.instance.targetApiHost
-LIST_ITEMS           = PasteHub::Config.instance.listItems
 ALIVE_ENTRIES        = PasteHub::Config.instance.listItems
 LOCALDB_PATH         = PasteHub::Config.instance.localDbPath
 
 POLLING_INTERVAL     = 0.5
 
+
 def syncDb( auth )
   STDERR.puts "synchronizing..."
   client = PasteHub::Client.new( auth )
-
+  util   = PasteHub::Util.new
   # open local db
   localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
   localdb.open( auth.username, true )
 
   masterList = localdb.getServerList()
-  #pp [ "masterList", masterList ]
+  #pp [ "masterList.size", masterList.size ]
 
   # calc difference between master and local.
   localList = localdb.getList()
-  #pp [ "localList", localList ]
+  #pp [ "localList.size(1)", localList.size ]
 
-  util = PasteHub::Util.new
+  # pickup first ALIVE_ENTRIES from localList
+  #_half0 = util.takeList( localList,  ALIVE_ENTRIES )
+  _half1 = util.dropList( masterList,  ALIVE_ENTRIES )
+  localList = localList + _half1
+  #pp [ "localList.size(2)", localList.size ]
+
   downList = util.diffList( masterList, localList )
-  #pp [ "downList", downList ]
+  #pp [ "downList.size", downList.size ]
 
   upList   = util.diffList( localList,  masterList )
-  #pp [ "upList", upList ]
+  #pp [ "upList.size", upList.size ]
 
   # push first element to MacOS X clipboard.
   if 0 < downList.size
@@ -43,12 +48,16 @@ def syncDb( auth )
 
   # donwload
   downList.each {|key|
+    printf( "o" )
     value = client.getValue( key )
     localdb_w = PasteHub::LocalDB.new( LOCALDB_PATH )
     localdb_w.open( auth.username )
     localdb_w.insertValue( key.dup, value.dup )
     localdb_w.close
+    printf( "x" )
+    sleep( 0.2 )
   }
+  puts ""
   # upload
   upList.each {|key|
     value = localdb.getValue( key )
@@ -57,11 +66,11 @@ def syncDb( auth )
 
   STDERR.puts "Info: download #{downList.size} records."
   downList.each { |x|
-    STDERR.puts "  key=#{x}"
+    #STDERR.puts "  key=#{x}"
   }
   STDERR.puts "Info:   upload #{upList.size} records."
   upList.each { |x|
-    STDERR.puts "  key=#{x}"
+    #STDERR.puts "  key=#{x}"
   }
   localdb.close()
 
