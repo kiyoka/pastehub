@@ -43,7 +43,7 @@ end
 
 module PasteHub
   class Admin
-    ALIVE_ENTRIES = 100
+    ALIVE_ENTRIES = PasteHub::Config.instance.listItems
     GC_INTERVAL   = 60*60
 
     def listUsers( )

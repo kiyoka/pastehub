@@ -82,6 +82,12 @@ masterdb_server.request_handler do |req|
           users.touch( username )
           # notify to client
           notifyHash.set( username, key, PasteHub::Config.instance.keyCacheTime )
+
+          # remove Last entry
+          arr = entries.getList( )
+          if PasteHub::Config.instance.listItems < arr.size
+            entries.deleteValue( arr[arr.size-1] )
+          end
           puts "    END:   delayed job"
         end
       end
