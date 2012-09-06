@@ -20,11 +20,6 @@
   :type 'integer
   :group 'pastehub)
 
-(defcustom pastehub-use-signal nil
-  "receive notify event by signal."
-  :type 'boolean
-  :group 'pastehub)
-
 
 (defvar pastehub-latest-date ""         "latest synced date.")
 (defvar pastehub-timer-object nil       "interval timer object.")
@@ -141,14 +136,9 @@
   ;;(message "Caught signal %S" last-input-event)
   (pastehub-timer-handler))
 
-(cond
- (pastehub-use-signal
-  (define-key special-event-map [sigusr1] 'pastehub-sigusr-handler)
-  (setq pastehub-timer-object 
-	(run-at-time t  60.0  'pastehub-timer-handler)))
- (t
-  (setq pastehub-timer-object 
-	(run-at-time t   1.0  'pastehub-timer-handler))))
+(define-key special-event-map [sigusr1] 'pastehub-sigusr-handler)
+(setq pastehub-timer-object 
+      (run-at-time t  60.0  'pastehub-timer-handler)))
 
 ;; enable pastehub-mode
 (setq pastehub-mode t)
