@@ -23,20 +23,7 @@ module PasteHub
       osxPaste = open( "|/usr/bin/pbpaste" ) { |f| 
         f.read
       }
-
-      # read top data of localDB
-      begin
-        store = PasteHub::LocalStore.new( username, true )
-        top = store.top( )
-        store.close()
-      rescue RuntimeError
-        # alreay opened the localStore
-        top = ""
-      end
-
-      if 0 == osxPaste.size or 0 == top.size
-        nil
-      elsif osxPaste != top
+      if 0 < osxPaste.size
         osxPaste
       else
         nil

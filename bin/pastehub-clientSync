@@ -48,16 +48,13 @@ def syncDb( auth )
 
   # donwload
   downList.each {|key|
-    printf( "o" )
     value = client.getValue( key )
     localdb_w = PasteHub::LocalDB.new( LOCALDB_PATH )
     localdb_w.open( auth.username )
     localdb_w.insertValue( key.dup, value.dup )
     localdb_w.close
-    printf( "x" )
     sleep( 0.2 )
   }
-  puts ""
   # upload
   upList.each {|key|
     value = localdb.getValue( key )
@@ -165,24 +162,28 @@ end
 
 
 def macosxCheck( username, secretKey )
+  prevData = ""
   while true
     sleep POLLING_INTERVAL
     data = PasteHub::MacOSX.hasNew?( username )
     if data
-      auth = PasteHub::AuthForClient.new( username, secretKey )
-      client = PasteHub::Client.new( auth )
-      if client.online?(  )
-        STDERR.puts( "Info: posted data from MacOS X." )
-        begin
-          client.postData( data )
-        rescue Errno::ECONNREFUSED => e
-          # if postData was fail, save to local.
-          setOnlineState( false )
+      if data != prevData
+        auth = PasteHub::AuthForClient.new( username, secretKey )
+        client = PasteHub::Client.new( auth )
+        if client.online?(  )
+          STDERR.puts( "Info: posted data from MacOS X." )
+          begin
+            client.postData( data )
+          rescue Errno::ECONNREFUSED => e
+            # if postData was fail, save to local.
+            setOnlineState( false )
+            client.localSaveValue( data )
+            sleep 60
+          end
+        else
           client.localSaveValue( data )
-          sleep 60
         end
-      else
-        client.localSaveValue( data )
+        prevData = data
       end
     end
   end
