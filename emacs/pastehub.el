@@ -138,7 +138,7 @@
 
 (define-key special-event-map [sigusr1] 'pastehub-sigusr-handler)
 (setq pastehub-timer-object 
-      (run-at-time t  60.0  'pastehub-timer-handler)))
+      (run-at-time t  60.0  'pastehub-timer-handler))
 
 ;; enable pastehub-mode
 (setq pastehub-mode t)
