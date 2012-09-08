@@ -189,23 +189,31 @@ def macosxCheck( username, secretKey )
   end
 end
 
+def setup
+  # Create directory
+  if not File.exist?( LOCALDB_PATH )
+    if 0 == Dir.mkdir( LOCALDB_PATH, 0700 )
+      STDERR.puts( "Info:  created directory #{LOCALDB_PATH}" )
+    else
+      STDERR.puts( "Error: can't create directory #{LOCALDB_PATH}" )
+      exit( 1 )
+    end
+  end
+
+  return PasteHub.signIn( )
+end
 
 def main
-  username  = ENV['PASTEHUB_USER']
-  if not username
-    STDERR.puts( "clientSync needs environment var `PASTEHUB_USER'" )
-    exit 1
-  end
+  ret = setup()
+  username  = ret[0]
+  secretKey = ret[1]
 
-  secretKey = ENV['PASTEHUB_SECRET_KEY']
-  if not secretKey
-    STDERR.puts( "clientSync needs environment var `PASTEHUB_SECRET_KEY'" )
+  if username
+    threads = []
+    threads.push(Thread.new {    syncMain( username, secretKey ) })
+    threads.push(Thread.new { macosxCheck( username, secretKey ) })
+    threads.each {|t| t.join}
   end
-
-  threads = []
-  threads.push(Thread.new {    syncMain( username, secretKey ) })
-  threads.push(Thread.new { macosxCheck( username, secretKey ) })
-  threads.each {|t| t.join}
 end
 
 main

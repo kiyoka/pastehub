@@ -54,12 +54,12 @@ module PasteHub
       @targetApiHost       = if hash[ :targetApiHost ]
                                hash[ :targetApiHost ]
                              else
-                               "pastehub.org:8000"
+                               "pastehub.net:8000"
                              end
       @targetNotifierHost  = if hash[ :targetNotifierHost ]
                                hash[ :targetNotifierHost ]
                              else
-                               "pastehub.org:8001"
+                               "pastehub.net:8001"
                              end
       @localDbPath         = if hash[ :localDbPath ]
                                hash[ :localDbPath ]

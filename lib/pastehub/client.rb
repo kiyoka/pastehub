@@ -5,6 +5,58 @@ require 'fileutils'
 
 module PasteHub
 
+  def self.signIn
+    signfile = LOCALDB_PATH + "authinfo.txt"
+
+    # setup authenticate information
+    if not File.exist?( signfile )
+      STDERR.puts( "If you don't have PasteHub account, please sing-up at http://pastehub.net/" )
+      3.times { |n|
+        STDERR.print( "  email:" )
+        username  = STDIN.readline.chomp
+        STDERR.print( "  secret-key:" )
+        secretKey = STDIN.readline.chomp
+
+        auth = AuthForClient.new( username, secretKey )
+        client = Client.new( auth )
+        if client.authTest()
+          # save authinfo with gpg
+          begin
+            open( signfile, "w" ) {|f|
+              h = {
+                :email => username,
+                :secretKey => secretKey }
+              f.puts( JSON( h ))
+            }
+            # auth OK
+            return [ username, secretKey ]
+          rescue
+            STDERR.puts( "Error: can't save #{signfile}" )
+          end
+        else
+          STDERR.puts( "your email or secret key is not registerd..." )
+        end
+      }
+    else
+      begin
+        open( signfile ) {|f|
+          json = JSON.parse( f.read )
+          username  = json[ 'email' ]
+          secretKey = json[ 'secretKey' ]
+
+          auth = AuthForClient.new( username, secretKey )
+          client = Client.new( auth )
+          if client.authTest()
+            return [ username, secretKey ]
+          end
+        }
+      rescue
+        STDERR.puts( "Error: can't load #{signfile}" )
+      end
+    end
+    return [ nil, nil ]
+  end
+
   class Client
     def initialize( auth )
       @auth = auth
@@ -16,6 +68,21 @@ module PasteHub
       @server_host          = ins.targetApiHost
       @localdb_path         = ins.localDbPath
       @syncTrigger          = []
+    end
+
+    def authTest
+      uri = URI.parse("http://#{@server_api_host}/authTest")
+      begin
+        Net::HTTP.start(uri.host, uri.port) do |http|
+          resp = http.get(uri.request_uri, @auth.getAuthHash())
+          if "200" == resp.code
+            return true
+          end
+        end
+      rescue
+        STDERR.puts "Error: can't connect to server for auth test"
+      end
+      return nil
     end
 
     def getList( limit = nil )
