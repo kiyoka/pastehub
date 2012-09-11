@@ -10,7 +10,6 @@ module PasteHub
 
     # setup authenticate information
     if not File.exist?( signfile )
-      STDERR.puts( "If you don't have PasteHub account, please sing-up at http://pastehub.net/" )
       3.times { |n|
         STDERR.print( "  email:" )
         username  = STDIN.readline.chomp
@@ -22,14 +21,23 @@ module PasteHub
         if client.authTest()
           # save authinfo with gpg
           begin
-            open( signfile, "w" ) {|f|
-              h = {
-                :email => username,
-                :secretKey => secretKey }
-              f.puts( JSON( h ))
-            }
-            # auth OK
-            return [ username, secretKey ]
+            util = Util.new
+            password = util.inputSeveralTimes(
+                            "Please input password for encrypt files",
+                            "  password            :",
+                            "  password(for verify):" )
+            if password
+              crypt = PasteHub::Crypt.new( password )
+              open( signfile, "w" ) {|f|
+                h = {
+                  :email => username,
+                  :secretKey => secretKey }
+                f.puts( crypt.en( JSON( h )))
+              }
+              # auth OK
+              return [ username, secretKey ]
+            end
+            STDERR.puts( "Error: password setting failed..." )
           rescue
             STDERR.puts( "Error: can't save #{signfile}" )
           end
@@ -40,15 +48,29 @@ module PasteHub
     else
       begin
         open( signfile ) {|f|
-          json = JSON.parse( f.read )
-          username  = json[ 'email' ]
-          secretKey = json[ 'secretKey' ]
+          util = Util.new
+          password = util.inputSeveralTimes(
+                          "Please input password for encrypt files",
+                          "  password            :",
+                          "  password(for verify):" )
+          if password
+            crypt = PasteHub::Crypt.new( password )
+            jsonStr = crypt.de( f.read )
+            if jsonStr
+              json = JSON.parse( jsonStr )
+              username  = json[ 'email' ]
+              secretKey = json[ 'secretKey' ]
 
-          auth = AuthForClient.new( username, secretKey )
-          client = Client.new( auth )
-          if client.authTest()
-            return [ username, secretKey ]
+              auth = AuthForClient.new( username, secretKey )
+              client = Client.new( auth )
+              if client.authTest()
+                return [ username, secretKey ]
+              else
+                STDERR.puts( "Error: password is wrong." )
+              end
+            end
           end
+          STDERR.puts( "Error: missing password." )
         }
       rescue
         STDERR.puts( "Error: can't load #{signfile}" )
