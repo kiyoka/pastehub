@@ -34,6 +34,7 @@
 #
 require 'pastehub/config'
 require 'pastehub/util'
+require 'pastehub/crypt'
 require 'pastehub/auth'
 require 'pastehub/localdb'
 require 'pastehub/store'
