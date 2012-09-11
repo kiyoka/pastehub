@@ -48,8 +48,8 @@ describe PasteHub::Config, "When use config object...  " do
     @config.dynamoSecretKey.should     == nil
     @config.memcacheEp.should          == "localhost:11211"
     @config.keyCacheTime.should        == 24 * 3600
-    @config.targetApiHost.should       == "pastehub.org:8000"
-    @config.targetNotifierHost.should  == "pastehub.org:8001"
+    @config.targetApiHost.should       == "pastehub.net:8000"
+    @config.targetNotifierHost.should  == "pastehub.net:8001"
     @config.localDbPath.should         == File.expand_path( "~/.pastehub/" ) + "/"
   end
 end
