@@ -18,9 +18,9 @@ module PasteHub
     def top
       lst = @db.getList( 1 )
       if 0 < lst.size
-        @db.getValue( lst.first )
+        [ lst.first, @db.getValue( lst.first ) ]
       else
-        ""
+        [ nil, nil ]
       end
     end
 

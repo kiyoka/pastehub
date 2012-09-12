@@ -95,6 +95,27 @@ module PasteHub
     return [ nil, nil ]
   end
 
+  def self.savePid( pid )
+    pidFile = PasteHub::Config.instance.localDbPath + "pid"
+    open( pidFile, "w" ) {|f|
+      f.puts pid
+    }
+  end
+
+  def self.loadPid
+    pidFile = PasteHub::Config.instance.localDbPath + "pid"
+    pid = 0
+    begin
+      pid = open( pidFile ) {|f|
+        f.readline.chomp.to_i
+      }
+    rescue
+      pid = 0
+    end
+    return pid
+  end
+
+
   class Client
     def initialize( auth )
       @auth = auth

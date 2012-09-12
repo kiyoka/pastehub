@@ -70,13 +70,13 @@ describe LocalStore, "when LocalStore API use ... " do
   it "should" do
     @store1.insertValue( "key1", "value1" ).should_not   == nil
     @store1.getList().should                             == [ "key1" ]
-    @store1.top().should                                 == "value1"
-    @store1.insertValue( "key2", "value2" ).should_not   == nil
+    @store1.top().should                                 == [ "key1", "value1" ]
+    @store1.insertValue( "key2", "value2" ).should_not   == [ nil, nil ]
     @store1.getList().should                             == [ "key2", "key1" ]
-    @store1.top().should                                 == "value2"
-    @store1.insertValue( "key3", "value3" ).should_not   == nil
+    @store1.top().should                                 == [ "key2", "value2" ]
+    @store1.insertValue( "key3", "value3" ).should_not   == [ nil, nil ]
     @store1.getList().should                             == [ "key3", "key2", "key1" ]
-    @store1.top().should                                 == "value3"
+    @store1.top().should                                 == [ "key3", "value3" ]
 
     @store1.latest().should                                 == [ "false", "false" ]
 

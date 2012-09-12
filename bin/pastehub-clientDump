@@ -26,8 +26,8 @@ def dumpDb( username, command, key )
     }
 
   when "top"
-    data = store.top()
-    print data  if data
+    pair = store.top()
+    print pair[1]  if pair[1]
 
   when "latest"
     arr = store.latest()
@@ -44,7 +44,7 @@ end
 def main
   username  = PasteHub.loadUsername
   if not username
-    STDERR.puts "clientDump setup problem. Please setup pastehub application."
+    STDERR.puts "clientDump: setup problem. Please setup pastehub application."
     exit 1
   end
 

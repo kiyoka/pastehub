@@ -9,25 +9,23 @@ require 'pastehub'
 PasteHub::Config.instance.loadClient
 
 def main
-  username  = ENV['PASTEHUB_USER']
+  username  = PasteHub.loadUsername
   if not username
-    STDERR.puts( "clientSync needs environment var `PASTEHUB_USER'" )
+    STDERR.puts "clientPost: setup problem. Please setup pastehub application."
     exit 1
   end
 
-  secretKey = ENV['PASTEHUB_SECRET_KEY']
-  if not secretKey
-    STDERR.puts( "clientSync needs environment var `PASTEHUB_SECRET_KEY'" )
-  end
-
+  # save to LocalDB
   data = STDIN.read
-  auth = PasteHub::AuthForClient.new( username, secretKey )
+  auth = PasteHub::AuthForClient.new( username, "" )
   client = PasteHub::Client.new( auth )
-  if client.online?(  )
-    key = client.postData( data )
-    puts client.localSaveValue( key, data ) # sync single entry now.
-  else
-    puts client.localSaveValue( nil, data )
+  puts client.localSaveValue( nil, data )
+
+  # singal to pastehubSync
+  pid = PasteHub.loadPid
+  pp ["pid", pid ]
+  if 0 < pid
+    Process.kill( :SIGUSR1, pid )
   end
 end
 

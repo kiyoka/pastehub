@@ -189,6 +189,15 @@ def macosxCheck( username, secretKey )
   end
 end
 
+def signalHandler( username, secretKey )
+  store = PasteHub::LocalStore.new( username, true )
+  pair = store.top()
+  auth = PasteHub::AuthForClient.new( username, secretKey )
+  client = PasteHub::Client.new( auth )
+  puts [ "put", pair ]
+  client.putValue( pair[0], pair[1] )
+end
+
 def setup
   # Create directory
   if not File.exist?( LOCALDB_PATH )
@@ -208,6 +217,13 @@ def main
   username  = ret[0]
   secretKey = ret[1]
 
+  # save pid file
+  PasteHub.savePid( Process.pid )
+
+  Signal.trap( :SIGUSR1 ) {
+    puts "signalHandler start"
+    signalHandler( username, secretKey )
+  }
   if username
     threads = []
     threads.push(Thread.new {    syncMain( username, secretKey ) })
