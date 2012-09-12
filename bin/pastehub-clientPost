@@ -23,7 +23,6 @@ def main
 
   # singal to pastehubSync
   pid = PasteHub.loadPid
-  pp ["pid", pid ]
   if 0 < pid
     Process.kill( :SIGUSR1, pid )
   end

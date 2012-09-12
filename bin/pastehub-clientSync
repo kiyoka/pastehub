@@ -194,7 +194,6 @@ def signalHandler( username, secretKey )
   pair = store.top()
   auth = PasteHub::AuthForClient.new( username, secretKey )
   client = PasteHub::Client.new( auth )
-  puts [ "put", pair ]
   client.putValue( pair[0], pair[1] )
 end
 
@@ -221,7 +220,6 @@ def main
   PasteHub.savePid( Process.pid )
 
   Signal.trap( :SIGUSR1 ) {
-    puts "signalHandler start"
     signalHandler( username, secretKey )
   }
   if username
