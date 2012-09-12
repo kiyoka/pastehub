@@ -42,9 +42,9 @@ def dumpDb( username, command, key )
 end
 
 def main
-  username  = ENV['PASTEHUB_USER']
+  username  = PasteHub.loadUsername
   if not username
-    STDERR.puts "clientDump needs environment var `PASTEHUB_USER'"
+    STDERR.puts "clientDump setup problem. Please setup pastehub application."
     exit 1
   end
 

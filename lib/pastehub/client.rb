@@ -5,10 +5,32 @@ require 'fileutils'
 
 module PasteHub
 
-  def self.signIn
-    signfile = LOCALDB_PATH + "authinfo.txt"
+  def self.loadUsername
+    signfile = PasteHub::Config.instance.localDbPath + "authinfo.txt"
 
-    # setup authenticate information
+    # load authenticate information
+    if not File.exist?( signfile )
+      return nil
+    else
+      begin
+        open( signfile ) {|f|
+          # first line is email (is username)
+          username = f.readline.chomp
+          if username.match( /^[a-z]+/ )
+            return username
+          end
+        }
+      rescue
+        return nil
+      end
+      return nil
+    end
+  end
+
+  def self.signIn
+    signfile = PasteHub::Config.instance.localDbPath + "authinfo.txt"
+
+    # authenticate information
     if not File.exist?( signfile )
       3.times { |n|
         STDERR.print( "  email:" )
