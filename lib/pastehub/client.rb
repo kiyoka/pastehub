@@ -23,16 +23,14 @@ module PasteHub
           begin
             util = Util.new
             password = util.inputSeveralTimes(
-                            "Please input password for encrypt files",
+                            "Please input password for crypted file",
                             "  password            :",
                             "  password(for verify):" )
             if password
               crypt = PasteHub::Crypt.new( password )
               open( signfile, "w" ) {|f|
-                h = {
-                  :email => username,
-                  :secretKey => secretKey }
-                f.puts( crypt.en( JSON( h )))
+                f.puts(           username  )
+                f.puts( crypt.en( secretKey ))
               }
               # auth OK
               return [ username, secretKey ]
@@ -48,29 +46,25 @@ module PasteHub
     else
       begin
         open( signfile ) {|f|
-          util = Util.new
-          password = util.inputSeveralTimes(
-                          "Please input password for encrypt files",
-                          "  password            :",
-                          "  password(for verify):" )
-          if password
+          STDERR.puts( "Please input password for crypted file" )
+          username = f.readline.chomp
+          signStr = f.read
+          3.times { |n|
+            STDERR.print( "  crypt password:" )
+            password = STDIN.readline.chomp
             crypt = PasteHub::Crypt.new( password )
-            jsonStr = crypt.de( f.read )
-            if jsonStr
-              json = JSON.parse( jsonStr )
-              username  = json[ 'email' ]
-              secretKey = json[ 'secretKey' ]
-
+            secretKey= crypt.de( signStr )
+            if secretKey
               auth = AuthForClient.new( username, secretKey )
               client = Client.new( auth )
               if client.authTest()
                 return [ username, secretKey ]
               else
-                STDERR.puts( "Error: password is wrong." )
+                STDERR.puts( "Error: your secretKey may be old." )
               end
             end
-          end
-          STDERR.puts( "Error: missing password." )
+            STDERR.puts( "Error: missing password." )
+          }
         }
       rescue
         STDERR.puts( "Error: can't load #{signfile}" )

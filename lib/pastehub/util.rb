@@ -90,10 +90,8 @@ module PasteHub
       3.times { |n|
         STDERR.print( firstLabel  )
         firstStr  = STDIN.readline.chomp
-        STDERR.puts ""
         STDERR.print( secondLabel )
         secondStr = STDIN.readline.chomp
-        STDERR.puts ""
         if firstStr == secondStr
           return firstStr
         end
