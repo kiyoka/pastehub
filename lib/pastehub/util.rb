@@ -1,6 +1,7 @@
 require 'digest'
 require 'date'
 require 'set'
+require 'highline'
 
 module PasteHub
   class Util
@@ -85,13 +86,11 @@ module PasteHub
     end
 
     # input utility
-    def inputSeveralTimes( message, firstLabel, secondLabel )
+    def inputPasswordTwice( message, firstLabel, secondLabel )
       STDERR.puts( message )
       3.times { |n|
-        STDERR.print( firstLabel  )
-        firstStr  = STDIN.readline.chomp
-        STDERR.print( secondLabel )
-        secondStr = STDIN.readline.chomp
+        firstStr  = HighLine.new.ask(firstLabel)  {|q| q.echo = '*' }
+        secondStr = HighLine.new.ask(secondLabel) {|q| q.echo = '*' }
         if firstStr == secondStr
           return firstStr
         end

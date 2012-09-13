@@ -2,6 +2,7 @@ require 'net/http'
 require 'uri'
 require 'open-uri'
 require 'fileutils'
+require 'highline'
 
 module PasteHub
 
@@ -33,21 +34,19 @@ module PasteHub
     # authenticate information
     if not File.exist?( signfile )
       3.times { |n|
-        STDERR.print( "  email:" )
-        username  = STDIN.readline.chomp
-        STDERR.print( "  secret-key:" )
-        secretKey = STDIN.readline.chomp
-
+        HighLine.new.say( "Please input your account information" )
+        username  = HighLine.new.ask("       email: ")
+        secretKey = HighLine.new.ask("  secret-key: " )
         auth = AuthForClient.new( username, secretKey )
         client = Client.new( auth )
         if client.authTest()
           # save authinfo with gpg
           begin
             util = Util.new
-            password = util.inputSeveralTimes(
+            password = util.inputPasswordTwice(
                             "Please input password for crypted file",
-                            "  password            :",
-                            "  password(for verify):" )
+                            "  password            : ",
+                            "  password(for verify): " )
             if password
               crypt = PasteHub::Crypt.new( password )
               open( signfile, "w" ) {|f|
@@ -68,12 +67,11 @@ module PasteHub
     else
       begin
         open( signfile ) {|f|
-          STDERR.puts( "Please input password for crypted file" )
+          HighLine.new.say( "Please input password for crypted file" )
           username = f.readline.chomp
           signStr = f.read
           3.times { |n|
-            STDERR.print( "  crypt password:" )
-            password = STDIN.readline.chomp
+            password  = HighLine.new.ask("  crypt password: ") {|q| q.echo = "*"}
             crypt = PasteHub::Crypt.new( password )
             secretKey= crypt.de( signStr )
             if secretKey
