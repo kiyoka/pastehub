@@ -51,6 +51,7 @@ describe PasteHub::Config, "When use config object...  " do
     @config.targetApiHost.should       == "pastehub.net:8000"
     @config.targetNotifierHost.should  == "pastehub.net:8001"
     @config.localDbPath.should         == File.expand_path( "~/.pastehub/" ) + "/"
+    @config.scheme.should              == "https"
   end
 end
 
@@ -66,7 +67,8 @@ describe PasteHub::Config, "When use config object...  " do
                            :keyCacheTime       => 10 } )
     @config.setupClient( { :targetApiHost      => "localhost:8000",
                            :targetNotifierHost => "localhost:8001",
-                           :localDbPath        => "/tmp/local/" } )
+                           :localDbPath        => "/tmp/local/",
+                           :scheme             => "http" } )
   end
 
   it "should" do
@@ -80,6 +82,7 @@ describe PasteHub::Config, "When use config object...  " do
     @config.targetApiHost.should       == "localhost:8000"
     @config.targetNotifierHost.should  == "localhost:8001"
     @config.localDbPath.should         == "/tmp/local/"
+    @config.scheme.should              == "http"
   end
 end
 
@@ -97,7 +100,8 @@ describe PasteHub::Config, "When use config object...  " do
                            :domain             => "domain.example.com" } )
     @config.setupClient( { :targetApiHost      => "host.example.com:8000",
                            :targetNotifierHost => "host.example.com:8001",
-                           :localDbPath        => "/tmp/tmp/tmp" })
+                           :localDbPath        => "/tmp/tmp/tmp",
+                           :scheme             => "ftp" } )
   end
 
   it "should" do
@@ -112,5 +116,6 @@ describe PasteHub::Config, "When use config object...  " do
     @config.targetApiHost.should       == "host.example.com:8000"
     @config.targetNotifierHost.should  == "host.example.com:8001"
     @config.localDbPath.should         == "/tmp/tmp/tmp"
+    @config.scheme.should              == "ftp"
   end
 end

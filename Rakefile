@@ -34,6 +34,7 @@ begin
     gemspec.add_development_dependency "rspec"
     gemspec.add_development_dependency "rake"
     gemspec.add_dependency             "json"
+    gemspec.add_dependency             "highline"
   end
 rescue LoadError
   puts 'Jeweler2 not available. If you want to build a gemfile, please install with "sudo gem install jeweler2"'

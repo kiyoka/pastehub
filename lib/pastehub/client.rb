@@ -54,7 +54,7 @@ module PasteHub
                 f.puts( crypt.en( secretKey ))
               }
               # auth OK
-              return [ username, secretKey ]
+              return [ username, secretKey, password ]
             end
             STDERR.puts( "Error: password setting failed..." )
           rescue
@@ -78,7 +78,7 @@ module PasteHub
               auth = AuthForClient.new( username, secretKey )
               client = Client.new( auth )
               if client.authTest()
-                return [ username, secretKey ]
+                return [ username, secretKey, password ]
               else
                 STDERR.puts( "Error: your secretKey may be old." )
               end
@@ -90,7 +90,7 @@ module PasteHub
         STDERR.puts( "Error: can't load #{signfile}" )
       end
     end
-    return [ nil, nil ]
+    return [ nil, nil, nil ]
   end
 
   def self.savePid( pid )
@@ -115,7 +115,7 @@ module PasteHub
 
 
   class Client
-    def initialize( auth )
+    def initialize( auth, password = nil )
       @auth = auth
       ins = PasteHub::Config.instance
       @localdb_path         = ins.localDbPath
@@ -123,8 +123,12 @@ module PasteHub
       @server_notifier_host = ins.targetNotifierHost
       @list_items           = ins.listItems
       @server_host          = ins.targetApiHost
-      @localdb_path         = ins.localDbPath
       @syncTrigger          = []
+      @crypt                = if password
+                                Crypt.new( password )
+                              else
+                                nil
+                              end
     end
 
     def authTest
@@ -168,35 +172,55 @@ module PasteHub
     end
 
     def getValue( key )
+      raise RuntimeError, "Error: no encrypt password." unless @crypt
+
       uri = URI.parse("http://#{@server_api_host}/getValue")
       ret = ""
       Net::HTTP.start(uri.host, uri.port) do |http|
         resp = http.post(uri.request_uri, key, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ))
-        ret = resp.read_body()
+        ret = @crypt.de( resp.read_body() )
+        unless ret
+          STDERR.puts( "Warning: encrypt password is wrong. getValue missing..." )
+          ret = "error..."
+        end
       end
       ret
     end
 
-    def putValue( key, value )
-      uri = URI.parse("http://#{@server_api_host}/putValue")
-      ret = ""
-      Net::HTTP.start(uri.host, uri.port) do |http|
-        resp = http.post(uri.request_uri, value,
-                         @auth.getAuthHash().merge(
-                                                   { "content-type" => "plain/text",
-                                                     "x-pastehub-key" => key    }
-                                                   ))
-        ret = resp.read_body()
+    def putValue( key, data )
+      raise RuntimeError, "Error: no encrypt password." unless @crypt
+      _data = @crypt.en( data )
+      unless _data
+        STDERR.puts( "Warning: encrypt password is wrong. putValue missing..." )
+        ret = nil
+      else
+        uri = URI.parse("http://#{@server_api_host}/putValue")
+        ret = ""
+        Net::HTTP.start(uri.host, uri.port) do |http|
+          resp = http.post(uri.request_uri, _data,
+                      @auth.getAuthHash().merge(
+                                          { "content-type" => "plain/text",
+                                                  "x-pastehub-key" => key    }
+                                          ))
+          ret = resp.read_body()
+        end
       end
       ret
     end
 
     def postData( data )
+      raise RuntimeError, "Error: no encrypt password." unless @crypt
+      _data = @crypt.en( data )
+      unless _data
+        STDERR.puts( "Warning: encrypt password is wrong. postData missing..." )
+        return nil
+      end
+
       resp = nil
       begin
         uri = URI.parse("http://#{@server_host}/insertValue")
         Net::HTTP.start(uri.host, uri.port) do |http|
-          resp = http.post(uri.request_uri, data, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ) )
+          resp = http.post(uri.request_uri, _data, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ) )
         end
 
       rescue Errno::ECONNREFUSED => e

@@ -12,9 +12,9 @@ LOCALDB_PATH         = PasteHub::Config.instance.localDbPath
 POLLING_INTERVAL     = 0.5
 
 
-def syncDb( auth )
+def syncDb( auth, password )
   STDERR.puts "synchronizing..."
-  client = PasteHub::Client.new( auth )
+  client = PasteHub::Client.new( auth, password )
   util   = PasteHub::Util.new
   # open local db
   localdb = PasteHub::LocalDB.new( LOCALDB_PATH )
@@ -109,7 +109,7 @@ def fetchServerList( latestKey, auth )
 end
 
 
-def syncMain( username, secretKey )
+def syncMain( username, secretKey, password )
   auth   = PasteHub::AuthForClient.new( username, secretKey )
   client = PasteHub::Client.new( auth )
   client.setOnlineState( false )
@@ -138,7 +138,7 @@ def syncMain( username, secretKey )
       else
         client.setOnlineState( true )
         fetchServerList( result, auth )
-        syncDb( auth )
+        syncDb( auth, password )
       end
     rescue Errno::EAGAIN => e
       STDERR.puts "retrying... DB is locked"
@@ -161,7 +161,7 @@ def syncMain( username, secretKey )
 end
 
 
-def macosxCheck( username, secretKey )
+def macosxCheck( username, secretKey, password )
   prevData = ""
   while true
     sleep POLLING_INTERVAL
@@ -169,7 +169,7 @@ def macosxCheck( username, secretKey )
     if data
       if data != prevData
         auth = PasteHub::AuthForClient.new( username, secretKey )
-        client = PasteHub::Client.new( auth )
+        client = PasteHub::Client.new( auth, password )
         if client.online?(  )
           STDERR.puts( "Info: posted data from MacOS X." )
           begin
@@ -189,11 +189,11 @@ def macosxCheck( username, secretKey )
   end
 end
 
-def signalHandler( username, secretKey )
+def signalHandler( username, secretKey, password )
   store = PasteHub::LocalStore.new( username, true )
   pair = store.top()
   auth = PasteHub::AuthForClient.new( username, secretKey )
-  client = PasteHub::Client.new( auth )
+  client = PasteHub::Client.new( auth, password )
   client.putValue( pair[0], pair[1] )
 end
 
@@ -215,17 +215,18 @@ def main
   ret = setup()
   username  = ret[0]
   secretKey = ret[1]
+  password  = ret[2]
 
   # save pid file
   PasteHub.savePid( Process.pid )
 
   Signal.trap( :SIGUSR1 ) {
-    signalHandler( username, secretKey )
+    signalHandler( username, secretKey, password )
   }
   if username
     threads = []
-    threads.push(Thread.new {    syncMain( username, secretKey ) })
-    threads.push(Thread.new { macosxCheck( username, secretKey ) })
+    threads.push(Thread.new {    syncMain( username, secretKey, password ) })
+    threads.push(Thread.new { macosxCheck( username, secretKey, password ) })
     threads.each {|t| t.join}
   end
 end

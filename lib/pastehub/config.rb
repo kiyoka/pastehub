@@ -66,7 +66,12 @@ module PasteHub
                              else
                                File.expand_path( "~/.pastehub/" ) + "/"
                              end
-    end
+      @scheme              = if hash[ :scheme ]
+                               hash[ :scheme ]
+                             else
+                               "https"
+                             end
+   end
 
     def loadServer()
       name = "/etc/pastehub.conf"
@@ -92,12 +97,14 @@ module PasteHub
           json = JSON.parse( f.read )
           self.setupClient( { :targetApiHost      => json[ 'targetApiHost' ],
                               :targetNotifierHost => json[ 'targetNotifierHost' ],
-                              :localDbPath        => json[ 'localDbPath' ] } )
+                              :localDbPath        => json[ 'localDbPath' ],
+                              :scheme             => json[ 'scheme' ] } )
         }
       end
     end
 
-    attr_reader :aws, :dynamoEp, :dynamoAccessKey, :dynamoSecretKey, :memcacheEp, :keyCacheTime, :domain, :targetApiHost, :targetNotifierHost, :localDbPath, :listItems
+    attr_reader :aws, :dynamoEp, :dynamoAccessKey, :dynamoSecretKey, :memcacheEp, :keyCacheTime, :domain
+    attr_reader :targetApiHost, :targetNotifierHost, :localDbPath, :listItems, :scheme
     attr_accessor :awsWarn
   end
 end
