@@ -5,7 +5,7 @@ RUBYPATH=/opt/pastehub/${RUBY}
 BINPATH=/opt/pastehub/bin
 
 ${RUBYPATH}/bin/gem install bundler
-bundle
+${RUBYPATH}/bin/bundle
 ${RUBYPATH}/bin/gem install ../../pkg/pastehub-0.1.5.gem 
 
 mkdir -p ${BINPATH}
