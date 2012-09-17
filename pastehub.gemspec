@@ -9,10 +9,10 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kiyoka Nishiyama"]
-  s.date = "2012-09-15"
+  s.date = "2012-09-17"
   s.description = "PasteHub is cloud-based cross-platform clipboard sync."
   s.email = "kiyoka@sumibi.org"
-  s.executables = ["pastehub-clientDump", "pastehub-clientPost", "pastehub-clientSync"]
+  s.executables = ["PastehubSync", "pastehubDump", "pastehubPost"]
   s.extra_rdoc_files = [
     "README.txt"
   ]
@@ -20,9 +20,9 @@ Gem::Specification.new do |s|
     "README.txt",
     "Rakefile",
     "VERSION.yml",
-    "bin/pastehub-clientDump",
-    "bin/pastehub-clientPost",
-    "bin/pastehub-clientSync",
+    "bin/PastehubSync",
+    "bin/pastehubDump",
+    "bin/pastehubPost",
     "lib/pastehub.rb",
     "lib/pastehub/auth.rb",
     "lib/pastehub/client.rb",
@@ -48,24 +48,30 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
+      s.add_runtime_dependency(%q<highline>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
+      s.add_runtime_dependency(%q<highline>, [">= 0"])
     else
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
+      s.add_dependency(%q<highline>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
+      s.add_dependency(%q<highline>, [">= 0"])
     end
   else
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<json>, [">= 0"])
+    s.add_dependency(%q<highline>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<json>, [">= 0"])
+    s.add_dependency(%q<highline>, [">= 0"])
   end
 end
 
