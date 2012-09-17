@@ -76,34 +76,30 @@ task :d do # deleter
 end
 
 task :sync do
-  sh "ruby -I ./lib bin/pastehub-clientSync"
+  sh "ruby -I ./lib bin/PastehubSync"
 end
 
 task :syncA do
-  sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientSync"
+  sh SETENV_A + "; ruby -I ./lib bin/PastehubSync"
 end
 
 task :postA1 do
-  sh SETENV_A + "; echo 'aaa1' | ruby -I ./lib bin/pastehub-clientPost"
+  sh SETENV_A + "; echo 'aaa1' | ruby -I ./lib bin/pastehubPost"
 end
 
 task :postA2 do
-  sh SETENV_A + "; echo 'aaa2' | ruby -I ./lib bin/pastehub-clientPost"
+  sh SETENV_A + "; echo 'aaa2' | ruby -I ./lib bin/pastehubPost"
 end
 
 task :postB1 do
-  sh "echo 'bbb1' | ruby -I ./lib bin/pastehub-clientPost"
-end
-
-task :osxA do
-  sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientOSX"
+  sh "echo 'bbb1' | ruby -I ./lib bin/pastehubPost"
 end
 
 task :dumpA do
-  open( "|" + SETENV_A + "; ruby -I ./lib bin/pastehub-clientDump list" ) {|f|
+  open( "|" + SETENV_A + "; ruby -I ./lib bin/pastehubDump list" ) {|f|
     firstKey = f.readline.chomp
-    sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientDump get '#{firstKey}'"
+    sh SETENV_A + "; ruby -I ./lib bin/pastehubDump get '#{firstKey}'"
   }
-  sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientDump top"
-  sh SETENV_A + "; ruby -I ./lib bin/pastehub-clientDump latest"
+  sh SETENV_A + "; ruby -I ./lib bin/pastehubDump top"
+  sh SETENV_A + "; ruby -I ./lib bin/pastehubDump latest"
 end

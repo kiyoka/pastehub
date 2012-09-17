@@ -5,12 +5,12 @@
 ;;   Copyright (C) 2012 Kiyoka Nishiyama
 ;;
 
-(defcustom pastehub-client-post "pastehub-clientPost"
+(defcustom pastehub-client-post "pastehubPost"
   "client (post) program name."
   :type  'string
   :group 'pastehub)
 
-(defcustom pastehub-client-dump "pastehub-clientDump"
+(defcustom pastehub-client-dump "pastehubDump"
   "client (dump) program name."
   :type  'string
   :group 'pastehub)
