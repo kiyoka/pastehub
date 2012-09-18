@@ -16,7 +16,6 @@ solist='
 /lib/libkrb5.so.3
 /lib/libkrb5support.so.0
 /lib/libselinux.so.1
-/lib/libssl.so.10
 /lib/libz.so.1
 /usr/lib/libssl.so.10
 /usr/lib/libgdbm.so.2'

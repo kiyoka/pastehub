@@ -9,7 +9,8 @@ ${RUBYPATH}/bin/bundle
 ${RUBYPATH}/bin/gem install ../../pkg/pastehub-0.1.5.gem 
 
 mkdir -p ${BINPATH}
-ln -sf ${RUBYPATH}/bin/pastehubPost ${BINPATH}/pastehubPost
-ln -sf ${RUBYPATH}/bin/pastehubDump ${BINPATH}/pastehubDump
-ln -sf ${RUBYPATH}/bin/PastehubSync ${BINPATH}/PastehubSync
+/bin/cp ./bin/PastehubSync ${BINPATH}
+/bin/cp ./bin/pastehubDump ${BINPATH}
+/bin/cp ./bin/pastehubPost ${BINPATH}
+
 
