@@ -1,7 +1,7 @@
+VERSION=0.1.5
 
-
-./pastehub-installer.tar.gz	: /opt/pastehub/bin/PastehubSync
-	tar zcf ./pastehub-installer.tar.gz /opt/pastehub
+./pastehub-installer-${VERSION}.tar.gz	: /opt/pastehub/bin/PastehubSync
+	tar zcf ./pastehub-installer-${VERSION}.tar.gz /opt/pastehub
 
 /opt/pastehub/bin/PastehubSync : /opt/pastehub/lib/libz.so.1
 	./geminstall.sh
