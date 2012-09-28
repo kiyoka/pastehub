@@ -350,10 +350,17 @@ module PasteHub
 
       localdb = PasteHub::LocalDB.new( @localdb_path )
       localdb.open( @auth.username )
-      localdb.insertValue( key, data.dup )
-      localdb.insertValue( PasteHub::LOCAL_DATE_KEY, util.currentTime( ) )
-      localdb.close()
-      key
+      list = localdb.getList( )
+      if util.key_digest( list[0] ) == util.digest( data )
+        # duplicate
+        localdb.close()
+        list[0]
+      else
+        localdb.insertValue( key, data.dup )
+        localdb.insertValue( PasteHub::LOCAL_DATE_KEY, util.currentTime( ) )
+        localdb.close()
+        key
+      end
     end
 
     def setServerFlags( keys )
