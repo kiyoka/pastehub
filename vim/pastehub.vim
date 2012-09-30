@@ -5,11 +5,10 @@
 if exists("loaded_pastehub")
     finish
 endif
-" let loaded_pastehub = 1
+let loaded_pastehub = 1
 
 let s:pastehub_latest_key = ""
 let s:pastehub_last_paste = ""
-let s:pastehub_sync_count = 0
 
 if !exists("g:pastehub_dump_program")
 	if executable( "pastehubDump" ) == 1
@@ -61,8 +60,7 @@ func! PastehubSync( key )
 		let s:pastehub_latest_key = a:key
 		if @" != result
 			let @" = result
-			let s:pastehub_sync_count += 1
-			echo "PasteHub sync! [" . s:pastehub_sync_count . "]"
+			echo "PasteHub sync!"
 		endif
 	endif
 endfunc
@@ -79,9 +77,7 @@ func! PastehubEventOccur()
 		return
 	endif
 
-	if (result == s:pastehub_latest_key) && (@" == s:pastehub_last_paste)
-		let s:pastehub_sync_count = 0
-	else
+	if (result != s:pastehub_latest_key) || (@" != s:pastehub_last_paste)
 		call PastehubSync( result )
 	endif
 	return result
@@ -91,4 +87,4 @@ au! CursorHold  * nested call PastehubEventOccur()
 au! VimEnter    * nested call PastehubEventOccur()
 
 finish
-
+ 
