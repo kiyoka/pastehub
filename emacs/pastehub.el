@@ -5,26 +5,20 @@
 ;;   Copyright (C) 2012 Kiyoka Nishiyama
 ;;
 
-(defcustom pastehub-client-post "pastehub-clientPost"
-  "client (post) program name."
-  :type  'string
-  :group 'pastehub)
-
-(defcustom pastehub-client-dump "pastehub-clientDump"
-  "client (dump) program name."
-  :type  'string
-  :group 'pastehub)
-
 (defcustom pastehub-sync-items 10
   "number of paste items to sync."
   :type 'integer
   :group 'pastehub)
 
+(defconst pastehub-client-post          "pastehub-clientPost")
+(defconst pastehub-client-dump          "pastehub-clientDump")
+(defconst pastehub-default-client-post "/opt/pastehub/bin/pastehub-clientPost")
+(defconst pastehub-default-client-dump "/opt/pastehub/bin/pastehub-clientDump")
+
 
 (defvar pastehub-latest-date ""         "latest synced date.")
 (defvar pastehub-timer-object nil       "interval timer object.")
 (defvar pastehub-unread-count 0         "number of unread pastes")
-
 (defvar pastehub-sync-cache   '()       "cache of key-value")
 
 (defvar pastehub-mode nil               "pastehub toggle for mode")
@@ -36,6 +30,15 @@
     (setq minor-mode-alist (cons
 			    '(pastehub-mode (:eval (pastehub-modeline-string)))
 			    minor-mode-alist)))
+
+(defun get-pastehub-client-post ()
+  (if (file-exists-p pastehub-default-client-post)
+      pastehub-default-client-post
+    pastehub-client-post))
+(defun get-pastehub-client-dump ()
+  (if (file-exists-p pastehub-default-client-dump)
+      pastehub-default-client-dump
+    pastehub-client-dump))
 
 ;;
 ;; Paste
@@ -87,7 +90,7 @@
       ;;(message (format "%s:%s" (car pair) (cdr pair)))
       (cdr pair))
      (t
-      (let ((value (pastehub-call-process pastehub-client-dump "get" key)))
+      (let ((value (pastehub-call-process (get-pastehub-client-dump) "get" key)))
 	(setq pastehub-sync-cache
 	      (cons
 	       (cons key value)
@@ -102,7 +105,7 @@
 (defun pastehub-sync-kill-ring ()
   "sync kill-ring"
   (message "syncing kill-ring...")
-  (let* ((keys-string (pastehub-call-process pastehub-client-dump "list" (format "%d" pastehub-sync-items)))
+  (let* ((keys-string (pastehub-call-process (get-pastehub-client-dump) "list" (format "%d" pastehub-sync-items)))
 	 (keys
 	  (pastehub-take (split-string 
 			  keys-string
@@ -125,7 +128,7 @@
 (defun pastehub-timer-handler ()
   "polling process handler for pastehub service."
   (let ((latest-date
-	 (pastehub-call-process pastehub-client-dump "latest" "")))
+	 (pastehub-call-process (get-pastehub-client-dump) "latest" "")))
     (if (not (string-equal pastehub-latest-date latest-date))
 	(progn
 	  (setq pastehub-latest-date latest-date)
@@ -136,8 +139,10 @@
   ;;(message "Caught signal %S" last-input-event)
   (pastehub-timer-handler))
 
+
+;; initialize
 (define-key special-event-map [sigusr1] 'pastehub-sigusr-handler)
-(setq pastehub-timer-object 
+(setq pastehub-timer-object
       (run-at-time t  60.0  'pastehub-timer-handler))
 
 ;; enable pastehub-mode
