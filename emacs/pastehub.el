@@ -147,3 +147,6 @@
 
 ;; enable pastehub-mode
 (setq pastehub-mode t)
+(pastehub-timer-handler) ;; one shot for initializing.
+
+
