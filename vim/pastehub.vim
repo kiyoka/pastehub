@@ -51,6 +51,7 @@ func! PastehubSync( key )
 	if @" != s:pastehub_last_paste
 		let key    = system( g:pastehub_post_program , @" )
 		let s:pastehub_last_paste = @"
+		let result = system( "killall -SIGUSR1 Emacs emacs" )
 		echo "posting to PasteHub..."
 	endif
 
