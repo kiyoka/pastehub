@@ -1,4 +1,8 @@
-VERSION=0.1.5
+#
+# This makefile expects Amazon linux platform.
+#
+
+VERSION=$(shell ruby1.9 ./getVersion.rb)
 
 ./pastehub-installer-${VERSION}.tar.gz	: /opt/pastehub/bin/PastehubSync
 	tar zcf ./pastehub-installer-${VERSION}.tar.gz /opt/pastehub
