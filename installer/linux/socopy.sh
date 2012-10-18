@@ -4,7 +4,7 @@
 #   http://gihyo.jp/lifestyle/serial/01/ganshiki-soushi/0032
 
 RUBY=ruby-1.9.3-p194
-TARGET=/opt/pastehub/lib
+TARGET=./work/opt/pastehub/lib
 
 #ldd ./work/${RUBY}/bin/ruby
 solist='

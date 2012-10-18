@@ -3,23 +3,33 @@
 #
 
 VERSION=$(shell ruby1.9 ./getVersion.rb)
+BASEDIR=./work/opt/pastehub
 
-./pastehub-installer-${VERSION}.tar.gz	: /opt/pastehub/bin/PastehubSync
-	tar zcf ./pastehub-installer-${VERSION}.tar.gz /opt/pastehub
 
-/opt/pastehub/bin/PastehubSync : /opt/pastehub/lib/libz.so.1
+all : ./pastehub.spec  ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz
+	rpmbuild -ba pastehub.spec
+
+~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz	: ${BASEDIR}/bin/PastehubSync
+	mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+	/bin/mv work pastehub-${VERSION}
+	tar zcf  ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz pastehub-${VERSION}/opt
+	/bin/mv pastehub-${VERSION} work
+
+${BASEDIR}/bin/PastehubSync : ${BASEDIR}/lib/libz.so.1
 	./geminstall.sh
 
-/opt/pastehub/lib/libz.so.1 : /opt/pastehub/ruby-1.9.3-p194/bin/ruby
+${BASEDIR}/lib/libz.so.1 : ${BASEDIR}/ruby-1.9.3-p194/bin/ruby
 	./socopy.sh
 
-/opt/pastehub/ruby-1.9.3-p194/bin/ruby : ruby-1.9.3-p194.tar.gz
+${BASEDIR}/ruby-1.9.3-p194/bin/ruby : ruby-1.9.3-p194.tar.gz
 	./build.sh
 
 ruby-1.9.3-p194.tar.gz :
 	wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p194.tar.gz
 
+
 clean:
-	rm -rf /opt/pastehub
+	rm -rf ./work
 
-
+clean2:
+	rm -f ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz
