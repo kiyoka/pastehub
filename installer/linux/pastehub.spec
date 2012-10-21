@@ -16,7 +16,8 @@ Source0: %{name}-%{version}.tar.gz
 
 %install
 /bin/rm -rf %{buildroot}/
-/bin/cp -r ./opt %{buildroot}/
+mkdir -p    %{buildroot}/opt
+/bin/cp -r ./opt/* %{buildroot}/opt
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -24,5 +25,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 /opt
+%defattr(755, root, root)
+/opt/pastehub/bin
 
 %changelog

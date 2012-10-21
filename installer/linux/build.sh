@@ -1,8 +1,7 @@
 #!/bin/bash -x
 
 RUBY=ruby-1.9.3-p194
-TARGET=`pwd`/work/opt/pastehub/${RUBY}
-
+TARGET=`pwd`/${1}/${RUBY}
 
 rm -rf ./work
 rm -rf ${TARGET}

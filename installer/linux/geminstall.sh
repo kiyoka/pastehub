@@ -1,8 +1,8 @@
 #!/bin/bash -x
 
 RUBY=ruby-1.9.3-p194
-RUBYPATH=./work/opt/pastehub/${RUBY}
-BINPATH=./work/opt/pastehub/bin
+RUBYPATH=${1}/${RUBY}
+BINPATH=${1}/bin
 
 ${RUBYPATH}/bin/gem install bundler
 ${RUBYPATH}/bin/bundle
