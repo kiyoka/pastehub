@@ -1,18 +1,18 @@
 #!/bin/bash -x
 
 RUBY=ruby-1.9.3-p194
-TARGET=`pwd`/${1}/${RUBY}
+TARGET=${1}
+echo ${TARGET}
 
 rm -rf ./work
-rm -rf ${TARGET}
 mkdir -p work
 pushd .
 
   cd work
   tar zxf ../${RUBY}.tar.gz
   cd ./${RUBY}
-  ./configure --prefix=${TARGET}
+  ./configure --prefix=/opt/pastehub/${RUBY}
   make
-  make install
+  make install DESTDIR=../../${TARGET}
 
 popd
