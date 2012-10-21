@@ -1,14 +1,8 @@
 #!/bin/bash -x
 
-RUBY=ruby-1.9.3-p194
-RUBYPATH=${1}/${RUBY}
-BINPATH=${1}/bin
+TARGET="${1}/gems"
+mkdir -p ${TARGET}
 
-${RUBYPATH}/bin/gem install bundler
-${RUBYPATH}/bin/bundle
-${RUBYPATH}/bin/gem install ../../pkg/pastehub-0.1.5.gem 
-
-mkdir -p ${BINPATH}
-/bin/cp ./bin/PastehubSync ${BINPATH}
-/bin/cp ./bin/pastehubDump ${BINPATH}
-/bin/cp ./bin/pastehubPost ${BINPATH}
+/bin/cp -f ../../pkg/bundler-1.2.1.gem    ${TARGET}
+/bin/cp -f ../../pkg/highline-1.6.15.gem  ${TARGET}
+/bin/cp -f ../../pkg/pastehub-*gem        ${TARGET}
