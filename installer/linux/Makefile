@@ -2,7 +2,7 @@
 # This makefile expects Amazon linux platform.
 #
 
-VERSION=$(shell ruby1.9 ./getVersion.rb)
+VERSION=$(shell ruby ./getVersion.rb)
 ROOTDIR=./work/pastehub-${VERSION}
 BASEDIR=./work/pastehub-${VERSION}/opt/pastehub
 
@@ -29,3 +29,7 @@ clean:
 clean2:
 	rm -f ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz
 	rm -rf ~/rpmbuild/BUILDROOT/*
+
+deb:
+	fakeroot alien -v --to-deb --scripts pastehub-${VERSION}-1.i386.rpm
+
