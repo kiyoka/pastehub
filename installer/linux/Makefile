@@ -13,6 +13,10 @@ all : ./pastehub.spec  ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz
 ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz	: ${BASEDIR}/ruby-1.9.3-p194/bin/ruby
 	./gemcopy.sh ${BASEDIR}
 	./socopy.sh ${BASEDIR}
+	mkdir -p ${BASEDIR}/bin
+	cp -f ./bin/pastehubDump  ${BASEDIR}/bin
+	cp -f ./bin/pastehubPost  ${BASEDIR}/bin
+	cp -f ./bin/PastehubSync  ${BASEDIR}/bin
 	mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 	tar zcfC  ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz ./work pastehub-${VERSION}
 
