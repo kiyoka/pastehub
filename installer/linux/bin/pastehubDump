@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export LD_LIBRARY_PATH=/opt/pastehub/lib:$LD_LIBRARY_PATH
+
+/opt/pastehub/ruby-1.9.3-p194/bin/ruby /opt/pastehub/ruby-1.9.3-p194/bin/pastehubDump $*
+
+
+

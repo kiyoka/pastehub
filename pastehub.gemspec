@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.date = "2012-09-28"
   s.description = "PasteHub is cloud-based cross-platform clipboard sync."
   s.email = "kiyoka@sumibi.org"
-  s.executables = ["pastehub-clientDump", "pastehub-clientPost", "pastehub-clientSync"]
+  s.executables = ["PastehubSync", "pastehubDump", "pastehubPost"]
   s.extra_rdoc_files = [
     "README.txt"
   ]
@@ -20,9 +20,9 @@ Gem::Specification.new do |s|
     "README.txt",
     "Rakefile",
     "VERSION.yml",
-    "bin/pastehub-clientDump",
-    "bin/pastehub-clientPost",
-    "bin/pastehub-clientSync",
+    "bin/PastehubSync",
+    "bin/pastehubDump",
+    "bin/pastehubPost",
     "lib/pastehub.rb",
     "lib/pastehub/auth.rb",
     "lib/pastehub/client.rb",
