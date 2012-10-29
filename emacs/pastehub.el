@@ -10,10 +10,10 @@
   :type 'integer
   :group 'pastehub)
 
-(defconst pastehub-client-post          "pastehub-clientPost")
-(defconst pastehub-client-dump          "pastehub-clientDump")
-(defconst pastehub-default-client-post "/opt/pastehub/bin/pastehub-clientPost")
-(defconst pastehub-default-client-dump "/opt/pastehub/bin/pastehub-clientDump")
+(defconst pastehub-client-post          "pastehubPost")
+(defconst pastehub-client-dump          "pastehubDump")
+(defconst pastehub-default-client-post "/opt/pastehub/bin/pastehubPost")
+(defconst pastehub-default-client-dump "/opt/pastehub/bin/pastehubDump")
 
 
 (defvar pastehub-latest-date ""         "latest synced date.")
@@ -48,7 +48,7 @@
     (with-temp-buffer
       (insert (substring-no-properties (car kill-ring)))
       (call-process-region (point-min) (point-max)
-			   pastehub-client-post))))
+			   (get-pastehub-client-post)))))
 
 (defadvice kill-new (after pastehub-post activate)
   "Post the latest killed text to pastehub cloud service."
