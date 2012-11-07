@@ -31,8 +31,16 @@ module PasteHub
                              else
                                dynamoEp = 'dynamodb.ap-northeast-1.amazonaws.com' # Default DynamoDB's endpoint is Tokyo Region
                              end
-      @dynamoAccessKey     = hash[ :dynamoAccessKey ]
-      @dynamoSecretKey     = hash[ :dynamoSecretKey ]
+      @dynamoAccessKey     = if hash[ :dynamoAccessKey ]
+                               hash[ :dynamoAccessKey ]
+                             else
+                               "xxxx"
+                             end
+      @dynamoSecretKey     = if hash[ :dynamoSecretKey ]
+                               hash[ :dynamoSecretKey ]
+                             else
+                               "xxxx"
+                             end
       @memcacheEp          = if hash[ :memcacheEp ]
                                hash[ :memcacheEp ]
                              else

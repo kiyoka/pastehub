@@ -46,12 +46,15 @@ describe Users, "User Database API operations are " do
 
   before do
     @users = Users.new( )
+    [ "userA", "userB", "userC" ].each { |u|
+      @users.__deleteUser( u )
+    }
 
     ###         user,    secretKey
     @userA = [ "userA",  "ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==" ]
     @userB = [ "userB",  "MjZmZDc5OWVhMDc0OTQ5MTZlOWRhOWI5MWIyYWFjNjQ2Mzk3ZjM0YQ==" ]
     @userC = [ "userC",  "YzlkYTliOTFiMmFhYzY0NjM5N2YzNGEyNmZkNzk5ZWEwNzQ5NDkxNg==" ]
-      
+
   end
 
   it "should" do

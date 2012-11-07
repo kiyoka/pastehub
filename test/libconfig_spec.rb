@@ -44,8 +44,8 @@ describe PasteHub::Config, "When use config object...  " do
     @config.aws.should                 == false
     @config.awsWarn.should             == false
     @config.dynamoEp.should            == 'dynamodb.ap-northeast-1.amazonaws.com'
-    @config.dynamoAccessKey.should     == nil
-    @config.dynamoSecretKey.should     == nil
+    @config.dynamoAccessKey.should     == 'xxxx'
+    @config.dynamoSecretKey.should     == 'xxxx'
     @config.memcacheEp.should          == "localhost:11211"
     @config.keyCacheTime.should        == 24 * 3600
     @config.targetApiHost.should       == "pastehub.net:8000"

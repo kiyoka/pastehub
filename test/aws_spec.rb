@@ -61,6 +61,9 @@ describe Users, "User Database API operations are " do
 
   before do
     @users = Users.new( )
+    [ "userA", "userB", "userC" ].each { |u|
+      @users.__deleteUser( u )
+    }
 
     ###         user,    secretKey
     @userA = [ "userA",  "ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==" ]

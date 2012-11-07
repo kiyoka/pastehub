@@ -46,6 +46,9 @@ describe Entries, "masterDB API operations are " do
 
   before do
     @entries = Entries.new( "usertmp" )
+    @entries.getList( ).each { |x|
+      @entries.deleteValue( x )
+    }
     @util = Util.new
 
     ###         date,                           value
