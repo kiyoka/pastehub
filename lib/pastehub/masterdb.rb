@@ -7,17 +7,20 @@ module PasteHub
   Dynamoid.configure do |conf|
     config = PasteHub::Config.instance
     conf.adapter         = 'aws_sdk'
-    conf.namespace       = config.domain                                # To namespace tables created by Dynamoid from other tables you might have.
-    conf.warn_on_scan    = config.awsWarn                               # Output a warning to the logger when you perform a scan rather than a query on a table.
-    conf.partitioning    = false                                        # Spread writes randomly across the database. See "partitioning" below for more.
-    conf.partition_size  = 1                                            # Determine the key space size that writes are randomly spread across.
-    conf.read_capacity   = 1                                            # Read capacity for your tables
-    conf.write_capacity  = 1                                            # Write capacity for your tables
-    conf.access_key      = config.dynamoAccessKey                       # If connecting to DynamoDB, your access key is required.
-    conf.secret_key      = config.dynamoSecretKey                       # So is your secret key.
-    conf.endpoint        = config.aws ? config.dynamoEp : 'localhost'   # Set the regional endpoint
-    conf.use_ssl         = config.aws
-    conf.port            = config.aws ? '80' : '4567'                   # real DynamoDB or fake_dynamo
+    conf.namespace       = config.domain              # To namespace tables created by Dynamoid from other tables you might have.
+    conf.warn_on_scan    = config.awsWarn             # Output a warning to the logger when you perform a scan rather than a query on a table.
+    conf.partitioning    = false                      # Spread writes randomly across the database. See "partitioning" below for more.
+    conf.partition_size  = 1                          # Determine the key space size that writes are randomly spread across.
+    conf.read_capacity   = 1                          # Read capacity for your tables
+    conf.write_capacity  = 1                          # Write capacity for your tables
+    conf.access_key      = config.dynamoAccessKey     # If connecting to DynamoDB, your access key is required.
+    conf.secret_key      = config.dynamoSecretKey     # So is your secret key.
+    conf.endpoint        = config.dynamoEp            # Set the regional endpoint
+    if not config.aws
+      conf.endpoint      = 'localhost'                # Set the regional endpoint
+      conf.use_ssl       = false                      # Don't use SSL
+      conf.port          = '4567'                     # Use fake_dynamo
+    end
   end
 
   class User
