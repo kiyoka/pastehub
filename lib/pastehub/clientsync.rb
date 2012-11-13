@@ -148,7 +148,7 @@ module PasteHub
           STDERR.puts "retrying... DB is locked"
           sleep 2
         rescue Errno::ECONNREFUSED => e
-          STDERR.puts "retrying... masterdb server is down(1)"
+          STDERR.puts "retrying... pastehub server is down(1)"
           sleep 60
         rescue Errno::ETIMEDOUT => e
           STDERR.puts "retrying... network is offline(1)"
@@ -158,7 +158,7 @@ module PasteHub
           sleep 60
         rescue Timeout::Error => e
           # ONLINE, but server is not helthy
-          STDERR.puts "retrying... masterdb server is down(2)"
+          STDERR.puts "retrying... pastehub server is down(2)"
           sleep 60
         end
       end
