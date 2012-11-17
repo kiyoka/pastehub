@@ -1,5 +1,5 @@
 Name: pastehub
-Version: 0.1.5
+Version: 0.1.7
 Summary: pastehub client for Linux
 Release: 1
 License: BSD License
@@ -30,7 +30,7 @@ rm -rf $RPM_BUILD_ROOT
 export LD_LIBRARY_PATH=/opt/pastehub/lib:$LD_LIBRARY_PATH
 /opt/pastehub/ruby-1.9.3-p194/bin/gem install /opt/pastehub/gems/bundler-1.2.1.gem 
 /opt/pastehub/ruby-1.9.3-p194/bin/gem install /opt/pastehub/gems/highline-1.6.15.gem 
-/opt/pastehub/ruby-1.9.3-p194/bin/gem install /opt/pastehub/gems/pastehub-0.1.5.gem 
+/opt/pastehub/ruby-1.9.3-p194/bin/gem install /opt/pastehub/gems/pastehub-%{version}.gem 
 
 %postun
 # remove gem files
