@@ -177,7 +177,7 @@ module PasteHub
             if client.online?(  )
               STDERR.puts( "Info: posted data from MacOS X." )
               begin
-                client.postData( data )
+                client.putValue( "_", data )
               rescue Errno::ECONNREFUSED => e
                 # if postData was fail, save to local.
                 setOnlineState( false )

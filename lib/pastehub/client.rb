@@ -189,6 +189,9 @@ module PasteHub
     end
 
     def putValue( key, data )
+      if not key
+        key = "_"
+      end
       raise RuntimeError, "Error: no encrypt password." unless @crypt
       _data = @crypt.en( data )
       unless _data
@@ -207,32 +210,6 @@ module PasteHub
         end
       end
       ret
-    end
-
-    def postData( data )
-      raise RuntimeError, "Error: no encrypt password." unless @crypt
-      _data = @crypt.en( data )
-      unless _data
-        STDERR.puts( "Warning: encrypt password is wrong. postData missing..." )
-        return nil
-      end
-
-      resp = nil
-      begin
-        uri = URI.parse("#{@scheme}://#{@server_host}/insertValue")
-        Net::HTTP.start(uri.host, uri.port) do |http|
-          resp = http.post(uri.request_uri, _data, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ) )
-        end
-
-      rescue Errno::ECONNREFUSED => e
-        STDERR.puts "Error: can't connect server."
-        return nil
-      end
-      if resp
-        resp.read_body()
-      else
-        nil
-      end
     end
 
     def wait_notify( auth )
