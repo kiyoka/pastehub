@@ -57,27 +57,38 @@ masterdb_server.request_handler do |req|
     users   = PasteHub::Users.new( )
 
     case req.path
-    when "/insertValue"
-      data = body.to_s.dup
+    when "/authTest"
+      req.response.end
 
-      # duplicate check
+    when "/putValue"
+      data = body.to_s.dup
       digest = util.digest( data )
+
+      # update db
+      key = req.headers[ 'X-Pastehub-Key' ].dup
+      puts "[#{username}]:putValue: key=[#{key}] "
+
+      # client have no specified key
+      if "_" == key
+        key = util.currentTime( ) + "=" + digest
+      end
+
+      # data duplicate check
       insertFlag = true
       prevKey = notifyHash.get( username )
       if prevKey
         if util.key_digest( prevKey ) == digest
-          puts "[#{username}]:insertValue: canceled because data is duplicate. "
+          puts "[#{username}]:putValue: canceled because data is duplicate. "
           insertFlag = false
           key = prevKey
         end
       end
 
       if insertFlag
-        key = util.currentTime( ) + "=" + digest
         Vertx.set_timer(1000) do
           puts "    START: delayed job"
           # update db
-          puts "[#{username}]:insertValue: key=[#{key}] "
+          puts "[#{username}]:putValue: key=[#{key}] "
           entries.insertValue( key, data )
           users.touch( username )
           # notify to client
@@ -93,18 +104,6 @@ masterdb_server.request_handler do |req|
       end
       req.response.end( key )
 
-    when "/putValue"
-      data = body.to_s.dup
-
-      # update db
-      key = req.headers[ 'X-Pastehub-Key' ].dup
-      puts "[#{username}]:putValue: key=[#{key}] "
-      entries.insertValue( key, data )
-      users.touch( username )
-
-      # notify to all client
-      notifyHash.set( username, key, PasteHub::Config.instance.keyCacheTime )
-      req.response.end( key )
 
     when "/getList"
       limit = req.headers[ 'X-Pastehub-Limit' ]
@@ -126,7 +125,14 @@ masterdb_server.request_handler do |req|
       end
       puts "[#{username}]:getValue:" + k
       req.response.end( str )
-    end
 
+    else
+      mes = "Error: Unknown API #{req.path}"
+      puts mes
+      req.response.status_code = 400
+      req.response.status_message = mes
+      req.response.end
+
+    end
   end
 end.listen(8000)
