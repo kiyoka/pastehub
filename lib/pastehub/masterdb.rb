@@ -16,6 +16,7 @@ module PasteHub
     conf.access_key      = config.dynamoAccessKey     # If connecting to DynamoDB, your access key is required.
     conf.secret_key      = config.dynamoSecretKey     # So is your secret key.
     conf.endpoint        = config.dynamoEp            # Set the regional endpoint
+    conf.port            = '443'                      # Use real dynamo
     if not config.aws
       conf.endpoint      = 'localhost'                # Set the regional endpoint
       conf.use_ssl       = false                      # Don't use SSL
