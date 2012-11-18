@@ -61,7 +61,8 @@ describe Users, "User Database API operations are " do
 
   before do
     @users = Users.new( )
-    [ "userA", "userB", "userC" ].each { |u|
+    @users.addUser( "userDummy", "dummy" )
+    [ "userA", "userB", "userC", "userDummy" ].each { |u|
       @users.__deleteUser( u )
     }
 
@@ -118,6 +119,7 @@ describe Entries, "masterDB API operations are " do
     @data = [[ "1338738983=06/04/12:00:56:22",  "first  data" ],
              [ "1338814085=06/04/12:21:48:04",  "second data" ]]
 
+    @entries.insertValue( "1338814090=06/04/12:21:48:09=4dbccf6bf4ca71c6d1ec8f08350222c93cb23ebb", "dummy" )
     @entries.deleteValue( "1338814090=06/04/12:21:48:09=4dbccf6bf4ca71c6d1ec8f08350222c93cb23ebb" )
     @entries.deleteValue( "1338738983=06/04/12:00:56:22=30aac3a6f968fc5983a0f62a287e79516d701ea5" )
     @entries.deleteValue( "1338738983=06/04/12:00:56:22=30aac3a6f968fc5983a0f62a287e79516d701ea5" )
