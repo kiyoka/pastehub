@@ -196,7 +196,7 @@ module PasteHub
         STDERR.puts( "Warning: encrypt password is wrong. putValue missing..." )
         ret = nil
       else
-        uri = URI.parse("#{@server_api_url}/putValue")
+        uri = URI.parse("#{@server_api_url}putValue")
         ret = ""
         Net::HTTP.start(uri.host, uri.port) do |http|
           resp = http.post(uri.request_uri, _data,
@@ -212,7 +212,7 @@ module PasteHub
 
     def wait_notify( auth )
       begin
-        uri = URI.parse("#{@server_notifier_url}/")
+        uri = URI.parse("#{@server_notifier_url}")
         Net::HTTP.start(uri.host, uri.port) do |http|
           request = Net::HTTP::Get.new(uri.request_uri, auth.getAuthHash())
           http.request(request) do |response|
