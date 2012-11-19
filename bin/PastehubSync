@@ -6,11 +6,6 @@ require 'pastehub'
 PasteHub::Config.instance.loadClient
 RETRY_INTERVAL = 60
 
-def signalHandler( clientSync, username, secretKey, password )
-  STDERR.puts( "Info: caught signal." )
-  clientSync.syncNow( username, secretKey, password )
-end
-
 
 def setup
   localdb_path = PasteHub::Config.instance.localDbPath
@@ -43,13 +38,11 @@ def main
                                     PasteHub::Config.instance.localDbPath,
                                     0.5 )
 
-  contFlag = true
-  Signal.trap( :SIGINT ) {  contFlag = false  }
-
-  while contFlag
+  while true
     begin
       Signal.trap( :SIGUSR1 ) {
-        signalHandler( clientSync, username, secretKey, password )
+        STDERR.puts( "Info: caught signal." )
+        clientSync.syncNow( username, secretKey, password )
       }
       if username
         threads = []
