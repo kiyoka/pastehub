@@ -33,7 +33,6 @@ def main
 
   # create clientSync
   clientSync = PasteHub::ClientSync.new(
-                                    PasteHub::Config.instance.targetApiHost,
                                     PasteHub::Config.instance.listItems / 2,
                                     PasteHub::Config.instance.localDbPath,
                                     0.5 )

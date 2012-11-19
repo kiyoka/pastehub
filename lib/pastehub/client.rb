@@ -119,21 +119,19 @@ module PasteHub
       @auth = auth
       ins = PasteHub::Config.instance
       @localdb_path         = ins.localDbPath
-      @server_api_host      = ins.targetApiHost
-      @server_notifier_host = ins.targetNotifierHost
+      @server_api_url       = ins.targetApiURL
+      @server_notifier_url  = ins.targetNotifierURL
       @list_items           = ins.listItems
-      @server_host          = ins.targetApiHost
       @syncTrigger          = []
       @crypt                = if password
                                 Crypt.new( password )
                               else
                                 nil
                               end
-      @scheme               = ins.scheme
     end
 
     def authTest
-      uri = URI.parse("#{@scheme}://#{@server_api_host}/authTest")
+      uri = URI.parse("#{@server_api_url}authTest")
       begin
         Net::HTTP.start(uri.host, uri.port) do |http|
           resp = http.get(uri.request_uri, @auth.getAuthHash())
@@ -148,7 +146,7 @@ module PasteHub
     end
 
     def getList( limit = nil )
-      uri = URI.parse("#{@scheme}://#{@server_api_host}/getList")
+      uri = URI.parse("#{@server_api_url}getList")
       masterList = []
       Net::HTTP.start(uri.host, uri.port) do |http|
         h = {"content-type" => "plain/text"}
@@ -175,7 +173,7 @@ module PasteHub
     def getValue( key )
       raise RuntimeError, "Error: no encrypt password." unless @crypt
 
-      uri = URI.parse("#{@scheme}://#{@server_api_host}/getValue")
+      uri = URI.parse("#{@server_api_url}getValue")
       ret = ""
       Net::HTTP.start(uri.host, uri.port) do |http|
         resp = http.post(uri.request_uri, key, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ))
@@ -198,7 +196,7 @@ module PasteHub
         STDERR.puts( "Warning: encrypt password is wrong. putValue missing..." )
         ret = nil
       else
-        uri = URI.parse("#{@scheme}://#{@server_api_host}/putValue")
+        uri = URI.parse("#{@server_api_url}/putValue")
         ret = ""
         Net::HTTP.start(uri.host, uri.port) do |http|
           resp = http.post(uri.request_uri, _data,
@@ -214,7 +212,7 @@ module PasteHub
 
     def wait_notify( auth )
       begin
-        uri = URI.parse("#{@scheme}://#{@server_notifier_host}/")
+        uri = URI.parse("#{@server_notifier_url}/")
         Net::HTTP.start(uri.host, uri.port) do |http|
           request = Net::HTTP::Get.new(uri.request_uri, auth.getAuthHash())
           http.request(request) do |response|

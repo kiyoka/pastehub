@@ -74,8 +74,8 @@ PasteHub
 
 ~/.pastehub.conf
 {
-  "targetApiHost":       "localhost:8000",
-  "targetNotifierHost":  "localhost:8001",
+  "targetApiURL":        "http://localhost:8000/",
+  "targetNotifierURL":   "http://localhost:8001/",
   "localDbPath":         "/tmp/local/"
 }
 
