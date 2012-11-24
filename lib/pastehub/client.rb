@@ -1,4 +1,5 @@
 require 'net/http'
+require 'net/https'
 require 'uri'
 require 'open-uri'
 require 'fileutils'
@@ -114,7 +115,56 @@ module PasteHub
   end
 
 
-  class Client
+  class ClientBase
+
+    # return:  Net::HTTPResponse
+    def httpGet( uriStr, headerHash, errorMessage )
+      uri = URI.parse( uriStr )
+      begin
+        https = Net::HTTP.new(uri.host, uri.port)
+        if ( Net::HTTP.https_default_port == uri.port )
+          https.use_ssl     = true
+          https.verify_mode = OpenSSL::SSL::VERIFY_PEER
+        end
+        https.start {|http|
+          resp = http.get(uri.request_uri, headerHash)
+          if "200" == resp.code
+            return resp
+          end
+        }
+      rescue Exception => e
+        STDERR.puts errorMessage + ":" + e.to_s
+      end
+      return nil
+    end
+
+    # return:  Net::HTTPResponse
+    def httpPost( uriStr, bodyStr, headerHash, errorMessage )
+      uri = URI.parse( uriStr )
+      begin
+        https = Net::HTTP.new(uri.host, uri.port)
+        if ( Net::HTTP.https_default_port == uri.port )
+          https.use_ssl     = true
+          https.verify_mode = OpenSSL::SSL::VERIFY_PEER
+        end
+        https.start {|http|
+          resp = http.post(uri.request_uri, bodyStr, headerHash)
+          if "200" == resp.code
+            return resp
+          end
+        }
+      rescue Exception => e
+        STDERR.puts errorMessage + ":" + e.to_s
+      end
+      return nil
+    end
+
+
+
+  end
+
+
+  class Client < ClientBase
     def initialize( auth, password = nil )
       @auth = auth
       ins = PasteHub::Config.instance
@@ -131,62 +181,46 @@ module PasteHub
     end
 
     def authTest
-      uri = URI.parse("#{@server_api_url}authTest")
-      begin
-        Net::HTTP.start(uri.host, uri.port) do |http|
-          resp = http.get(uri.request_uri, @auth.getAuthHash())
-          if "200" == resp.code
-            return true
-          end
-        end
-      rescue
-        STDERR.puts "Error: can't connect to server for auth test"
-      end
-      return nil
+      httpGet( "#{@server_api_url}authTest", @auth.getAuthHash(), "Error: can't connect to server for auth test" )
     end
 
+
     def getList( limit = nil )
-      uri = URI.parse("#{@server_api_url}getList")
-      masterList = []
-      Net::HTTP.start(uri.host, uri.port) do |http|
-        h = {"content-type" => "plain/text"}
-        if limit
-          h[ 'X-Pastehub-Limit' ] = limit.to_i
-        end
-        resp = http.get(uri.request_uri, @auth.getAuthHash().merge( h ))
-        str = resp.read_body()
-        masterList = str.split( /\n/ )
-        STDERR.puts "Info: masterList lines = #{masterList.size}  #{str.size}Bytes"
-        masterList = masterList.select { |x|
-          okSize = "1340542369=2012-06-24.12:52:49=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".size
-          if okSize != x.size
-            STDERR.puts "Info: masterList(NG): " + x
-            false
-          else
-            x
-          end
-        }
+      h = {"content-type" => "plain/text"}
+      if limit
+        h[ 'X-Pastehub-Limit' ] = limit.to_i
       end
+
+      resp = httpGet( "#{@server_api_url}getList", @auth.getAuthHash().merge( h ), "Error: fails 'getList' from server." )
+      str = resp.read_body()
+      masterList = str.split( /\n/ )
+      STDERR.puts "Info: masterList lines = #{masterList.size}  #{str.size}Bytes"
+      masterList = masterList.select { |x|
+        okSize = "1340542369=2012-06-24.12:52:49=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".size
+        if okSize != x.size
+          STDERR.puts "Info: masterList(NG): " + x
+          false
+        else
+          x
+        end
+      }
       masterList
     end
 
     def getValue( key )
       raise RuntimeError, "Error: no encrypt password." unless @crypt
 
-      uri = URI.parse("#{@server_api_url}getValue")
-      ret = ""
-      Net::HTTP.start(uri.host, uri.port) do |http|
-        resp = http.post(uri.request_uri, key, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ))
-        ret = @crypt.de( resp.read_body() )
-        unless ret
-          STDERR.puts( "Warning: encrypt password is wrong. getValue missing..." )
-          ret = "error..."
-        end
+      resp = httpPost( "#{@server_api_url}getValue", key, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ), "Error: fails 'getList' from server." )
+      ret = @crypt.de( resp.read_body() )
+      unless ret
+        STDERR.puts( "Warning: encrypt password is wrong. getValue missing..." )
+        ret = "error..."
       end
       ret
     end
 
     def putValue( key, data )
+      ret = ""
       if not key
         key = "_"
       end
@@ -196,14 +230,12 @@ module PasteHub
         STDERR.puts( "Warning: encrypt password is wrong. putValue missing..." )
         ret = nil
       else
-        uri = URI.parse("#{@server_api_url}putValue")
-        ret = ""
-        Net::HTTP.start(uri.host, uri.port) do |http|
-          resp = http.post(uri.request_uri, _data,
-                      @auth.getAuthHash().merge(
-                                          { "content-type" => "plain/text",
-                                                  "x-pastehub-key" => key    }
-                                          ))
+        resp = httpPost( "#{@server_api_url}putValue", _data,
+               @auth.getAuthHash().merge(
+                                   { "content-type" => "plain/text",
+                                           "x-pastehub-key" => key    }),
+               "Error: fails 'getList' from server." )
+        if resp
           ret = resp.read_body()
         end
       end
@@ -212,29 +244,25 @@ module PasteHub
 
     def wait_notify( auth )
       begin
-        uri = URI.parse("#{@server_notifier_url}")
-        Net::HTTP.start(uri.host, uri.port) do |http|
-          request = Net::HTTP::Get.new(uri.request_uri, auth.getAuthHash())
-          http.request(request) do |response|
-            raise 'Response is not chuncked' unless response.chunked?
-            response.read_body do |chunk|
-              serverValue = chunk.chomp
-              if serverHasNew?( serverValue )
-                puts "Info: server has new data: #{serverValue}"
-                return chunk.chomp
-              else
-                puts "Info: server is stable:    #{serverValue}"
-              end
-              if localHasNew?( )
-                puts "Info: local  has new data"
-                return :local
-              end
-            end
-            if "200" != response.code
-              STDERR.puts "Error: request error result=[#{response.code}]"
-              return :retry
-            end
+        response = httpGet("#{@server_notifier_url}", auth.getAuthHash(), "Error: fails 'notifier' api on server." )
+
+        raise 'Response is not chuncked' unless response.chunked?
+        response.read_body do |chunk|
+          serverValue = chunk.chomp
+          if serverHasNew?( serverValue )
+            puts "Info: server has new data: #{serverValue}"
+            return chunk.chomp
+          else
+            puts "Info: server is stable:    #{serverValue}"
           end
+          if localHasNew?( )
+            puts "Info: local  has new data"
+            return :local
+          end
+        end
+        if "200" != response.code
+          STDERR.puts "Error: request error result=[#{response.code}]"
+          return :retry
         end
       rescue EOFError => e
         STDERR.puts "Error: disconnected by server."
