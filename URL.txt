@@ -21,10 +21,10 @@
 
 * apache settings
 
-    ProxyPass          /api            http://webapi.local:8000/
-    ProxyPassReverse   /api            http://webapi.local:8000/
-    ProxyPass          /notifier       http://webapi.local:8001/
-    ProxyPassReverse   /notifier       http://webapi.local:8001/
-    ProxyPass          /               http://webpage.local:3000/
-    ProxyPassReverse   /               http://webpage.local:3000/
+    ProxyPass          /api            http://webapi.local:8000
+    ProxyPassReverse   /api            http://webapi.local:8000
+    ProxyPass          /notifier       http://webapi.local:8001
+    ProxyPassReverse   /notifier       http://webapi.local:8001
+    ProxyPass          /               http://webpage.local:3000
+    ProxyPassReverse   /               http://webpage.local:3000
 
