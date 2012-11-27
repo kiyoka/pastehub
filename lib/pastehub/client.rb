@@ -159,7 +159,21 @@ module PasteHub
       return nil
     end
 
-
+    # return:  [ Net::HTTP, Net::HTTP::Get ]
+    def httpGetRequest( uriStr, headerHash, errorMessage )
+      uri = URI.parse( uriStr )
+      begin
+        https = Net::HTTP.new(uri.host, uri.port)
+        if ( Net::HTTP.https_default_port == uri.port )
+          https.use_ssl     = true
+          https.verify_mode = OpenSSL::SSL::VERIFY_PEER
+        end
+        return [ https, Net::HTTP::Get.new(uri.request_uri, headerHash) ]
+      rescue Exception => e
+        STDERR.puts errorMessage + ":" + e.to_s
+      end
+      return nil
+    end
 
   end
 
@@ -210,7 +224,7 @@ module PasteHub
     def getValue( key )
       raise RuntimeError, "Error: no encrypt password." unless @crypt
 
-      resp = httpPost( "#{@server_api_url}getValue", key, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ), "Error: fails 'getList' from server." )
+      resp = httpPost( "#{@server_api_url}getValue", key, @auth.getAuthHash().merge( {"content-type" => "plain/text"} ), "Error: fails 'getValue' from server." )
       ret = @crypt.de( resp.read_body() )
       unless ret
         STDERR.puts( "Warning: encrypt password is wrong. getValue missing..." )
@@ -232,9 +246,10 @@ module PasteHub
       else
         resp = httpPost( "#{@server_api_url}putValue", _data,
                @auth.getAuthHash().merge(
-                                   { "content-type" => "plain/text",
+                                   {
+                                           "content-type" => "plain/text",
                                            "x-pastehub-key" => key    }),
-               "Error: fails 'getList' from server." )
+               "Error: fails 'putValue' from server." )
         if resp
           ret = resp.read_body()
         end
@@ -244,26 +259,31 @@ module PasteHub
 
     def wait_notify( auth )
       begin
-        response = httpGet("#{@server_notifier_url}", auth.getAuthHash(), "Error: fails 'notifier' api on server." )
-
-        raise 'Response is not chuncked' unless response.chunked?
-        response.read_body do |chunk|
-          serverValue = chunk.chomp
-          if serverHasNew?( serverValue )
-            puts "Info: server has new data: #{serverValue}"
-            return chunk.chomp
-          else
-            puts "Info: server is stable:    #{serverValue}"
+        pair = httpGetRequest("#{@server_notifier_url}", auth.getAuthHash(), "Error: fails 'notifier' api on server." )
+        https       = pair[0]
+        getRequest  = pair[1]
+        https.start() { |http|
+          http.request(getRequest) do |response|
+            raise 'Response is not chuncked' unless response.chunked?
+            response.read_body do |chunk|
+              serverValue = chunk.chomp
+              if serverHasNew?( serverValue )
+                puts "Info: server has new data: #{serverValue}"
+                return chunk.chomp
+              else
+                puts "Info: server is stable:    #{serverValue}"
+              end
+              if localHasNew?( )
+                puts "Info: local  has new data"
+                return :local
+              end
+            end
+            if "200" != response.code
+              STDERR.puts "Error: request error result=[#{response.code}]"
+              return :retry
+            end
           end
-          if localHasNew?( )
-            puts "Info: local  has new data"
-            return :local
-          end
-        end
-        if "200" != response.code
-          STDERR.puts "Error: request error result=[#{response.code}]"
-          return :retry
-        end
+        }
       rescue EOFError => e
         STDERR.puts "Error: disconnected by server."
         return :retry
