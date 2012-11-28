@@ -19,12 +19,18 @@
       http://webapi.local:8001/
 
 
-* apache settings
+* nginx settings
 
-    ProxyPass          /api            http://webapi.local:8000/
-    ProxyPassReverse   /api            http://webapi.local:8000/
-    ProxyPass          /notifier       http://webapi.local:8001/
-    ProxyPassReverse   /notifier       http://webapi.local:8001/
-    ProxyPass          /               http://webpage.local:3000/
-    ProxyPassReverse   /               http://webpage.local:3000/
+    # proxy pastehub
+    #
+    location /api/ {
+        proxy_pass    http://webapi.local:8000/;
+    }
+    location /notifier/ {
+        proxy_pass    http://webapi.local:8001/;
+    }
+    location / {
+        proxy_pass    http://webpage.local:3000/;
+    }
+
 

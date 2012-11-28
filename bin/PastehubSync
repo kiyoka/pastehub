@@ -6,11 +6,6 @@ require 'pastehub'
 PasteHub::Config.instance.loadClient
 RETRY_INTERVAL = 60
 
-def signalHandler( clientSync, username, secretKey, password )
-  STDERR.puts( "Info: caught signal." )
-  clientSync.syncNow( username, secretKey, password )
-end
-
 
 def setup
   localdb_path = PasteHub::Config.instance.localDbPath
@@ -38,40 +33,41 @@ def main
 
   # create clientSync
   clientSync = PasteHub::ClientSync.new(
-                                    PasteHub::Config.instance.targetApiHost,
                                     PasteHub::Config.instance.listItems / 2,
                                     PasteHub::Config.instance.localDbPath,
                                     0.5 )
 
-  begin
-    Signal.trap( :SIGUSR1 ) {
-      signalHandler( clientSync, username, secretKey, password )
-    }
-    if username
-      threads = []
-      threads.push(Thread.new { clientSync.syncMain(    username, secretKey, password ) })
-      threads.push(Thread.new { clientSync.macosxCheck( username, secretKey, password ) })
-      threads.each {|t| t.join}
+  while true
+    begin
+      Signal.trap( :SIGUSR1 ) {
+        STDERR.puts( "Info: caught signal." )
+        clientSync.syncNow( username, secretKey, password )
+      }
+      if username
+        threads = []
+        threads.push(Thread.new { clientSync.syncMain(    username, secretKey, password ) })
+        threads.push(Thread.new { clientSync.macosxCheck( username, secretKey, password ) })
+        threads.each {|t| t.join}
+      end
+
+    rescue Errno::ECONNREFUSED => e
+      STDERR.puts "retrying... pastehub server is down(1)"
+      sleep RETRY_INTERVAL
+    rescue Errno::ETIMEDOUT => e
+      STDERR.puts "retrying... network is offline(1)"
+      sleep RETRY_INTERVAL
+    rescue SocketError => e
+      STDERR.puts "retrying... network is offline(2)"
+      sleep RETRY_INTERVAL
+    rescue Timeout::Error => e
+      # ONLINE, but server is not helthy
+      STDERR.puts "retrying... pastehub server is down(2)"
+      sleep RETRY_INTERVAL
+    rescue Errno::ECONNRESET => e
+      STDERR.puts "retrying... pastehub server is down(3)"
+      sleep RETRY_INTERVAL
     end
-
-  rescue Errno::ECONNREFUSED => e
-    STDERR.puts "retrying... pastehub server is down(1)"
-    sleep RETRY_INTERVAL
-  rescue Errno::ETIMEDOUT => e
-    STDERR.puts "retrying... network is offline(1)"
-    sleep RETRY_INTERVAL
-  rescue SocketError => e
-    STDERR.puts "retrying... network is offline(2)"
-    sleep RETRY_INTERVAL
-  rescue Timeout::Error => e
-    # ONLINE, but server is not helthy
-    STDERR.puts "retrying... pastehub server is down(2)"
-    sleep RETRY_INTERVAL
-  rescue Errno::ECONNRESET => e
-    STDERR.puts "retrying... pastehub server is down(3)"
-    sleep RETRY_INTERVAL
   end
-
 end
 
 main

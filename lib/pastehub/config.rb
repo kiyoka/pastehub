@@ -58,26 +58,29 @@ module PasteHub
                              end
     end
 
+    def appendSlash( uri )
+      if uri.match( /\/$/ )
+        uri
+      else
+        uri + "/"
+      end
+    end
+
     def setupClient( hash )
-      @targetApiHost       = if hash[ :targetApiHost ]
-                               hash[ :targetApiHost ]
+      @targetApiURL        = if hash[ :targetApiURL ]
+                               appendSlash( hash[ :targetApiURL ] )
                              else
-                               "pastehub.net:8000"
+                               "https://pastehub.net/api/"
                              end
-      @targetNotifierHost  = if hash[ :targetNotifierHost ]
-                               hash[ :targetNotifierHost ]
+      @targetNotifierURL   = if hash[ :targetNotifierURL ]
+                               appendSlash( hash[ :targetNotifierURL ] )
                              else
-                               "pastehub.net:8001"
+                               "https://pastehub.net/notifier/"
                              end
       @localDbPath         = if hash[ :localDbPath ]
                                hash[ :localDbPath ]
                              else
                                File.expand_path( "~/.pastehub/" ) + "/"
-                             end
-      @scheme              = if hash[ :scheme ]
-                               hash[ :scheme ]
-                             else
-                               "https"
                              end
    end
 
@@ -103,16 +106,16 @@ module PasteHub
       if File.exist?( name )
         open( name ) { |f|
           json = JSON.parse( f.read )
-          self.setupClient( { :targetApiHost      => json[ 'targetApiHost' ],
-                              :targetNotifierHost => json[ 'targetNotifierHost' ],
-                              :localDbPath        => json[ 'localDbPath' ],
-                              :scheme             => json[ 'scheme' ] } )
+          self.setupClient( { :targetApiURL       => json[ 'targetApiURL' ],
+                              :targetNotifierURL  => json[ 'targetNotifierURL' ],
+                              :localDbPath        => json[ 'localDbPath' ] } )
+
         }
       end
     end
 
     attr_reader :aws, :dynamoEp, :dynamoAccessKey, :dynamoSecretKey, :memcacheEp, :keyCacheTime, :domain
-    attr_reader :targetApiHost, :targetNotifierHost, :localDbPath, :listItems, :scheme
+    attr_reader :targetApiURL, :targetNotifierURL, :localDbPath, :listItems
     attr_accessor :awsWarn
   end
 end

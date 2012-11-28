@@ -8,8 +8,7 @@ module PasteHub
 
   class ClientSync
 
-    def initialize( server_api_host, alive_entries, localdb_path, polling_interval )
-      @server_api_host      = server_api_host
+    def initialize( alive_entries, localdb_path, polling_interval )
       @alive_entries        = alive_entries
       @localdb_path         = localdb_path
       @polling_interval     = polling_interval

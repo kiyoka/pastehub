@@ -48,10 +48,9 @@ describe PasteHub::Config, "When use config object...  " do
     @config.dynamoSecretKey.should     == 'xxxx'
     @config.memcacheEp.should          == "localhost:11211"
     @config.keyCacheTime.should        == 24 * 3600
-    @config.targetApiHost.should       == "pastehub.net:8000"
-    @config.targetNotifierHost.should  == "pastehub.net:8001"
+    @config.targetApiURL.should        == "https://pastehub.net/api/"
+    @config.targetNotifierURL.should   == "https://pastehub.net/notifier/"
     @config.localDbPath.should         == File.expand_path( "~/.pastehub/" ) + "/"
-    @config.scheme.should              == "https"
   end
 end
 
@@ -65,10 +64,9 @@ describe PasteHub::Config, "When use config object...  " do
                            :dynamoSecretKey    => 'secretKey',
                            :memcacheEp         => 'memcache.example.com:11211',
                            :keyCacheTime       => 10 } )
-    @config.setupClient( { :targetApiHost      => "localhost:8000",
-                           :targetNotifierHost => "localhost:8001",
-                           :localDbPath        => "/tmp/local/",
-                           :scheme             => "http" } )
+    @config.setupClient( { :targetApiURL       => "http://localhost:8000",
+                           :targetNotifierURL  => "http://localhost:8001",
+                           :localDbPath        => "/tmp/local/" } )
   end
 
   it "should" do
@@ -79,10 +77,9 @@ describe PasteHub::Config, "When use config object...  " do
     @config.memcacheEp.should          == "memcache.example.com:11211"
     @config.keyCacheTime.should        == 10
     @config.domain                     == "localhost"
-    @config.targetApiHost.should       == "localhost:8000"
-    @config.targetNotifierHost.should  == "localhost:8001"
+    @config.targetApiURL.should        == "http://localhost:8000/"
+    @config.targetNotifierURL.should   == "http://localhost:8001/"
     @config.localDbPath.should         == "/tmp/local/"
-    @config.scheme.should              == "http"
   end
 end
 
@@ -98,10 +95,9 @@ describe PasteHub::Config, "When use config object...  " do
                            :memcacheEp         => "memcache.example.com:11211",
                            :keyCacheTime       => 1000,
                            :domain             => "domain.example.com" } )
-    @config.setupClient( { :targetApiHost      => "host.example.com:8000",
-                           :targetNotifierHost => "host.example.com:8001",
-                           :localDbPath        => "/tmp/tmp/tmp",
-                           :scheme             => "ftp" } )
+    @config.setupClient( { :targetApiURL       => "http://host.example.com:8000/abc/",
+                           :targetNotifierURL  => "http://host.example.com:8001/def",
+                           :localDbPath        => "/tmp/tmp/tmp" } )
   end
 
   it "should" do
@@ -113,9 +109,8 @@ describe PasteHub::Config, "When use config object...  " do
     @config.memcacheEp.should          == "memcache.example.com:11211"
     @config.keyCacheTime.should        == 1000
     @config.domain                     == "domain.example.com"
-    @config.targetApiHost.should       == "host.example.com:8000"
-    @config.targetNotifierHost.should  == "host.example.com:8001"
+    @config.targetApiURL.should        == "http://host.example.com:8000/abc/"
+    @config.targetNotifierURL.should   == "http://host.example.com:8001/def/"
     @config.localDbPath.should         == "/tmp/tmp/tmp"
-    @config.scheme.should              == "ftp"
   end
 end
