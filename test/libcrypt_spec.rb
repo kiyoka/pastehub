@@ -52,6 +52,7 @@ line 3
 line 4
 "
            ).should                                    == "tfvawjcqv9RjMZ0ZnBanz4LSh6B32J5hZIkdpa3Lvdo=\n"
+    @crypt.en( "" ).should             == ""
   end
 end
 
@@ -73,6 +74,8 @@ line 2
 line 3
 line 4
 "
+
+    @crypt.de( "" ).should                             == ""
   end
 end
 

@@ -9,21 +9,29 @@ module PasteHub
     end
 
     def en( str )
-      @des3.encrypt
-      @des3.pkcs5_keyivgen( @password )
-      Base64.encode64( @des3.update( str ) + @des3.final )
+      if 0 == str.size
+        ""
+      else
+        @des3.encrypt
+        @des3.pkcs5_keyivgen( @password )
+        Base64.encode64( @des3.update( str ) + @des3.final )
+      end
     end
 
     def de( str )
-      begin
-        @des3.decrypt
-        @des3.pkcs5_keyivgen( @password )
-        ret =  @des3.update( Base64.decode64( str ))
-        ret += @des3.final
-      rescue OpenSSL::Cipher::CipherError => e
-        ret = nil
+      if 0 == str.size
+        ""
+      else
+        begin
+          @des3.decrypt
+          @des3.pkcs5_keyivgen( @password )
+          ret =  @des3.update( Base64.decode64( str ))
+          ret += @des3.final
+        rescue OpenSSL::Cipher::CipherError => e
+          ret = nil
+        end
+        ret
       end
-      ret
     end
   end
 end
