@@ -122,7 +122,7 @@ module PasteHub
       uri = URI.parse( uriStr )
       begin
         https = Net::HTTP.new(uri.host, uri.port)
-        if ( Net::HTTP.https_default_port == uri.port )
+        if ( Net::HTTP.https_default_port == uri.port ) or ( "https" == uri.scheme )
           https.use_ssl     = true
           https.verify_mode = OpenSSL::SSL::VERIFY_PEER
         end
@@ -143,7 +143,7 @@ module PasteHub
       uri = URI.parse( uriStr )
       begin
         https = Net::HTTP.new(uri.host, uri.port)
-        if ( Net::HTTP.https_default_port == uri.port )
+        if ( Net::HTTP.https_default_port == uri.port ) or ( "https" == uri.scheme )
           https.use_ssl     = true
           https.verify_mode = OpenSSL::SSL::VERIFY_PEER
         end
@@ -164,7 +164,7 @@ module PasteHub
       uri = URI.parse( uriStr )
       begin
         https = Net::HTTP.new(uri.host, uri.port)
-        if ( Net::HTTP.https_default_port == uri.port )
+        if ( Net::HTTP.https_default_port == uri.port ) or ( "https" == uri.scheme )
           https.use_ssl     = true
           https.verify_mode = OpenSSL::SSL::VERIFY_PEER
         end
