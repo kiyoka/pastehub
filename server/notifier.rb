@@ -12,6 +12,7 @@ printf( "Use AWS:                 %s\n", ins.aws )
 printf( "Domain:                  %s\n", ins.domain )
 printf( "Dynamo   Endpoint:       %s\n", ins.dynamoEp )
 printf( "Memcache Endpoint:       %s\n", ins.memcacheEp )
+printf( "ssl keystore file:       %s\n", ins.keystore )
 
 # initialize master database
 require 'pastehub/masterdb'
@@ -39,6 +40,12 @@ def notify( res, str )
 end
 
 notifier = Vertx::HttpServer.new
+if ins.keystore
+  notifier.ssl = true
+  notifier.key_store_path     = ins.keystore
+  notifier.key_store_password = ins.keystorePassword
+end
+
 notifier.request_handler do |req|
   util = PasteHub::Util.new
   auth = PasteHub::AuthForServer.new( users )
