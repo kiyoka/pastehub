@@ -56,6 +56,16 @@ module PasteHub
                              else
                                "localhost"
                              end
+      @keystore            = if hash[ :keystore ]
+                               hash[ :keystore ]
+                             else
+                               nil
+                             end
+      @keystorePassword    = if hash[ :keystorePassword ]
+                               hash[ :keystorePassword ]
+                             else
+                               "password"
+                             end
     end
 
     def appendSlash( uri )
@@ -75,7 +85,7 @@ module PasteHub
       @targetNotifierURL   = if hash[ :targetNotifierURL ]
                                appendSlash( hash[ :targetNotifierURL ] )
                              else
-                               "https://pastehub.net/notifier/"
+                               "https://pastehub.net:8001/"
                              end
       @localDbPath         = if hash[ :localDbPath ]
                                hash[ :localDbPath ]
@@ -96,7 +106,9 @@ module PasteHub
                               :dynamoSecretKey    => json[ 'dynamoSecretKey' ],
                               :memcacheEp         => json[ 'memcacheEp' ],
                               :keyCacheTime       => json[ 'keyCacheTime' ],
-                              :domain             => json[ 'domain' ] } )
+                              :domain             => json[ 'domain' ],
+                              :keystore           => json[ 'keystore' ],
+                              :keystorePassword   => json[ 'keystorePassword' ] } )
         }
       end
     end
@@ -114,7 +126,7 @@ module PasteHub
       end
     end
 
-    attr_reader :aws, :dynamoEp, :dynamoAccessKey, :dynamoSecretKey, :memcacheEp, :keyCacheTime, :domain
+    attr_reader :aws, :dynamoEp, :dynamoAccessKey, :dynamoSecretKey, :memcacheEp, :keyCacheTime, :domain, :keystore, :keystorePassword
     attr_reader :targetApiURL, :targetNotifierURL, :localDbPath, :listItems
     attr_accessor :awsWarn
   end

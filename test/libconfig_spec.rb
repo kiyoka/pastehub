@@ -49,8 +49,10 @@ describe PasteHub::Config, "When use config object...  " do
     @config.memcacheEp.should          == "localhost:11211"
     @config.keyCacheTime.should        == 24 * 3600
     @config.targetApiURL.should        == "https://pastehub.net/api/"
-    @config.targetNotifierURL.should   == "https://pastehub.net/notifier/"
+    @config.targetNotifierURL.should   == "https://pastehub.net:8001/"
     @config.localDbPath.should         == File.expand_path( "~/.pastehub/" ) + "/"
+    @config.keystore.should               be_nil
+    @config.keystorePassword.should    == "password"
   end
 end
 
@@ -94,7 +96,9 @@ describe PasteHub::Config, "When use config object...  " do
                            :dynamoSecretKey    => 'b',
                            :memcacheEp         => "memcache.example.com:11211",
                            :keyCacheTime       => 1000,
-                           :domain             => "domain.example.com" } )
+                           :domain             => "domain.example.com",
+                           :keystore           => "/etc/keystore/keystore.jks",
+                           :keystorePassword   => "long_long_password" } )
     @config.setupClient( { :targetApiURL       => "http://host.example.com:8000/abc/",
                            :targetNotifierURL  => "http://host.example.com:8001/def",
                            :localDbPath        => "/tmp/tmp/tmp" } )
@@ -109,6 +113,8 @@ describe PasteHub::Config, "When use config object...  " do
     @config.memcacheEp.should          == "memcache.example.com:11211"
     @config.keyCacheTime.should        == 1000
     @config.domain                     == "domain.example.com"
+    @config.keystore                   == "/etc/keystore/keystore.jks"
+    @config.keystorePassword           == "long_long_password"
     @config.targetApiURL.should        == "http://host.example.com:8000/abc/"
     @config.targetNotifierURL.should   == "http://host.example.com:8001/def/"
     @config.localDbPath.should         == "/tmp/tmp/tmp"
