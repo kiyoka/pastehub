@@ -7,16 +7,17 @@ module PasteHub
       if hash.is_a? Hash
         if hash.has_key?( :user )
           @user = hash[ :user ]
+        else
+          @user = 'UNKNOWN'
         end
         if hash.has_key?( :api )
           @api  = hash[ :api ]
+        else
+          raise ArgumentError if not @api
         end
       else
         raise ArgumentError
       end
-
-      raise ArgumentError if not @user
-      raise ArgumentError if not @api
 
       Fluent::Logger::FluentLogger.open(nil, :host=>'localhost', :port=>24224)
     end

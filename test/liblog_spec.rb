@@ -40,13 +40,16 @@ require 'pastehub/log'
 describe Log, "When Log class is used ...  " do
 
   before do
-    @log_for_userA = Log.new( { :api => 'api_a',     :user => 'userA' } )
-    @log_for_userB = Log.new( { :api => 'authTest',  :user => 'userB' } )
+    @log_for_userA   = Log.new( { :api => 'api_a',     :user => 'userA' } )
+    @log_for_userB   = Log.new( { :api => 'authTest',  :user => 'userB' } )
+    @log_for_unknown = Log.new( { :api => 'api_u'                       } )
   end
 
   it "should" do
-    @log_for_userA.info(  'RSpec test(info) ' ).should   == true
-    @log_for_userB.error( 'RSpec test(error)' ).should   == true
+    @log_for_userA.info(    'RSpec test(info) '         ).should   == true
+    @log_for_userB.error(   'RSpec test(error)'         ).should   == true
+    @log_for_unknown.info(  'RSpec test(unknown.info)'  ).should   == true
+    @log_for_unknown.error( 'RSpec test(unknown.error)' ).should   == true
   end
 end
 
@@ -54,7 +57,7 @@ describe Log, "When log use in illegal manner ...  " do
 
   it "should" do
     lambda { Log.new( )                                        }.should      raise_error(ArgumentError)
-    lambda { Log.new( { :api  => 'api1'  } )                   }.should      raise_error(ArgumentError)
+    lambda { Log.new( { :api  => 'api1'  } )                   }.should_not  raise_error
     lambda { Log.new( { :user => 'userA' } )                   }.should      raise_error(ArgumentError)
     lambda { Log.new( { :aaa  => 'userA' } )                   }.should      raise_error(ArgumentError)
     lambda { Log.new( { :api  => 'api_a', :user => 'userA' } ) }.should_not  raise_error
