@@ -53,6 +53,11 @@ task :test do
   sh "time ruby -I ./lib `which rspec` -b   ./test/libclient_spec.rb      -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
   sh "time ruby -I ./lib `which rspec` -b   ./test/libmasterdb_spec.rb    -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
   sh "time ruby -I ./lib `which rspec` -b   ./test/libuserdb_spec.rb      -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
+  sh "time ruby -I ./lib `which rspec` -b   ./test/liblog_spec.rb         -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
+end
+
+task :fluentd_for_test do
+  sh "fluentd -c ./fluentd-conf-for-test/fluent.conf"
 end
 
 task :test_u do
