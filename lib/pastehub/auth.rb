@@ -90,7 +90,7 @@ module PasteHub
     end
 
     # return:
-    #  [ true/false, :reason ]
+    #  [ true/false, "username", :reason ]
     def invoke( hash, serverTime )
       auth = Auth.new
       client_sign = ""
@@ -104,14 +104,14 @@ module PasteHub
           client_sign = v
         end
       }
-      
+
       #pp [ "auth.getAuthHash()", auth.getAuthHash() ]
       #pp [ "client_sign", client_sign ]
       #pp [ "auth.username", auth.username ]
 
       if not auth.username
         # fail... username was unspecified
-        [ false, :unspecified_user ]
+        [ false, 'UNSPECIFIED', :unspecified_user ]
       else
         if @users.getSecretKey(auth.username)
           server_sign = auth.calcSignature( @users.getSecretKey(auth.username) )
@@ -120,17 +120,17 @@ module PasteHub
 
             if expired?( auth.curTime, serverTime )
               # authentication success
-              [ false, :expired_client_request ]
+              [ false, auth.username, :expired_client_request ]
             else
-              [ true,  auth.username ]
+              [ true,  auth.username, :ok ]
             end
           else
             # fail...
-            [ false, :illegal_signature ]
+            [ false, auth.username, :illegal_signature ]
           end
         else
           # unknown user
-          [ false, :unknown_user ]
+          [ false, auth.username, :unknown_user ]
         end
       end
     end

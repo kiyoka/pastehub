@@ -50,6 +50,8 @@ describe Log, "When Log class is used ...  " do
     @log_for_userB.error(   'RSpec test(error)'         ).should   == true
     @log_for_unknown.info(  'RSpec test(unknown.info)'  ).should   == true
     @log_for_unknown.error( 'RSpec test(unknown.error)' ).should   == true
+    @log_for_userA.info(    'RSpec test(more hash arg:info)',   { :more1 => 1 }              ).should   == true
+    @log_for_userA.error(   'RSpec test(more hash arg:error)',  { :more1 => 1, :more2 => 2 } ).should   == true
   end
 end
 

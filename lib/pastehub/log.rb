@@ -8,7 +8,7 @@ module PasteHub
         if hash.has_key?( :user )
           @user = hash[ :user ]
         else
-          @user = 'UNKNOWN'
+          @user = 'UNSPECIFIED'
         end
         if hash.has_key?( :api )
           @api  = hash[ :api ]
@@ -30,23 +30,23 @@ module PasteHub
 
   class Log < LogBase
     # info without error
-    def info( message )
+    def info( message, moreHash = {} )
       hashData = {
           "from"=>"#{@user}",
           "api"=>"#{@api}",
           "message"=>"#{message}",
           "error" => false}
-      write( hashData )
+      write( hashData.merge( moreHash ) )
     end
 
     # errors
-    def error( message )
+    def error( message, moreHash = {} )
       hashData = {
           "from"=>"#{@user}",
           "api"=>"#{@api}",
           "message"=>"#{message}",
           "error" => true}
-      write( hashData )
+      write( hashData.merge( moreHash ) )
     end
   end
 end

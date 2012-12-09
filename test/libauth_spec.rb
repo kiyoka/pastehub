@@ -94,7 +94,7 @@ describe Auth, "When server auth library is used ...  " do
                              "x-pastehub-version"=>"2012-06-16",
                              "authorization"=>"JdBdwsmcJ7jIy3EQ0lX5MjlKUprYump10UDxr0fxnRA="
                            }, 10000000
-                           ).should  == [ true, "userA" ]
+                           ).should  == [ true, "userA", :ok ]
 
     @auth.addElement( 'x-pastehub-username', 'unknownUser' )
     @auth.addElement( 'x-pastehub-date',     '10000000' )
@@ -106,7 +106,7 @@ describe Auth, "When server auth library is used ...  " do
                              "x-pastehub-date"=>"10000000",
                              'x-pastehub-version'=>'2012-06-16'
                            }, 10000000
-                           ).should  == [ false, :unknown_user ]
+                           ).should  == [ false, "unknownUser", :unknown_user ]
 
     @authForServer.invoke( {
                              "x-pastehub-username"=>"userA",
@@ -114,7 +114,7 @@ describe Auth, "When server auth library is used ...  " do
                              "x-pastehub-version"=>"2012-06-16",
                              "authorization"=>"XXXXXXXXXXXX"
                            }, 10000000
-                           ).should  == [ false, :illegal_signature ]
+                           ).should  == [ false, "userA", :illegal_signature ]
   end
 end
 
@@ -134,12 +134,12 @@ describe Auth, "When server auth library invokes time expire check ...  " do
   end
 
   it "should" do
-    @authForServer.invoke( @headers, 1339639491            ).should          == [ true,  "userA" ]
+    @authForServer.invoke( @headers, 1339639491            ).should          == [ true,  "userA", :ok ]
     # after  1 minutes
-    @authForServer.invoke( @headers, 1339639491 + 60       ).should          == [ true,  "userA" ]
+    @authForServer.invoke( @headers, 1339639491 + 60       ).should          == [ true,  "userA", :ok ]
     # after  6 minutes
-    @authForServer.invoke( @headers, 1339639491 + (60 * 6) ).should          == [ false, :expired_client_request ]
+    @authForServer.invoke( @headers, 1339639491 + (60 * 6) ).should          == [ false, "userA", :expired_client_request ]
     # before 6 minutes
-    @authForServer.invoke( @headers, 1339639491 - (60 * 6) ).should          == [ false, :expired_client_request ]
+    @authForServer.invoke( @headers, 1339639491 - (60 * 6) ).should          == [ false, "userA", :expired_client_request ]
   end
 end
