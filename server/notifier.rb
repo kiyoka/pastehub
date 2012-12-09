@@ -4,6 +4,7 @@ require 'memcache'
 require 'pp'
 $LOAD_PATH.push( File.dirname(__FILE__) + "/../lib" )
 require 'pastehub'
+require 'pastehub/log'
 PasteHub::Config.instance.loadServer
 
 # display config info
@@ -54,11 +55,11 @@ notifier.request_handler do |req|
   # Now send back a response
   req.response.chunked = true
 
+  log = PasteHub::Log.new( :api => 'notifier', :user => ret[1] )
   if ret[0]
-    username = ret[1]
-    puts "Connected from user [#{username}]"
+    log.info( "connected" )
   else
-    puts "Error: " + ret[1].to_s
+    log.error( 'Auth failure:' + ret[2].to_s, { :reason => ret[2].to_s } )
     req.response.status_code = 403
     req.response.status_message = "Authorization failure."
     req.response.end
@@ -73,11 +74,13 @@ notifier.request_handler do |req|
     if notifyHash[ username ]
       if got != notifyHash[ username ]
         got = notifyHash[ username ]
+        log.info( 'notify', { :notify => got } )
         notify( req.response, got )
       end
     end
 
     if ( POLLING_SEC < timer_count )
+      log.info( 'timeout', { :notify => nil } )
       req.response.end
       Vertx::cancel_timer(timer_id)
     end

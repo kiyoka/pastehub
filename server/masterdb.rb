@@ -6,6 +6,7 @@ require 'memcache'
 
 $LOAD_PATH.push( File.dirname(__FILE__) + "/../lib" )
 require 'pastehub'
+require 'pastehub/log'
 PasteHub::Config.instance.loadServer
 
 # display config info
@@ -42,11 +43,11 @@ masterdb_server.request_handler do |req|
     auth = PasteHub::AuthForServer.new( users )
     ret = auth.invoke( req.headers, util.currentSeconds() )
 
+    log = PasteHub::Log.new( :api => req.path, :user => ret[1] )
     if ret[0]
-      username = ret[1]
-      puts "Connected from user [#{username}]"
+      log.info( "connected" )
     else
-      puts "Error: " + ret[1].to_s
+      log.error( 'Auth failure:' + ret[2].to_s, { :reason => ret[2].to_s } )
       req.response.status_code = 403
       req.response.status_message = "Authorization failure."
       req.response.end
@@ -78,7 +79,7 @@ masterdb_server.request_handler do |req|
       prevKey = notifyHash.get( username )
       if prevKey
         if util.key_digest( prevKey ) == digest
-          puts "[#{username}]:putValue: canceled because data is duplicate. "
+          log.info( "canceled because data is duplicate. ", { :key => key } )
           insertFlag = false
           key = prevKey
         end
@@ -86,9 +87,9 @@ masterdb_server.request_handler do |req|
 
       if insertFlag
         Vertx.set_timer(1000) do
-          puts "    START: delayed job"
+          log.info( "START: delayed job." )
           # update db
-          puts "[#{username}]:putValue: key=[#{key}] "
+          log.info( "insert", { :key => key } )
           entries.insertValue( key, data )
           users.touch( username )
           # notify to client
@@ -99,7 +100,7 @@ masterdb_server.request_handler do |req|
           if PasteHub::Config.instance.listItems < arr.size
             entries.deleteValue( arr[arr.size-1] )
           end
-          puts "    END:   delayed job"
+          log.info( "END:   delayed job", { :entries => arr.size } )
         end
       end
       req.response.end( key )
@@ -112,7 +113,7 @@ masterdb_server.request_handler do |req|
       else
         str = entries.getList( ).join( "\n" )
       end
-      puts "[#{username}]:getList (#{limit}) response: "
+      log.info( "getList", { :limit => limit, :entries => entries.getList( ).size } )
       puts str
       req.response.end( str )
 
@@ -123,12 +124,13 @@ masterdb_server.request_handler do |req|
       else
         str = ""
       end
+      log.info( "getValue", { :key => k } )
       puts "[#{username}]:getValue:" + k
       req.response.end( str )
 
     else
       mes = "Error: Unknown API #{req.path}"
-      puts mes
+      log.error( mes )
       req.response.status_code = 400
       req.response.status_message = mes
       req.response.end
