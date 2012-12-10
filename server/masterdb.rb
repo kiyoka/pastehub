@@ -42,8 +42,9 @@ masterdb_server.request_handler do |req|
     util = PasteHub::Util.new
     auth = PasteHub::AuthForServer.new( users )
     ret = auth.invoke( req.headers, util.currentSeconds() )
+    username = ret[1]
 
-    log = PasteHub::Log.new( :api => req.path, :user => ret[1] )
+    log = PasteHub::Log.new( :api => req.path, :user => username )
     if ret[0]
       log.info( "connected" )
     else

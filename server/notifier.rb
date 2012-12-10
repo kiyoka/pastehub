@@ -52,10 +52,11 @@ notifier.request_handler do |req|
   auth = PasteHub::AuthForServer.new( users )
 
   ret = auth.invoke( req.headers, util.currentSeconds() )
+  username = ret[1]
   # Now send back a response
   req.response.chunked = true
 
-  log = PasteHub::Log.new( :api => 'notifier', :user => ret[1] )
+  log = PasteHub::Log.new( :api => 'notifier', :user => username )
   if ret[0]
     log.info( "connected" )
   else
