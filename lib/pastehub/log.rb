@@ -1,4 +1,4 @@
-require 'fluent-logger'
+require 'pp'
 
 module PasteHub
   class LogBase
@@ -19,12 +19,23 @@ module PasteHub
         raise ArgumentError
       end
 
-      Fluent::Logger::FluentLogger.open(nil, :host=>'localhost', :port=>24224)
+      @uri = URI.parse( "http://localhost:9880/pastehub.webapi" )
+      @http = Net::HTTP.new(@uri.host, @uri.port)
+      #Fluent::Logger::FluentLogger.open(nil, :host=>'localhost', :port=>24224)
     end
 
     def write( hashData )
-      Fluent::Logger.post("pastehub.webapi_prod",  hashData)
-      Fluent::Logger.post("pastehub.webapi_rspec", hashData)
+      begin
+        jsonStr = hashData.to_json
+        resp = @http.post( @uri.request_uri, "json=" + jsonStr )
+        if "200" != resp.code
+          STDERR.print "Error: can't post to fluentd(http)[1].\n"
+        end
+      rescue
+        STDERR.print "Error: can't post to fluentd(http)[2].\n"
+      end
+      #Fluent::Logger.post("pastehub.webapi",  hashData)
+      true
     end
   end
 
