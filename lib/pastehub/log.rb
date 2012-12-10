@@ -43,7 +43,7 @@ module PasteHub
     # info without error
     def info( message, moreHash = {} )
       hashData = {
-          "from"=>"#{@user}",
+          "user"=>"#{@user}",
           "api"=>"#{@api}",
           "message"=>"#{message}",
           "error" => false}
@@ -53,7 +53,7 @@ module PasteHub
     # errors
     def error( message, moreHash = {} )
       hashData = {
-          "from"=>"#{@user}",
+          "user"=>"#{@user}",
           "api"=>"#{@api}",
           "message"=>"#{message}",
           "error" => true}
