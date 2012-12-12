@@ -58,8 +58,8 @@ module PasteHub
               return [ username, secretKey, password ]
             end
             STDERR.puts( "Error: password setting failed..." )
-          rescue
-            STDERR.puts( "Error: can't save #{signfile}" )
+          rescue Exception => e
+            STDERR.puts( "Error: can't save #{signfile}: #{e.to_s}" )
           end
         else
           STDERR.puts( "your email or secret key is not registerd..." )

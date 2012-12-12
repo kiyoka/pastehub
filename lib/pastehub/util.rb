@@ -2,6 +2,7 @@ require 'digest'
 require 'date'
 require 'set'
 require 'highline'
+require 'password_strength'
 
 module PasteHub
   class Util
@@ -87,9 +88,21 @@ module PasteHub
 
     # input utility
     def inputPasswordTwice( message, firstLabel, secondLabel )
+      required_password_chars = 6
+
       STDERR.puts( message )
       3.times { |n|
-        firstStr  = HighLine.new.ask(firstLabel)  {|q| q.echo = '*' }
+        firstStr = nil
+        while not firstStr
+          firstStr  = HighLine.new.ask(firstLabel)  {|q| q.echo = '*' }
+          if required_password_chars > firstStr.size()
+            STDERR.puts( "you must input #{required_password_chars} or more characters." )
+            firstStr = nil
+          elsif firstStr.match( /[ \t]/i )
+            STDERR.puts( "you must not use white space characters." )
+            firstStr = nil
+          end
+        end
         secondStr = HighLine.new.ask(secondLabel) {|q| q.echo = '*' }
         if firstStr == secondStr
           return firstStr
