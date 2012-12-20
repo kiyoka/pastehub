@@ -2,7 +2,6 @@ source "http://rubygems.org"
 gem 'gdbm'
 gem 'highline'
 gem 'dynamoid', "<= 0.5.0"
-gem 'password_strength'
 
 # need to add JRuby properties for memcache native extention. 
 # $ cat ~/.jrubyrc 

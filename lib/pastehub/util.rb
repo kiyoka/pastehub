@@ -2,7 +2,6 @@ require 'digest'
 require 'date'
 require 'set'
 require 'highline'
-require 'password_strength'
 
 module PasteHub
   class Util
