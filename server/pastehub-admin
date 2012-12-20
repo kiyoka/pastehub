@@ -19,32 +19,20 @@ STDERR.printf( "Memcache Endpoint:       %s\n", ins.memcacheEp )
 # initialize master database
 require 'pastehub/masterdb'
 
-## insert data for debug
-if false
-  users = PasteHub::Users.new( )
-  users.addUser( "userA",  "ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==" )
-  users.addUser( "userB",  "MjZmZDc5OWVhMDc0OTQ5MTZlOWRhOWI5MWIyYWFjNjQ2Mzk3ZjM0YQ==" )
-
-  entries = PasteHub::Entries.new( "userA" )
-  entries.insertValue( "key001", "data001" )
-  entries.insertValue( "key002", "data002" )
-  entries.insertValue( "key003", "data003" )
-  entries.insertValue( "key004", "data004" )
-  entries.insertValue( "key005", "data005" )
-
-  entries = PasteHub::Entries.new( "userB" )
-  (1..30).each {|i|
-    printf( "i = %d\n", i )
-    entries.insertValue(
-                        sprintf( "key%03d", i ),
-                        sprintf( "value%03d", i ))
-  }
-end
-
 module PasteHub
   class Admin
     ALIVE_ENTRIES = PasteHub::Config.instance.listItems
     GC_INTERVAL   = 60*60
+
+    def setup( )
+      username = "____setup_user____"
+      ## insert data for debug
+      users = PasteHub::Users.new( )
+      users.addUser( username,  "ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==" )
+      entries = PasteHub::Entries.new( username )
+      entries.insertValue( "key001", "data001" )
+      users.__deleteUser( username )
+    end
 
     def listUsers( )
       userList = Users.new( ).getList()
@@ -130,6 +118,8 @@ def main
 
   command = ARGV[0].downcase
   case command
+  when "setup"
+    admin.setup()
   when "list"
     admin.listUsers()
   when "get"
