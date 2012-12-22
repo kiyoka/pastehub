@@ -7,8 +7,14 @@ ROOTDIR=./work/pastehub-${VERSION}
 BASEDIR=./work/pastehub-${VERSION}/opt/pastehub
 
 
-all : ./pastehub.spec  ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz
+all : pastehub.spec  ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz
 	rpmbuild -ba pastehub.spec
+
+pastehub.spec : pastehub.spec.in
+	echo -n "Version: "  >   pastehub.spec
+	echo ${VERSION}      >>  pastehub.spec
+	cat pastehub.spec.in >>  pastehub.spec
+
 
 ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz	: ${BASEDIR}/ruby-1.9.3-p194/bin/ruby
 	./gemcopy.sh ${BASEDIR}
@@ -28,9 +34,11 @@ ruby-1.9.3-p194.tar.gz :
 
 
 clean:
+	rm -f pastehub.spec
 	rm -rf ./work
 
 clean2:
+	rm -f pastehub.spec
 	rm -f ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz
 	rm -rf ~/rpmbuild/BUILDROOT/*
 

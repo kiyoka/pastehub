@@ -1,8 +1,9 @@
+/*.deb
+/*.rpm
 /getVersion.rb~
 /pastehub-installer-0.1.5.tar.gz
 /pastehub-installer.tar.gz
+/pastehub.spec
 /pastehub.spec~
 /ruby-1.9.3-p194.tar.gz
 /work
-/*.deb
-/*.rpm
