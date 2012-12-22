@@ -58,6 +58,18 @@
     pastehub-client-dump))
 
 ;;
+;; Version
+;;
+(defconst pastehub-version
+  "0.9.0"
+  )
+(defun pastehub-version (&optional arg)
+  "display version"
+  (interactive "P")
+  (message pastehub-version))
+
+
+;;
 ;; Paste
 ;;
 (defun posthub-post-internal ()
@@ -69,13 +81,15 @@
 
 (defadvice kill-new (after pastehub-post activate)
   "Post the latest killed text to pastehub cloud service."
-  (posthub-post-internal))
+  (when pastehub-mode
+    (posthub-post-internal)))
 
 (ad-activate 'kill-new)
 
 (defadvice insert-for-yank-1 (after pastehub-insert-for-yank-1 activate)
   "reset unread counter."
-  (setq pastehub-unread-count 0))
+  (when pastehub-mode
+    (setq pastehub-unread-count 0)))
   
 (ad-activate 'insert-for-yank-1)
 
@@ -144,12 +158,13 @@
 
 (defun pastehub-timer-handler ()
   "polling process handler for pastehub service."
-  (let ((latest-date
-	 (pastehub-call-process (get-pastehub-client-dump) "latest" "")))
-    (if (not (string-equal pastehub-latest-date latest-date))
-	(progn
-	  (setq pastehub-latest-date latest-date)
-	  (pastehub-sync-kill-ring)))))
+  (when pastehub-mode
+    (let ((latest-date
+	   (pastehub-call-process (get-pastehub-client-dump) "latest" "")))
+      (if (not (string-equal pastehub-latest-date latest-date))
+	  (progn
+	    (setq pastehub-latest-date latest-date)
+	    (pastehub-sync-kill-ring))))))
 	    
 (defun pastehub-sigusr-handler ()
   (interactive)
@@ -162,8 +177,19 @@
 (setq pastehub-timer-object
       (run-at-time t  60.0  'pastehub-timer-handler))
 
+
+;; mode changer
+(defun pastehub-mode (&optional arg)
+  "Pastehub mode changer"
+  (interactive "P")
+  (setq pastehub-mode (if (null arg) (not pastehub-mode)
+			(> (prefix-numeric-value arg) 0))))
+
+
 ;; enable pastehub-mode
 (setq pastehub-mode t)
 (pastehub-timer-handler) ;; one shot for initializing.
 
 
+(provide 'pastehub)
+;;; pastehub.el ends here
