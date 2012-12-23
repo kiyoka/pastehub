@@ -21,6 +21,15 @@
 ;; along with PasteHub.el; see the file COPYING.
 ;;
 
+;;; Commentary:
+
+;; PasteHub.net Cloud-based cross-platform clipboard (copy and paste)
+;; service.  PasteHub.el is an emacs client for PasteHub.net .
+;; 
+;; PasteHub.el can synchronize kill-ring with PasteHub.net cloud
+;; service automatically.  You don't have to learn new key-bindings.
+
+;;; Code:
 
 (defcustom pastehub-sync-items 10
   "number of paste items to sync."
