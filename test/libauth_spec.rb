@@ -39,7 +39,6 @@ include PasteHub
 conf = PasteHub::Config.instance
 conf.setupServer( { :memcacheEp         => 'localhost:11211',
                     :domain             => 'rspec' } )
-require 'pastehub/masterdb'
 
 
 describe Auth, "When client auth library is used (OK)...  " do
@@ -66,80 +65,5 @@ describe Auth, "When client auth library is used (OK)...  " do
       "authorization"=>"JdBdwsmcJ7jIy3EQ0lX5MjlKUprYump10UDxr0fxnRA="
     }
     authForClient.username.should == "userA"
-  end
-end
-
-describe Auth, "When server auth library is used ...  " do
-  before do
-    @auth = Auth.new
-
-    @userA = [ "userA",  "ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==" ]
-    users = Users.new( )
-    users.addUser( @userA[0], @userA[1] )
-    @authForServer = AuthForServer.new( users )
-
-    @ok_signature  = "JdBdwsmcJ7jIy3EQ0lX5MjlKUprYump10UDxr0fxnRA="
-  end
-
-  it "should" do
-    @auth.addElement( 'x-pastehub-username', 'userA' )
-    @auth.addElement( 'x-pastehub-date',     '10000000' )
-    @auth.addElement( 'x-pastehub-version',  '2012-06-16' )
-    @auth.calcSignature( @userA[1] ).should                       == @ok_signature
-
-
-    @authForServer.invoke( {
-                             "x-pastehub-username"=>"userA",
-                             "x-pastehub-date"=>"10000000",
-                             "x-pastehub-version"=>"2012-06-16",
-                             "authorization"=>"JdBdwsmcJ7jIy3EQ0lX5MjlKUprYump10UDxr0fxnRA="
-                           }, 10000000
-                           ).should  == [ true, "userA", :ok ]
-
-    @auth.addElement( 'x-pastehub-username', 'unknownUser' )
-    @auth.addElement( 'x-pastehub-date',     '10000000' )
-    @auth.addElement( 'x-pastehub-version',  '2012-06-16' )
-    @auth.calcSignature( @userA[1] ).should_not                   == @ok_signature
-
-    @authForServer.invoke( {
-                             'x-pastehub-username' => 'unknownUser',
-                             "x-pastehub-date"=>"10000000",
-                             'x-pastehub-version'=>'2012-06-16'
-                           }, 10000000
-                           ).should  == [ false, "unknownUser", :unknown_user ]
-
-    @authForServer.invoke( {
-                             "x-pastehub-username"=>"userA",
-                             "x-pastehub-date"=>"10000000",
-                             "x-pastehub-version"=>"2012-06-16",
-                             "authorization"=>"XXXXXXXXXXXX"
-                           }, 10000000
-                           ).should  == [ false, "userA", :illegal_signature ]
-  end
-end
-
-describe Auth, "When server auth library invokes time expire check ...  " do
-  before do
-    @userA = [ "userA",  "ZGFiYTRkNDg5MzA0YTA0Y2ExYzQ2MGFiNjM0YjFlNzJlMzcyZDVhZg==" ]
-    users = Users.new( )
-    users.addUser( @userA[0], @userA[1] )
-    @authForServer = AuthForServer.new( users )
-
-    @headers = {
-      "x-pastehub-username"=>"userA",
-      "x-pastehub-date"=>"1339639491",
-      "x-pastehub-version"=>"2012-06-16",
-      "authorization"=>"Nzvcsfnkbu/mlM+r5/YaZ676j08WiPikoS7KrpZf/RM="
-    }
-  end
-
-  it "should" do
-    @authForServer.invoke( @headers, 1339639491            ).should          == [ true,  "userA", :ok ]
-    # after  1 minutes
-    @authForServer.invoke( @headers, 1339639491 + 60       ).should          == [ true,  "userA", :ok ]
-    # after  6 minutes
-    @authForServer.invoke( @headers, 1339639491 + (60 * 6) ).should          == [ false, "userA", :expired_client_request ]
-    # before 6 minutes
-    @authForServer.invoke( @headers, 1339639491 - (60 * 6) ).should          == [ false, "userA", :expired_client_request ]
   end
 end
