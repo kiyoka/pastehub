@@ -16,7 +16,7 @@ module PasteHub
     # return the currentTime in Unixtime
     def currentTime( )
       dt = Time.new.gmtime.to_datetime()
-      currentDate = dt.strftime( "%s" ) + "=" + dt.strftime( "%F.%R:%S" )
+      currentDate = dt.strftime( "%s" ) + "=" + dt.strftime( "%F.%H:%M:%S" )
       currentDate
     end
 
