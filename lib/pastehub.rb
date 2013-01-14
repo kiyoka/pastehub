@@ -1,5 +1,5 @@
 #
-#                            PasteHub
+# pastehub.rb - PasteHub's top-level library file
 #
 #
 #   Copyright (c) 2012  Kiyoka Nishiyama  <kiyoka@sumibi.org>
