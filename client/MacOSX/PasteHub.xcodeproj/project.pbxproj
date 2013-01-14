@@ -14,9 +14,9 @@
 		CC0DE69916917D5C00438185 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE69716917D5C00438185 /* MainMenu.xib */; };
 		CC0DE69C16917D5C00438185 /* rb_main.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE69B16917D5C00438185 /* rb_main.rb */; };
 		CC0DE69E16917D5C00438185 /* AppDelegate.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE69D16917D5C00438185 /* AppDelegate.rb */; };
-		CC0DE6AC1691858300438185 /* PasteHubSatusMenu.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE6AB1691858300438185 /* PasteHubSatusMenu.rb */; };
 		CC0DE6AF1691859400438185 /* PasteHubCustomView.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE6AE1691859400438185 /* PasteHubCustomView.rb */; };
 		CC52A359169DBDA7008D83CF /* AccountInformationWindow.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC52A358169DBDA7008D83CF /* AccountInformationWindow.rb */; };
+		CC61014816A41E7700EDDCB8 /* PasteHubStatusMenu.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC61014716A41E7700EDDCB8 /* PasteHubStatusMenu.rb */; };
 		CC61D8F01691BC2B00FB4564 /* pastehub_status_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = CC61D8EF1691BC2B00FB4564 /* pastehub_status_bar.png */; };
 /* End PBXBuildFile section */
 
@@ -41,9 +41,9 @@
 		CC0DE69816917D5C00438185 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		CC0DE69B16917D5C00438185 /* rb_main.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = rb_main.rb; sourceTree = "<group>"; };
 		CC0DE69D16917D5C00438185 /* AppDelegate.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = AppDelegate.rb; sourceTree = "<group>"; };
-		CC0DE6AB1691858300438185 /* PasteHubSatusMenu.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = PasteHubSatusMenu.rb; sourceTree = "<group>"; };
 		CC0DE6AE1691859400438185 /* PasteHubCustomView.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = PasteHubCustomView.rb; sourceTree = "<group>"; };
 		CC52A358169DBDA7008D83CF /* AccountInformationWindow.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = AccountInformationWindow.rb; sourceTree = "<group>"; };
+		CC61014716A41E7700EDDCB8 /* PasteHubStatusMenu.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = PasteHubStatusMenu.rb; sourceTree = "<group>"; };
 		CC61D8EF1691BC2B00FB4564 /* pastehub_status_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pastehub_status_bar.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -89,9 +89,9 @@
 		CC0DE68D16917D5C00438185 /* PasteHub */ = {
 			isa = PBXGroup;
 			children = (
+				CC61014716A41E7700EDDCB8 /* PasteHubStatusMenu.rb */,
 				CC0DE69D16917D5C00438185 /* AppDelegate.rb */,
 				CC0DE6AE1691859400438185 /* PasteHubCustomView.rb */,
-				CC0DE6AB1691858300438185 /* PasteHubSatusMenu.rb */,
 				CC52A358169DBDA7008D83CF /* AccountInformationWindow.rb */,
 				CC0DE69616917D5C00438185 /* Resources */,
 				CC0DE69A16917D5C00438185 /* Other Sources */,
@@ -201,10 +201,10 @@
 				CC0DE69916917D5C00438185 /* MainMenu.xib in Resources */,
 				CC0DE69C16917D5C00438185 /* rb_main.rb in Resources */,
 				CC0DE69E16917D5C00438185 /* AppDelegate.rb in Resources */,
-				CC0DE6AC1691858300438185 /* PasteHubSatusMenu.rb in Resources */,
 				CC0DE6AF1691859400438185 /* PasteHubCustomView.rb in Resources */,
 				CC61D8F01691BC2B00FB4564 /* pastehub_status_bar.png in Resources */,
 				CC52A359169DBDA7008D83CF /* AccountInformationWindow.rb in Resources */,
+				CC61014816A41E7700EDDCB8 /* PasteHubStatusMenu.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
