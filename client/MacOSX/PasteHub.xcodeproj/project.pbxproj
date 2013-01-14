@@ -1,0 +1,382 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CC0DE68716917D5C00438185 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC0DE68616917D5C00438185 /* Cocoa.framework */; };
+		CC0DE68916917D5C00438185 /* MacRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC0DE68816917D5C00438185 /* MacRuby.framework */; };
+		CC0DE69216917D5C00438185 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE69016917D5C00438185 /* InfoPlist.strings */; };
+		CC0DE69416917D5C00438185 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CC0DE69316917D5C00438185 /* main.m */; };
+		CC0DE69916917D5C00438185 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE69716917D5C00438185 /* MainMenu.xib */; };
+		CC0DE69C16917D5C00438185 /* rb_main.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE69B16917D5C00438185 /* rb_main.rb */; };
+		CC0DE69E16917D5C00438185 /* AppDelegate.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE69D16917D5C00438185 /* AppDelegate.rb */; };
+		CC0DE6AC1691858300438185 /* PasteHubSatusMenu.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE6AB1691858300438185 /* PasteHubSatusMenu.rb */; };
+		CC0DE6AF1691859400438185 /* PasteHubCustomView.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE6AE1691859400438185 /* PasteHubCustomView.rb */; };
+		CC52A359169DBDA7008D83CF /* AccountInformationWindow.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC52A358169DBDA7008D83CF /* AccountInformationWindow.rb */; };
+		CC61D8F01691BC2B00FB4564 /* pastehub_status_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = CC61D8EF1691BC2B00FB4564 /* pastehub_status_bar.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CC0DE68B16917D5C00438185 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CC0DE67916917D5C00438185 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC0DE68116917D5C00438185;
+			remoteInfo = PasteHub;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CC0DE68216917D5C00438185 /* PasteHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PasteHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC0DE68616917D5C00438185 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		CC0DE68816917D5C00438185 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = Library/Frameworks/MacRuby.framework; sourceTree = DEVELOPER_DIR; };
+		CC0DE68F16917D5C00438185 /* PasteHub-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PasteHub-Info.plist"; sourceTree = "<group>"; };
+		CC0DE69116917D5C00438185 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CC0DE69316917D5C00438185 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		CC0DE69516917D5C00438185 /* PasteHub-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PasteHub-Prefix.pch"; sourceTree = "<group>"; };
+		CC0DE69816917D5C00438185 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		CC0DE69B16917D5C00438185 /* rb_main.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = rb_main.rb; sourceTree = "<group>"; };
+		CC0DE69D16917D5C00438185 /* AppDelegate.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = AppDelegate.rb; sourceTree = "<group>"; };
+		CC0DE6AB1691858300438185 /* PasteHubSatusMenu.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = PasteHubSatusMenu.rb; sourceTree = "<group>"; };
+		CC0DE6AE1691859400438185 /* PasteHubCustomView.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = PasteHubCustomView.rb; sourceTree = "<group>"; };
+		CC52A358169DBDA7008D83CF /* AccountInformationWindow.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = AccountInformationWindow.rb; sourceTree = "<group>"; };
+		CC61D8EF1691BC2B00FB4564 /* pastehub_status_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pastehub_status_bar.png; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CC0DE67F16917D5C00438185 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC0DE68716917D5C00438185 /* Cocoa.framework in Frameworks */,
+				CC0DE68916917D5C00438185 /* MacRuby.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CC0DE67716917D5C00438185 = {
+			isa = PBXGroup;
+			children = (
+				CC0DE68D16917D5C00438185 /* PasteHub */,
+				CC0DE68516917D5C00438185 /* Frameworks */,
+				CC0DE68316917D5C00438185 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CC0DE68316917D5C00438185 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CC0DE68216917D5C00438185 /* PasteHub.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CC0DE68516917D5C00438185 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CC0DE68616917D5C00438185 /* Cocoa.framework */,
+				CC0DE68816917D5C00438185 /* MacRuby.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CC0DE68D16917D5C00438185 /* PasteHub */ = {
+			isa = PBXGroup;
+			children = (
+				CC0DE69D16917D5C00438185 /* AppDelegate.rb */,
+				CC0DE6AE1691859400438185 /* PasteHubCustomView.rb */,
+				CC0DE6AB1691858300438185 /* PasteHubSatusMenu.rb */,
+				CC52A358169DBDA7008D83CF /* AccountInformationWindow.rb */,
+				CC0DE69616917D5C00438185 /* Resources */,
+				CC0DE69A16917D5C00438185 /* Other Sources */,
+				CC0DE68E16917D5C00438185 /* Supporting Files */,
+			);
+			path = PasteHub;
+			sourceTree = "<group>";
+		};
+		CC0DE68E16917D5C00438185 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CC0DE68F16917D5C00438185 /* PasteHub-Info.plist */,
+				CC0DE69016917D5C00438185 /* InfoPlist.strings */,
+				CC0DE69316917D5C00438185 /* main.m */,
+				CC0DE69516917D5C00438185 /* PasteHub-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		CC0DE69616917D5C00438185 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CC61D8EF1691BC2B00FB4564 /* pastehub_status_bar.png */,
+				CC0DE69716917D5C00438185 /* MainMenu.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		CC0DE69A16917D5C00438185 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				CC0DE69B16917D5C00438185 /* rb_main.rb */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		CC0DE68A16917D5C00438185 /* Deployment */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "--compile --embed";
+			buildConfigurationList = CC0DE6A416917D5C00438185 /* Build configuration list for PBXLegacyTarget "Deployment" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/local/bin/macruby_deploy;
+			dependencies = (
+				CC0DE68C16917D5C00438185 /* PBXTargetDependency */,
+			);
+			name = Deployment;
+			passBuildSettingsInEnvironment = 1;
+			productName = Deployment;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXNativeTarget section */
+		CC0DE68116917D5C00438185 /* PasteHub */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC0DE6A116917D5C00438185 /* Build configuration list for PBXNativeTarget "PasteHub" */;
+			buildPhases = (
+				CC0DE67E16917D5C00438185 /* Sources */,
+				CC0DE67F16917D5C00438185 /* Frameworks */,
+				CC0DE68016917D5C00438185 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PasteHub;
+			productName = PasteHub;
+			productReference = CC0DE68216917D5C00438185 /* PasteHub.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CC0DE67916917D5C00438185 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = "西山 清香";
+			};
+			buildConfigurationList = CC0DE67C16917D5C00438185 /* Build configuration list for PBXProject "PasteHub" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = CC0DE67716917D5C00438185;
+			productRefGroup = CC0DE68316917D5C00438185 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CC0DE68116917D5C00438185 /* PasteHub */,
+				CC0DE68A16917D5C00438185 /* Deployment */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CC0DE68016917D5C00438185 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC0DE69216917D5C00438185 /* InfoPlist.strings in Resources */,
+				CC0DE69916917D5C00438185 /* MainMenu.xib in Resources */,
+				CC0DE69C16917D5C00438185 /* rb_main.rb in Resources */,
+				CC0DE69E16917D5C00438185 /* AppDelegate.rb in Resources */,
+				CC0DE6AC1691858300438185 /* PasteHubSatusMenu.rb in Resources */,
+				CC0DE6AF1691859400438185 /* PasteHubCustomView.rb in Resources */,
+				CC61D8F01691BC2B00FB4564 /* pastehub_status_bar.png in Resources */,
+				CC52A359169DBDA7008D83CF /* AccountInformationWindow.rb in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CC0DE67E16917D5C00438185 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC0DE69416917D5C00438185 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CC0DE68C16917D5C00438185 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC0DE68116917D5C00438185 /* PasteHub */;
+			targetProxy = CC0DE68B16917D5C00438185 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CC0DE69016917D5C00438185 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CC0DE69116917D5C00438185 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		CC0DE69716917D5C00438185 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CC0DE69816917D5C00438185 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CC0DE69F16917D5C00438185 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		CC0DE6A016917D5C00438185 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		CC0DE6A216917D5C00438185 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"/Library/Frameworks\"",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				GCC_ENABLE_OBJC_GC = required;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PasteHub/PasteHub-Prefix.pch";
+				INFOPLIST_FILE = "PasteHub/PasteHub-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		CC0DE6A316917D5C00438185 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"/Library/Frameworks\"",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				GCC_ENABLE_OBJC_GC = required;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PasteHub/PasteHub-Prefix.pch";
+				INFOPLIST_FILE = "PasteHub/PasteHub-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		CC0DE6A516917D5C00438185 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+			};
+			name = Debug;
+		};
+		CC0DE6A616917D5C00438185 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CC0DE67C16917D5C00438185 /* Build configuration list for PBXProject "PasteHub" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC0DE69F16917D5C00438185 /* Debug */,
+				CC0DE6A016917D5C00438185 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC0DE6A116917D5C00438185 /* Build configuration list for PBXNativeTarget "PasteHub" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC0DE6A216917D5C00438185 /* Debug */,
+				CC0DE6A316917D5C00438185 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC0DE6A416917D5C00438185 /* Build configuration list for PBXLegacyTarget "Deployment" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC0DE6A516917D5C00438185 /* Debug */,
+				CC0DE6A616917D5C00438185 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CC0DE67916917D5C00438185 /* Project object */;
+}
