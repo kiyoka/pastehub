@@ -32,13 +32,36 @@
 #  
 #
 class PasteHubStatusMenu < NSMenu
-  attr_accessor :status_bar_item
-  def awakeFromNib
-    self.status_bar_item = NSStatusBar.systemStatusBar.statusItemWithLength(NSVariableStatusItemLength)
+    attr_accessor :status_bar_item
+
+    def awakeFromNib
+        self.status_bar_item = NSStatusBar.systemStatusBar.statusItemWithLength(NSVariableStatusItemLength)
     
-    image = NSImage.imageNamed 'pastehub_status_bar.png' # 17x17 dot
-    self.status_bar_item.setImage image
-    self.status_bar_item.setHighlightMode true    
-    self.status_bar_item.setMenu self
-  end
+        setStatusIcon(:normal)
+
+        # regist observer for "respond_to_status_change"
+        NSNotificationCenter.defaultCenter.addObserver(self,
+                                                       selector:"respond_to_change_status:",
+                                                       name:"change_status", object:nil)
+    end
+
+    def setStatusIcon(sym)
+        case sym
+        when :normal
+            image = NSImage.imageNamed 'pastehub_statusbar_normal.png'
+        when :checked
+            image = NSImage.imageNamed 'pastehub_statusbar_checked.png'
+        when :one
+            image = NSImage.imageNamed 'pastehub_statusbar_one.png'
+        end
+        self.status_bar_item.setImage image
+        self.status_bar_item.setHighlightMode true
+        self.status_bar_item.setMenu self
+    end
+    
+    def respond_to_change_status(notification)
+        p "respond_to_change_status"
+        setStatusIcon(notification.userInfo[:status])
+    end
+
 end

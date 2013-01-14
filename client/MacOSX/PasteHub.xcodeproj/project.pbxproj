@@ -17,7 +17,9 @@
 		CC0DE6AF1691859400438185 /* PasteHubCustomView.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE6AE1691859400438185 /* PasteHubCustomView.rb */; };
 		CC52A359169DBDA7008D83CF /* AccountInformationWindow.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC52A358169DBDA7008D83CF /* AccountInformationWindow.rb */; };
 		CC61014816A41E7700EDDCB8 /* PasteHubStatusMenu.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC61014716A41E7700EDDCB8 /* PasteHubStatusMenu.rb */; };
-		CC61D8F01691BC2B00FB4564 /* pastehub_status_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = CC61D8EF1691BC2B00FB4564 /* pastehub_status_bar.png */; };
+		CC9BA0D216A43DF400051048 /* pastehub_statusbar_1.png in Resources */ = {isa = PBXBuildFile; fileRef = CC9BA0CF16A43DF400051048 /* pastehub_statusbar_1.png */; };
+		CC9BA0D316A43DF400051048 /* pastehub_statusbar_checked.png in Resources */ = {isa = PBXBuildFile; fileRef = CC9BA0D016A43DF400051048 /* pastehub_statusbar_checked.png */; };
+		CC9BA0D416A43DF400051048 /* pastehub_statusbar_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = CC9BA0D116A43DF400051048 /* pastehub_statusbar_normal.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,7 +46,9 @@
 		CC0DE6AE1691859400438185 /* PasteHubCustomView.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = PasteHubCustomView.rb; sourceTree = "<group>"; };
 		CC52A358169DBDA7008D83CF /* AccountInformationWindow.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = AccountInformationWindow.rb; sourceTree = "<group>"; };
 		CC61014716A41E7700EDDCB8 /* PasteHubStatusMenu.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = PasteHubStatusMenu.rb; sourceTree = "<group>"; };
-		CC61D8EF1691BC2B00FB4564 /* pastehub_status_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pastehub_status_bar.png; sourceTree = "<group>"; };
+		CC9BA0CF16A43DF400051048 /* pastehub_statusbar_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pastehub_statusbar_1.png; sourceTree = "<group>"; };
+		CC9BA0D016A43DF400051048 /* pastehub_statusbar_checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pastehub_statusbar_checked.png; sourceTree = "<group>"; };
+		CC9BA0D116A43DF400051048 /* pastehub_statusbar_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pastehub_statusbar_normal.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,7 +118,9 @@
 		CC0DE69616917D5C00438185 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				CC61D8EF1691BC2B00FB4564 /* pastehub_status_bar.png */,
+				CC9BA0CF16A43DF400051048 /* pastehub_statusbar_1.png */,
+				CC9BA0D016A43DF400051048 /* pastehub_statusbar_checked.png */,
+				CC9BA0D116A43DF400051048 /* pastehub_statusbar_normal.png */,
 				CC0DE69716917D5C00438185 /* MainMenu.xib */,
 			);
 			name = Resources;
@@ -202,9 +208,11 @@
 				CC0DE69C16917D5C00438185 /* rb_main.rb in Resources */,
 				CC0DE69E16917D5C00438185 /* AppDelegate.rb in Resources */,
 				CC0DE6AF1691859400438185 /* PasteHubCustomView.rb in Resources */,
-				CC61D8F01691BC2B00FB4564 /* pastehub_status_bar.png in Resources */,
 				CC52A359169DBDA7008D83CF /* AccountInformationWindow.rb in Resources */,
 				CC61014816A41E7700EDDCB8 /* PasteHubStatusMenu.rb in Resources */,
+				CC9BA0D216A43DF400051048 /* pastehub_statusbar_1.png in Resources */,
+				CC9BA0D316A43DF400051048 /* pastehub_statusbar_checked.png in Resources */,
+				CC9BA0D416A43DF400051048 /* pastehub_statusbar_normal.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
