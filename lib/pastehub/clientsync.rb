@@ -2,7 +2,6 @@ require 'net/http'
 require 'uri'
 require 'open-uri'
 require 'fileutils'
-require 'highline'
 
 module PasteHub
 

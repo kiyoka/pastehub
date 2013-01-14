@@ -3,12 +3,15 @@ require 'net/https'
 require 'uri'
 require 'open-uri'
 require 'fileutils'
-require 'highline'
 
 module PasteHub
 
-  def self.loadUsername
+  def self.signfilePath
     signfile = PasteHub::Config.instance.localDbPath + "authinfo.txt"
+  end
+
+  def self.loadUsername
+    signfile = self.signfilePath
 
     # load authenticate information
     if not File.exist?( signfile )
@@ -22,28 +25,29 @@ module PasteHub
             return username
           end
         }
-      rescue
-        return nil
+      rescue Exception => e
+        STDERR.puts( "Error: can't load #{signfile}: #{e.to_s}" )
+        raise e
       end
       return nil
     end
   end
 
   def self.signIn
-    signfile = PasteHub::Config.instance.localDbPath + "authinfo.txt"
+    signfile = self.signfilePath
+    util = Util.new
 
     # authenticate information
     if not File.exist?( signfile )
       3.times { |n|
-        HighLine.new.say( "Please input your account information" )
-        username  = HighLine.new.ask("       email: ")
-        secretKey = HighLine.new.ask("  secret-key: " )
+        util.say( "Please input your account information" )
+        username  = util.inputText("       email: ")
+        secretKey = util.inputText("  secret-key: " )
         auth = AuthForClient.new( username, secretKey )
         client = Client.new( auth )
         if client.authTest()
           # save authinfo with gpg
           begin
-            util = Util.new
             password = util.inputPasswordTwice(
                             "Please input password for crypted file",
                             "  password            : ",
@@ -68,11 +72,11 @@ module PasteHub
     else
       begin
         open( signfile ) {|f|
-          HighLine.new.say( "Please input password for crypted file" )
+          util.say( "Please input password for crypted file" )
           username = f.readline.chomp
           signStr = f.read
           3.times { |n|
-            password  = HighLine.new.ask("  crypt password: ") {|q| q.echo = "*"}
+            password  = util.inputPassword("  crypt password: ")
             crypt = PasteHub::Crypt.new( password )
             secretKey= crypt.de( signStr )
             if secretKey
@@ -87,8 +91,9 @@ module PasteHub
             STDERR.puts( "Error: missing password." )
           }
         }
-      rescue
-        STDERR.puts( "Error: can't load #{signfile}" )
+      rescue Exception => e
+        STDERR.puts( "Error: can't load #{signfile}: #{e.to_s}" )
+        raise e
       end
     end
     return [ nil, nil, nil ]
@@ -108,7 +113,8 @@ module PasteHub
       pid = open( pidFile ) {|f|
         f.readline.chomp.to_i
       }
-    rescue
+    rescue Exception => e
+      STDERR.puts( "Warning: can't load #{pidFile}: #{e.to_s}" )
       pid = 0
     end
     return pid

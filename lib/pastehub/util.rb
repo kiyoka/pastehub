@@ -1,9 +1,16 @@
 require 'digest'
 require 'date'
 require 'set'
-require 'highline'
 
 module PasteHub
+  require 'rubygems'
+  begin
+    require 'highline'
+    USE_HIGHLINE = true
+  rescue LoadError
+    USE_HIGHLINE = false
+  end
+
   class Util
     def initialize()
     end
@@ -85,6 +92,39 @@ module PasteHub
       end
     end
 
+    def say( message )
+      if USE_HIGHLINE
+        HighLine.new.say( message ) {|q|
+          q.readline = true
+        }
+      else
+        puts "#{message}"
+      end
+    end
+
+    def inputText( label )
+      if USE_HIGHLINE
+        HighLine.new.ask( label )  {|q|
+          q.readline = true
+        }
+      else
+        print "#{label}"
+        return gets.chomp
+      end
+    end
+    
+    def inputPassword( label )
+      if USE_HIGHLINE
+        HighLine.new.ask( label )  {|q|
+          q.readline = true
+          q.echo = '*'
+        }
+      else
+        print "#{label}"
+        return gets.chomp
+      end
+    end
+
     # input utility
     def inputPasswordTwice( message, firstLabel, secondLabel )
       required_password_chars = 6
@@ -93,7 +133,7 @@ module PasteHub
       3.times { |n|
         firstStr = nil
         while not firstStr
-          firstStr  = HighLine.new.ask(firstLabel)  {|q| q.echo = '*' }
+          firstStr  = inputPassword(firstLabel)
           if required_password_chars > firstStr.size()
             STDERR.puts( "you must input #{required_password_chars} or more characters." )
             firstStr = nil
@@ -102,7 +142,7 @@ module PasteHub
             firstStr = nil
           end
         end
-        secondStr = HighLine.new.ask(secondLabel) {|q| q.echo = '*' }
+        secondStr = inputPassword(secondLabel)
         if firstStr == secondStr
           return firstStr
         end

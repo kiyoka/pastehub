@@ -15,26 +15,30 @@ SETENV_A="export PASTEHUB_USER=userA ; export PASTEHUB_SECRET_KEY='ZGFiYTRkNDg5M
 require 'rake'
 begin
   require 'jeweler2'
-  Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "pastehub"
-    gemspec.summary = "PasteHub is cloud-based cross-platform clipboard sync."
-    gemspec.description = "PasteHub is cloud-based cross-platform clipboard sync."
-    gemspec.email = "kiyoka@sumibi.org"
-    gemspec.homepage = "http://github.com/kiyoka/pastehub"
-    gemspec.authors = ["Kiyoka Nishiyama"]
-    gemspec.files = FileList['Rakefile',
-                             '.gemtest',
-                             'VERSION.yml',
-                             'README.txt',
-                             'bin/*',
-                             'lib/*.rb',
-                             'lib/*/*.rb',
-                             'server/*.rb'
-                            ].to_a
-    gemspec.add_development_dependency "rspec"
-    gemspec.add_development_dependency "rake"
-    gemspec.add_dependency             "json"
-    gemspec.add_dependency             "highline"
+  ['pastehub', 'pastehub_macruby'].each do |name|
+    Jeweler::Tasks.new do |gemspec|
+      gemspec.name = name
+      gemspec.summary = "PasteHub is cloud-based cross-platform clipboard sync."
+      gemspec.description = "PasteHub is cloud-based cross-platform clipboard sync."
+      gemspec.email = "kiyoka@sumibi.org"
+      gemspec.homepage = "http://github.com/kiyoka/pastehub"
+      gemspec.authors = ["Kiyoka Nishiyama"]
+      gemspec.files = FileList['Rakefile',
+                               '.gemtest',
+                               'VERSION.yml',
+                               'README.txt',
+                               'bin/*',
+                               'lib/*.rb',
+                               'lib/*/*.rb',
+                               'server/*.rb'
+                              ].to_a
+      gemspec.add_development_dependency "rspec"
+      gemspec.add_development_dependency "rake"
+      if 'pastehub' == name
+        gemspec.add_dependency             "json"
+        gemspec.add_dependency             "highline"
+      end
+    end
   end
 rescue LoadError
   puts 'Jeweler2 not available. If you want to build a gemfile, please install with "sudo gem install jeweler2"'
@@ -45,15 +49,30 @@ end
 
 task :test do
   sh "rm -f /tmp/usertmp.db"
-  sh "time ruby -I ./lib `which rspec` -b   ./test/libstore_spec.rb       -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
-  sh "time ruby -I ./lib `which rspec` -b   ./test/libconfig_spec.rb      -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
-  sh "time ruby -I ./lib `which rspec` -b   ./test/libutil_spec.rb        -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
-  sh "time ruby -I ./lib `which rspec` -b   ./test/libcrypt_spec.rb       -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
-  sh "time ruby -I ./lib `which rspec` -b   ./test/libauth_spec.rb        -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
-  sh "time ruby -I ./lib `which rspec` -b   ./test/libclient_spec.rb      -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
-  sh "time ruby -I ./lib `which rspec` -b   ./test/libmasterdb_spec.rb    -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
-  sh "time ruby -I ./lib `which rspec` -b   ./test/libuserdb_spec.rb      -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
-  sh "time ruby -I ./lib `which rspec` -b   ./test/liblog_spec.rb         -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
+  sh "time ruby    -I ./lib `which rspec` -b   ./test/libstore_spec.rb       "
+  sh "time ruby    -I ./lib `which rspec` -b   ./test/libconfig_spec.rb      "
+  sh "time ruby    -I ./lib `which rspec` -b   ./test/libutil_spec.rb        "
+  sh "time ruby    -I ./lib `which rspec` -b   ./test/libcrypt_spec.rb       "
+  sh "time ruby    -I ./lib `which rspec` -b   ./test/libauth_spec.rb        "
+  sh "time ruby    -I ./lib `which rspec` -b   ./test/libauth2_spec.rb       "
+  sh "time ruby    -I ./lib `which rspec` -b   ./test/libclient_spec.rb      "
+  sh "time ruby    -I ./lib `which rspec` -b   ./test/liblog_spec.rb         "
+  sh "time ruby    -I ./lib `which rspec` -b   ./test/libmasterdb_spec.rb    "
+  sh "time ruby    -I ./lib `which rspec` -b   ./test/libuserdb_spec.rb      "
+end
+
+task :test_macruby do
+  sh "rm -f /tmp/usertmp.db"
+  sh "time macruby -I ./lib `which rspec` -b   ./test/libstore_spec.rb       "
+  sh "time macruby -I ./lib `which rspec` -b   ./test/libconfig_spec.rb      "
+  sh "time macruby -I ./lib `which rspec` -b   ./test/libutil_spec.rb        "
+  sh "time macruby -I ./lib `which rspec` -b   ./test/libcrypt_spec.rb       "
+  sh "time macruby -I ./lib `which rspec` -b   ./test/libauth_spec.rb        "
+#  sh "time macruby -I ./lib `which rspec` -b   ./test/libauth2_spec.rb       "
+  sh "time macruby -I ./lib `which rspec` -b   ./test/libclient_spec.rb      "
+  sh "time macruby -I ./lib `which rspec` -b   ./test/liblog_spec.rb         "
+#  sh "time macruby -I ./lib `which rspec` -b   ./test/libmasterdb_spec.rb    "
+#  sh "time macruby -I ./lib `which rspec` -b   ./test/libuserdb_spec.rb      "
 end
 
 task :fluentd_for_test do
