@@ -40,7 +40,6 @@ class AppDelegate
     attr_accessor :accountInfo
 
     def applicationDidFinishLaunching(a_notification)
-        puts "start!"
         # save pid file
         PasteHub.savePid( Process.pid )
 
@@ -48,6 +47,31 @@ class AppDelegate
         NSNotificationCenter.defaultCenter.addObserver(self,
                                                        selector:"respond_to_auth_complete:",
                                                        name:"auth_complete", object:nil)
+    end
+    
+    def notifyPlus()
+        @notify_count += 1
+        status =
+        case @notify_count
+        when 1
+            :one
+        when 2
+            :two
+        when 3
+            :three
+        else
+            :threeplus
+        end
+        NSNotificationCenter.defaultCenter.postNotificationName("change_status", object:nil,
+                                                                userInfo: {:status => status})
+        puts '<< plus >>'
+    end
+    
+    def notifyClear()
+        @notify_count = 0
+        NSNotificationCenter.defaultCenter.postNotificationName("change_status", object:nil,
+                                                                userInfo: {:status => :checked})
+        puts '<< clear >>'
     end
     
     def respond_to_auth_complete(a_notification)
@@ -63,6 +87,10 @@ class AppDelegate
                                                 PasteHub::Config.instance.listItems / 2,
                                                 PasteHub::Config.instance.localDbPath,
                                                 0.5 )
+        @notify_count = 0
+        
+        clientSync.addNoitfyCallback( lambda { notifyPlus() }, lambda { notifyClear() } )
+
         @threads = []
         @threads.push(Thread.new { clientSync.syncMain(    email, secretKey, password ) })
         @threads.push(Thread.new { clientSync.macosxCheck( email, secretKey, password ) })

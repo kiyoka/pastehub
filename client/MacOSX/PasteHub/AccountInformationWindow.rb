@@ -136,10 +136,6 @@ class AccountInformationWindow < NSWindow
             # You must not send a auth information as notify object! for security reason.
             NSNotificationCenter.defaultCenter.postNotificationName("auth_complete", object:nil)
             p "send notify 'auth_complete'"
-    
-            NSNotificationCenter.defaultCenter.postNotificationName("change_status", object:nil,
-                userInfo: {:status => :checked})
-            p "send notify 'change_status'"
         end
     end
 end

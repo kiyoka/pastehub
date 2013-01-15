@@ -52,7 +52,13 @@ class PasteHubStatusMenu < NSMenu
         when :checked
             image = NSImage.imageNamed 'pastehub_statusbar_checked.png'
         when :one
-            image = NSImage.imageNamed 'pastehub_statusbar_one.png'
+            image = NSImage.imageNamed 'pastehub_statusbar_1.png'
+        when :two
+            image = NSImage.imageNamed 'pastehub_statusbar_2.png'
+        when :three
+            image = NSImage.imageNamed 'pastehub_statusbar_3.png'
+        when :threeplus
+            image = NSImage.imageNamed 'pastehub_statusbar_3plus.png'
         end
         self.status_bar_item.setImage image
         self.status_bar_item.setHighlightMode true
