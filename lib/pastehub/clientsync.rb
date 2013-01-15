@@ -110,6 +110,9 @@ module PasteHub
         STDERR.puts "Info:   send signal to Emacs."
         system( "killall -SIGUSR1 Emacs emacs" )
       end
+
+      # notify datum count
+      return downList.size
     end
 
 
@@ -143,6 +146,10 @@ module PasteHub
       client.setServerFlags( list )
     end
 
+    def addNoitfyCallback( plusFunc, clearFunc )
+      @plusFunc  = plusFunc
+      @clearFunc = clearFunc
+    end
 
     def syncMain( username, secretKey, password )
       auth   = PasteHub::AuthForClient.new( username, secretKey )
@@ -166,6 +173,7 @@ module PasteHub
           when :timeout
             STDERR.puts "waiting..."
             client.setOnlineState( true )
+            @clearFunc.call() if @clearFunc
           when :retry
             STDERR.puts "retrying...."
             client.setOnlineState( false )
@@ -173,7 +181,9 @@ module PasteHub
           else
             client.setOnlineState( true )
             fetchServerList( result, auth )
-            syncDb( auth, password )
+            if 0 < syncDb( auth, password )
+              @plusFunc.call() if @plusFunc
+            end
           end
         rescue Errno::EAGAIN => e
           STDERR.puts "retrying... DB is locked"
