@@ -15,7 +15,7 @@ SETENV_A="export PASTEHUB_USER=userA ; export PASTEHUB_SECRET_KEY='ZGFiYTRkNDg5M
 require 'rake'
 begin
   require 'jeweler2'
-  ['pastehub', 'pastehub_macruby'].each do |name|
+  ['pastehub', 'pastehub-macruby'].each do |name|
     Jeweler::Tasks.new do |gemspec|
       gemspec.name = name
       gemspec.summary = "PasteHub is cloud-based cross-platform clipboard sync."

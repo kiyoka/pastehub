@@ -15,6 +15,7 @@
 		CC0DE69C16917D5C00438185 /* rb_main.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE69B16917D5C00438185 /* rb_main.rb */; };
 		CC0DE69E16917D5C00438185 /* AppDelegate.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE69D16917D5C00438185 /* AppDelegate.rb */; };
 		CC0DE6AF1691859400438185 /* PasteHubCustomView.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC0DE6AE1691859400438185 /* PasteHubCustomView.rb */; };
+		CC16548916A6E49000A2AE77 /* PasteHub.icns in Resources */ = {isa = PBXBuildFile; fileRef = CC16548816A6E49000A2AE77 /* PasteHub.icns */; };
 		CC52A359169DBDA7008D83CF /* AccountInformationWindow.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC52A358169DBDA7008D83CF /* AccountInformationWindow.rb */; };
 		CC61014816A41E7700EDDCB8 /* PasteHubStatusMenu.rb in Resources */ = {isa = PBXBuildFile; fileRef = CC61014716A41E7700EDDCB8 /* PasteHubStatusMenu.rb */; };
 		CC9BA0D216A43DF400051048 /* pastehub_statusbar_1.png in Resources */ = {isa = PBXBuildFile; fileRef = CC9BA0CF16A43DF400051048 /* pastehub_statusbar_1.png */; };
@@ -47,6 +48,7 @@
 		CC0DE69B16917D5C00438185 /* rb_main.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = rb_main.rb; sourceTree = "<group>"; };
 		CC0DE69D16917D5C00438185 /* AppDelegate.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = AppDelegate.rb; sourceTree = "<group>"; };
 		CC0DE6AE1691859400438185 /* PasteHubCustomView.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = PasteHubCustomView.rb; sourceTree = "<group>"; };
+		CC16548816A6E49000A2AE77 /* PasteHub.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PasteHub.icns; sourceTree = SOURCE_ROOT; };
 		CC52A358169DBDA7008D83CF /* AccountInformationWindow.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = AccountInformationWindow.rb; sourceTree = "<group>"; };
 		CC61014716A41E7700EDDCB8 /* PasteHubStatusMenu.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = PasteHubStatusMenu.rb; sourceTree = "<group>"; };
 		CC9BA0CF16A43DF400051048 /* pastehub_statusbar_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pastehub_statusbar_1.png; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 		CC0DE69616917D5C00438185 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CC16548816A6E49000A2AE77 /* PasteHub.icns */,
 				CCC049C116A5A34E00F2ADF7 /* pastehub_statusbar_2.png */,
 				CCC049C216A5A34E00F2ADF7 /* pastehub_statusbar_3.png */,
 				CCC049C316A5A34E00F2ADF7 /* pastehub_statusbar_3plus.png */,
@@ -148,11 +151,12 @@
 /* Begin PBXLegacyTarget section */
 		CC0DE68A16917D5C00438185 /* Deployment */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "--compile --embed";
+			buildArgumentsString = "--compile --embed --gem pastehub-macruby";
 			buildConfigurationList = CC0DE6A416917D5C00438185 /* Build configuration list for PBXLegacyTarget "Deployment" */;
 			buildPhases = (
 			);
 			buildToolPath = /usr/local/bin/macruby_deploy;
+			buildWorkingDirectory = "";
 			dependencies = (
 				CC0DE68C16917D5C00438185 /* PBXTargetDependency */,
 			);
@@ -225,6 +229,7 @@
 				CCC049C416A5A34E00F2ADF7 /* pastehub_statusbar_2.png in Resources */,
 				CCC049C516A5A34E00F2ADF7 /* pastehub_statusbar_3.png in Resources */,
 				CCC049C616A5A34E00F2ADF7 /* pastehub_statusbar_3plus.png in Resources */,
+				CC16548916A6E49000A2AE77 /* PasteHub.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,6 +298,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				VALID_ARCHS = "";
 			};
 			name = Debug;
 		};
@@ -313,6 +319,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
+				VALID_ARCHS = "";
 			};
 			name = Release;
 		};
@@ -330,6 +337,7 @@
 				GCC_PREFIX_HEADER = "PasteHub/PasteHub-Prefix.pch";
 				INFOPLIST_FILE = "PasteHub/PasteHub-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"VALID_ARCHS[sdk=*]" = x86_64;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -348,6 +356,7 @@
 				GCC_PREFIX_HEADER = "PasteHub/PasteHub-Prefix.pch";
 				INFOPLIST_FILE = "PasteHub/PasteHub-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"VALID_ARCHS[sdk=*]" = x86_64;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
