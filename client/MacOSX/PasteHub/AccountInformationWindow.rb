@@ -89,8 +89,17 @@ class AccountInformationWindow < NSWindow
         range = NSRange.new(textObject.stringValue.length, 0)
         textObject.currentEditor.setSelectedRange range
     end
+    
+    def save()
+        crypt = PasteHub::Crypt.new( @password.stringValue )
+        open( PasteHub.signfilePath, "w" ) {|f|
+            f.puts( @email.stringValue )
+            f.puts( crypt.en( @secretKey.stringValue ))
+        }
+        true
+    end
 
-    def auth_and_save
+    def auth_and_save()
         success = false
         
         signfile = PasteHub.signfilePath
