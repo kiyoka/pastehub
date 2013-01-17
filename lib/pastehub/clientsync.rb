@@ -81,7 +81,7 @@ module PasteHub
         key = downList.first
         value = client.getValue( key )
         if @prevData == value
-          p [ @prevData , value ]
+          #p [ @prevData , value ]
           STDERR.puts "Info: did not push to MacOS X clipboard because prevData == donwloaded-firstEntry."
         else
           PasteHub::MacOSX.push( value.dup )
@@ -220,8 +220,7 @@ module PasteHub
         data = PasteHub::MacOSX.hasNew?( username )
         if data
           if @prevData != data
-            p [ @prevData, data ]
-
+            #p [ @prevData, data ]
             auth = PasteHub::AuthForClient.new( username, secretKey )
             client = PasteHub::Client.new( auth, password )
             if client.online?(  )
