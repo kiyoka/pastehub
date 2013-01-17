@@ -48,6 +48,8 @@ module PasteHub
 
 
     def syncDb( auth, password )
+      notifyFlag = false
+
       STDERR.puts "synchronizing..."
       client = PasteHub::Client.new( auth, password )
       util   = PasteHub::Util.new
@@ -78,7 +80,13 @@ module PasteHub
       if 0 < downList.size
         key = downList.first
         value = client.getValue( key )
-        PasteHub::MacOSX.push( value.dup )
+        if @prevData == value
+          p [ @prevData , value ]
+          STDERR.puts "Info: did not push to MacOS X clipboard because prevData == donwloaded-firstEntry."
+        else
+          PasteHub::MacOSX.push( value.dup )
+          notifyFlag = true
+        end
       end
 
       # donwload
@@ -111,8 +119,7 @@ module PasteHub
         system( "killall -SIGUSR1 Emacs emacs" )
       end
 
-      # notify datum count
-      return downList.size
+      return notifyFlag
     end
 
 
@@ -181,7 +188,7 @@ module PasteHub
           else
             client.setOnlineState( true )
             fetchServerList( result, auth )
-            if 0 < syncDb( auth, password )
+            if syncDb( auth, password )
               @plusFunc.call() if @plusFunc
             end
           end
@@ -207,12 +214,14 @@ module PasteHub
 
 
     def macosxCheck( username, secretKey, password )
-      prevData = ""
+      @prevData = ""
       while true
         sleep @polling_interval
         data = PasteHub::MacOSX.hasNew?( username )
         if data
-          if data != prevData
+          if @prevData != data
+            p [ @prevData, data ]
+
             auth = PasteHub::AuthForClient.new( username, secretKey )
             client = PasteHub::Client.new( auth, password )
             if client.online?(  )
@@ -228,7 +237,7 @@ module PasteHub
             else
               client.localSaveValue( data )
             end
-            prevData = data
+            @prevData = data
           end
         end
       end
