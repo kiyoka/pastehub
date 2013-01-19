@@ -49,7 +49,7 @@ class AppDelegate
                                                        name:"auth_complete", object:nil)
     end
     
-    def notifyPlus()
+    def notifyCountUp()
         @notify_count += 1
         status =
         case @notify_count
@@ -64,14 +64,21 @@ class AppDelegate
         end
         NSNotificationCenter.defaultCenter.postNotificationName("change_status", object:nil,
                                                                 userInfo: {:status => status})
-        puts '<< plus >>'
+        puts '<< COUNTUP >>'
     end
     
-    def notifyClear()
+    def notifyConnect()
         @notify_count = 0
         NSNotificationCenter.defaultCenter.postNotificationName("change_status", object:nil,
                                                                 userInfo: {:status => :checked})
-        puts '<< clear >>'
+        puts '<< ONLINE >>'
+    end
+
+    def notifyDisconnect()
+        @notify_count = 0
+        NSNotificationCenter.defaultCenter.postNotificationName("change_status", object:nil,
+                                                                userInfo: {:status => :normal})
+        puts '<< offline >>'
     end
     
     def respond_to_auth_complete(a_notification)
@@ -89,8 +96,10 @@ class AppDelegate
                                                 0.5 )
         @notify_count = 0
         
-        clientSync.addNoitfyCallback( lambda { notifyPlus() }, lambda { notifyClear() } )
-
+        clientSync.addNoitfyCallback( lambda { notifyCountUp() }, lambda { notifyConnect() }, lambda { notifyDisconnect() } )
+        
+        notifyConnect()
+        
         @threads = []
         @threads.push(Thread.new { clientSync.syncMain(    email, secretKey, password ) })
         @threads.push(Thread.new { clientSync.macosxCheck( email, secretKey, password ) })

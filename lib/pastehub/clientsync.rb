@@ -86,6 +86,7 @@ module PasteHub
         else
           PasteHub::MacOSX.push( value.dup )
           notifyFlag = true
+          @prevData = value
         end
       end
 
@@ -153,10 +154,24 @@ module PasteHub
       client.setServerFlags( list )
     end
 
-    def addNoitfyCallback( plusFunc, clearFunc )
-      @plusFunc  = plusFunc
-      @clearFunc = clearFunc
+    def addNoitfyCallback( countUpNotifyFunc, connectNotifyFunc, disconnectNotifyFunc )
+      @countUpNotifyFunc     = countUpNotifyFunc
+      @connectNotifyFunc     = connectNotifyFunc
+      @disconnectNotifyFunc  = disconnectNotifyFunc
     end
+
+    def notifyCountUp()
+      @countUpNotifyFunc.call() if @countUpNotifyFunc
+    end
+
+    def notifyConnect()
+      @connectNotifyFunc.call() if @connectNotifyFunc
+    end
+
+    def notifyDisconnect()
+      @disconnectNotifyFunc.call() if @disconnectNotifyFunc      
+    end
+
 
     def syncMain( username, secretKey, password )
       auth   = PasteHub::AuthForClient.new( username, secretKey )
@@ -180,32 +195,41 @@ module PasteHub
           when :timeout
             STDERR.puts "waiting..."
             client.setOnlineState( true )
-            @clearFunc.call() if @clearFunc
+            notifyConnect()
           when :retry
             STDERR.puts "retrying...."
             client.setOnlineState( false )
+            notifyDisconnect()
             sleep 60
           else
+            if not client.online?()
+              notifyConnect()
+            end
             client.setOnlineState( true )
             fetchServerList( result, auth )
             if syncDb( auth, password )
-              @plusFunc.call() if @plusFunc
+              notifyCountUp()
             end
           end
         rescue Errno::EAGAIN => e
           STDERR.puts "retrying... DB is locked"
+          notifyDisconnect()
           sleep 2
         rescue Errno::ECONNREFUSED => e
           STDERR.puts "retrying... pastehub server is down(1)"
+          notifyDisconnect()
           sleep 60
         rescue Errno::ETIMEDOUT => e
           STDERR.puts "retrying... network is offline(1)"
+          notifyDisconnect()
           sleep 60
         rescue SocketError => e
           STDERR.puts "retrying... network is offline(2)"
+          notifyDisconnect()
           sleep 60
         rescue Timeout::Error => e
           # ONLINE, but server is not helthy
+          notifyDisconnect()
           STDERR.puts "retrying... pastehub server is down(2)"
           sleep 60
         end

@@ -68,7 +68,7 @@ def main
                                     PasteHub::Config.instance.listItems / 2,
                                     PasteHub::Config.instance.localDbPath,
                                     0.5 )
-  clientSync.addNoitfyCallback( lambda { puts '<< plus >>' }, lambda { puts '<< clear >>' } )
+  clientSync.addNoitfyCallback( lambda { puts '<< COUNTUP >>' }, lambda { puts '<< ONLINE >>' }, lambda { puts '<< offline >>' } )
 
   while true
     begin
