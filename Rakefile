@@ -61,7 +61,7 @@ task :test do
   sh "time ruby    -I ./lib `which rspec` -b   ./test/libuserdb_spec.rb      "
 end
 
-task :test_macruby do
+task :macruby_test do
   sh "rm -f /tmp/usertmp.db"
   sh "time macruby -I ./lib `which rspec` -b   ./test/libstore_spec.rb       "
   sh "time macruby -I ./lib `which rspec` -b   ./test/libconfig_spec.rb      "
@@ -105,6 +105,10 @@ end
 
 task :sync do
   sh "ruby -I ./lib bin/PastehubSync"
+end
+
+task :macruby_sync do
+  sh "macruby -I ./lib bin/PastehubSync"
 end
 
 task :syncA do
