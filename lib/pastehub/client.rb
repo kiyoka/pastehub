@@ -66,6 +66,22 @@ module PasteHub
     end
   end
 
+  # setup user's directory
+  #   result: true ... success / false ... fail
+  def self.setupDirectory
+    localdb_path = PasteHub::Config.instance.localDbPath
+    # Create directory
+    if not File.exist?(  localdb_path )
+      if 0 == Dir.mkdir( localdb_path, 0700 )
+        STDERR.puts( "Info:  created directory #{localdb_path}" )
+      else
+        STDERR.puts( "Error: can't create directory #{localdb_path}" )
+        return false
+      end
+    end
+    return true
+  end
+
   def self.signIn
     signfile = self.signfilePath
     util = Util.new

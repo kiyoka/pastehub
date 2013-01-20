@@ -40,6 +40,10 @@ class AppDelegate
     attr_accessor :accountInfo
 
     def applicationDidFinishLaunching(a_notification)
+        if not PasteHub.setupDirectory( )
+            exit( 1 )
+        end
+        
         # save pid file
         PasteHub.savePid( Process.pid )
 

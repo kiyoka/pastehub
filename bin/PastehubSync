@@ -40,17 +40,9 @@ RETRY_INTERVAL = 60
 
 
 def setup
-  localdb_path = PasteHub::Config.instance.localDbPath
-  # Create directory
-  if not File.exist?(  localdb_path )
-    if 0 == Dir.mkdir( localdb_path, 0700 )
-      STDERR.puts( "Info:  created directory #{localdb_path}" )
-    else
-      STDERR.puts( "Error: can't create directory #{localdb_path}" )
-      exit( 1 )
-    end
+  if not PasteHub.setupDirectory( )
+    exit( 1 )
   end
-
   return PasteHub.signIn( )
 end
 
