@@ -38,7 +38,7 @@ class AccountInformationWindow < NSWindow
 
     attr_accessor :email, :secretKey, :password
     attr_accessor :signin_button, :ok_button
-    attr_accessor :success_view
+    attr_accessor :step1_message, :step2_message
     
     def awakeFromNib
         username = PasteHub.loadUsername
@@ -54,13 +54,25 @@ class AccountInformationWindow < NSWindow
         email     = @email.stringValue
         secretKey = @secretKey.stringValue
 
-        auth = PasteHub::AuthForClient.new( email, secretKey )
-        client = PasteHub::Client.new( auth )
-        if client.authTest()
-            @saveOnly = true
-            step2()
+        if email.size < 1
+            @step1_message.setStringValue "Please input your email address."
+            @step1_message.textColor = NSColor.redColor
+        elsif secretKey.size < 1
+            @step1_message.setStringValue "Please input your secretKey."
+            @step1_message.textColor = NSColor.redColor
         else
-            p "auth Error(1)"
+            auth = PasteHub::AuthForClient.new( email, secretKey )
+            client = PasteHub::Client.new( auth )
+            if client.authTest()
+                @saveOnly = true
+                @step1_message.setStringValue "Success!"
+                @step1_message.textColor = NSColor.blackColor
+                step2()
+            else
+                @step1_message.setStringValue "email or secretKey is incorrect."
+                @step1_message.textColor = NSColor.redColor
+                p "auth Error(1)"
+            end
         end
     end
 
@@ -69,6 +81,9 @@ class AccountInformationWindow < NSWindow
         @password.setEnabled      false
         @ok_button.setEnabled     false
         
+        @step1_message.setEnabled true
+        @step2_message.setEnabled false
+
         select_the_field( @email )
     end
 
@@ -80,6 +95,9 @@ class AccountInformationWindow < NSWindow
         
         @password.setEnabled      true
         @ok_button.setEnabled     true
+        
+        @step1_message.setEnabled false
+        @step2_message.setEnabled true
 
         select_the_field( @password )
     end
@@ -126,10 +144,23 @@ class AccountInformationWindow < NSWindow
                 end
             }
         end
+        unless success
+            @step2_message.setStringValue "Password is incorrect."
+            @step2_message.textColor = NSColor.redColor
+            p "auth Error(3)"
+        end
         success
     end
 
     def ok_button_pushed(sender)
+        
+        if @password.stringValue.size < 8
+            @step2_message.setStringValue "A password must be at least eight characters."
+            @step2_message.textColor = NSColor.redColor
+            p "less 8 chars"
+            return
+        end
+        
         success = if @saveOnly
             save()
         else
@@ -140,11 +171,12 @@ class AccountInformationWindow < NSWindow
             @password.setEnabled  false
             @ok_button.setEnabled false
 
-            @success_view.setHidden false
-
             # You must not send a auth information as notify object! for security reason.
             NSNotificationCenter.defaultCenter.postNotificationName("auth_complete", object:nil)
             p "send notify 'auth_complete'"
+
+            @step2_message.setStringValue "Success! please close window to start sync clipborad."
+            @step2_message.textColor = NSColor.blackColor
         end
     end
 end
