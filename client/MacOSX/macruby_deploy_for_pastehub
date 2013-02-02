@@ -1,0 +1,26 @@
+#!/bin/bash
+# macruby deploy script for pastehub
+
+DEPLOY_COMMAND=/usr/local/bin/macruby_deploy
+GEM_HOME=/Library/Ruby/Gems/MacRuby/0.13/gems
+MACRUBY_BINARY=/Library/Frameworks/MacRuby.framework/Versions/Current/usr/bin/macruby
+
+
+if ! -e ${DEPLOY_COMMAND} ; then
+    echo "Error: Please install ${DEPLOY_COMMAND}"
+    exit 1
+fi
+
+
+# TODO: use these enviromnet to decide deploy target path
+#   TARGET_BUILD_DIR
+#   PROJECT_NAME
+
+# 1. exec macruby_deploy
+#${DEPLOY_COMMAND} $*
+
+# 2. deploy macruby interpreter
+
+# 3. copy pastehub's script
+
+
