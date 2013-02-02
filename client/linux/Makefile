@@ -5,7 +5,7 @@
 VERSION=$(shell ruby ./getVersion.rb)
 ROOTDIR=./work/pastehub-${VERSION}
 BASEDIR=./work/pastehub-${VERSION}/opt/pastehub
-
+RUBYNAME=ruby-1.9.3-p374
 
 all : pastehub.spec  ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz
 	rpmbuild -ba pastehub.spec
@@ -16,7 +16,7 @@ pastehub.spec : pastehub.spec.in
 	cat pastehub.spec.in >>  pastehub.spec
 
 
-~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz	: ${BASEDIR}/ruby-1.9.3-p194/bin/ruby
+~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz	: ${BASEDIR}/${RUBYNAME}/bin/ruby
 	./gemcopy.sh ${BASEDIR}
 	./socopy.sh ${BASEDIR}
 	mkdir -p ${BASEDIR}/bin
@@ -26,11 +26,11 @@ pastehub.spec : pastehub.spec.in
 	mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 	tar zcfC  ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz ./work pastehub-${VERSION}
 
-${BASEDIR}/ruby-1.9.3-p194/bin/ruby : ruby-1.9.3-p194.tar.gz
-	./build.sh ${ROOTDIR}
+${BASEDIR}/${RUBYNAME}/bin/ruby : ${RUBYNAME}.tar.gz
+	./build.sh ${RUBYNAME} ${ROOTDIR}
 
-ruby-1.9.3-p194.tar.gz :
-	wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p194.tar.gz
+${RUBYNAME}.tar.gz :
+	wget http://ftp.ruby-lang.org/pub/ruby/1.9/${RUBYNAME}.tar.gz
 
 
 clean:

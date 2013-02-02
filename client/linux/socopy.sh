@@ -3,10 +3,9 @@
 # lbog entry about ldd.
 #   http://gihyo.jp/lifestyle/serial/01/ganshiki-soushi/0032
 
-RUBY=ruby-1.9.3-p194
 TARGET=${1}/lib
 
-#ldd ./work/${RUBY}/bin/ruby
+#ldd ./work/ruby-1.9.3-*/bin/ruby
 solist='
 /lib/libcom_err.so.2
 /lib/libcrypto.so.10
