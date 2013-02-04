@@ -39,24 +39,24 @@ How to install PasteHub client software ( Alpha service )
 
    download rpm and install by root account
 
-    \# wget https://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub-0.2.2-1.i386.rpm
-    \# rpm -ihv pastehub-0.2.2-1.i386.rpm
+	\# wget https://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub-0.2.2-1.i386.rpm
+	\# rpm -ihv pastehub-0.2.2-1.i386.rpm
 
    sync start
    
-    $ /opt/pastehub/bin/PastehubSync
+	$ /opt/pastehub/bin/PastehubSync
 
 
 - Debian or Ubuntu
 
    download deb and install by root account
 
-    \# https://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub_0.2.2-2_i386.deb
-    \# dpkg -i --force-architecture pastehub_0.2.2-2_i386.deb
+	\# https://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub_0.2.2-2_i386.deb
+	\# dpkg -i --force-architecture pastehub_0.2.2-2_i386.deb
 
    sync start
    
-    $ /opt/pastehub/bin/PastehubSync
+	$ /opt/pastehub/bin/PastehubSync
 
 
 ## MacOS X
@@ -88,14 +88,14 @@ How to install PasteHub client software ( Alpha service )
   add this code your .emacs (see also)
 
 
-    \(require 'package)
-    \(add-to-list 'package-archives
-                '("melpa" . "http://melpa.milkbox.net/packages/") t)
-    \(package-initialize)
+	(require 'package)
+	(add-to-list 'package-archives
+	            '("melpa" . "http://melpa.milkbox.net/packages/") t)
+	(package-initialize)
 
 
 - install the "pastehub" package.
 
 - add this code to your .emacs
 
-    \(require 'pastehub)
+	(require 'pastehub)
