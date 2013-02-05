@@ -25,7 +25,7 @@ sync start
 
 download deb and install by root account
 
-	# https://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub_0.2.2-2_i386.deb
+	# wget https://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub_0.2.2-2_i386.deb
 	# dpkg -i --force-architecture pastehub_0.2.2-2_i386.deb
 
 start to use

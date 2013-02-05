@@ -10,7 +10,7 @@ Install client software (Emacs)
 
 ## Setup melpa
 
-add this code your .emacs (see also)
+add this code your .emacs
 
 	(require 'package)
 	(add-to-list 'package-archives

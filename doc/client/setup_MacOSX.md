@@ -15,7 +15,7 @@ Install client software (MacOS X)
 
   ![Copy opertion](DragToApplicationFolder.png) 
 
-- start to double click application
+- double click to start application
 
 - input your account information
 
