@@ -1,4 +1,4 @@
-Install client service software (Linux)
+Install client software (Linux)
 =======================
 
 # Required platform
@@ -28,7 +28,12 @@ download deb and install by root account
 	# https://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub_0.2.2-2_i386.deb
 	# dpkg -i --force-architecture pastehub_0.2.2-2_i386.deb
 
-sync start
-   
-	$ /opt/pastehub/bin/PastehubSync
+start to use
 
+	$ /opt/pastehub/bin/PastehubSync 
+	Please input your account information
+	       email: your@mail.example.com
+	  secret-key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX==
+	Please input password for crypted file
+	  password            : ********
+	  password(for verify): ********

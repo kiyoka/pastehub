@@ -1,4 +1,4 @@
-Install client service software (Emacs)
+Install client software (Emacs)
 =======================
 
 # Required platforms
@@ -8,7 +8,7 @@ Install client service software (Emacs)
 
 # installation instruction
 
-- Setup melpa
+## Setup melpa
 
 add this code your .emacs (see also)
 
@@ -18,9 +18,9 @@ add this code your .emacs (see also)
 	(package-initialize)
 
 
-- install the "pastehub" package.
+## install the "pastehub" package.
 
-- add this code to your .emacs
+##  and add this code to your .emacs
 
 	(require 'pastehub)
 

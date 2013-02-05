@@ -1,7 +1,7 @@
 Account Registration
 =======================
 
-## Send your email to kiyoka@sumibi.org
+# Send your email to kiyoka@sumibi.org
 
   example of request mail:
 
@@ -10,7 +10,7 @@ Account Registration
     hello, ...
 
 
-## PasteHub.net will regist your account and reply account information to you.
+# PasteHub.net will regist your account and reply account information to you.
 
    Sample reply email:
 

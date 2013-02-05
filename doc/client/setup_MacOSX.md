@@ -1,4 +1,5 @@
-Install client service software (MacOS X)
+Install client software (MacOS X)
+=======================
 
 # Required platform
 
@@ -8,6 +9,25 @@ Install client service software (MacOS X)
 
 - download application
 
+  [PasteHub-0.2.2.dmg](https://s3-ap-northeast-1.amazonaws.com/pastehub/release/MacOSX/PasteHub-0.2.2.dmg) (9.7M)
+
 - install to your Application Folder
 
-- start to double click
+  ![Copy opertion](DragToApplicationFolder.png) 
+
+- start to double click application
+
+- input your account information
+
+  ![signin](signin_window.png)
+
+# Copy and Paste
+
+  Command + C / Command + V
+
+# Status bar icons
+
++ ![signin](pastehub_statusbar_normal.png)  ... offline
++ ![signin](pastehub_statusbar_checked.png) ... ONLINE
++ ![signin](pastehub_statusbar_1.png) ... one paste data comming
+
