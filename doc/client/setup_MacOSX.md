@@ -11,7 +11,7 @@ Install client software (MacOS X)
 
   [PasteHub-0.2.2.dmg](https://s3-ap-northeast-1.amazonaws.com/pastehub/release/MacOSX/PasteHub-0.2.2.dmg) (9.7M)
 
-- install to your Application Folder
+- copy PasteHub.app to your Application Folder
 
   ![Copy opertion](DragToApplicationFolder.png) 
 
