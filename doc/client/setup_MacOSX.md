@@ -38,6 +38,7 @@ Install client software (MacOS X)
   please cut / copy / paste as usual.
   PasteHub.app sync automatically.
 
+  ![key](https://dl.dropbox.com/u/3870066/blog/iStock_000009322220XSmall.jpg)
 
 # Status bar icons
 
