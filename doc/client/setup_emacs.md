@@ -24,3 +24,6 @@ add this code your .emacs
 
 	(require 'pastehub)
 
+  PasteHub's mode line appears 
+
+    ![modeline](emacs_mode_line.png)
