@@ -26,4 +26,4 @@ add this code your .emacs
 
   PasteHub's mode line appears 
 
-    ![modeline](emacs_mode_line.png)
+  ![modeline](emacs_mode_line.png)
