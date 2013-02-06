@@ -22,7 +22,13 @@ solist='
 /usr/lib/libyaml.so
 /usr/lib/libyaml-0.so.2
 /usr/lib/libgdbm.so.2
-/usr/lib/libgdbm.so'
+/usr/lib/libgdbm.so
+/lib/libreadline.so.6.0
+/lib/libreadline.so.6
+/lib/libncurses.so.5.7
+/lib/libncurses.so.5
+/lib/libtinfo.so.5.7
+/lib/libtinfo.so.5'
 
 mkdir -p ${TARGET}
 for i in ${solist} ;

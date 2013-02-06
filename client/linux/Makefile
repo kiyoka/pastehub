@@ -23,6 +23,8 @@ pastehub.spec : pastehub.spec.in
 	cp -f ./bin/pastehubDump  ${BASEDIR}/bin
 	cp -f ./bin/pastehubPost  ${BASEDIR}/bin
 	cp -f ./bin/PastehubSync  ${BASEDIR}/bin
+	mkdir -p ${BASEDIR}/certs
+	cp -f /etc/pki/tls/certs/ca-bundle.crt ${BASEDIR}/certs
 	mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 	tar zcfC  ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz ./work pastehub-${VERSION}
 
