@@ -19,22 +19,23 @@ Install client software (MacOS X)
 
 - input your account information
 
--- input your acction infromation
+  input your acction infromation
 
   ![signin](macos_signin.png)
 
--- decide your own password
+  decide your own password
 
   ![password](macos_password.png)
 
--- ONLINE icon appears
+  ONLINE icon appears
 
   ![ONLINE](status_bar_is_online.png)
 
 
 # Copy and Paste operation
 
-  It's easy. cut / copy / paste as usual.
+  It's easy.
+  please cut / copy / paste as usual.
   PasteHub.app sync automatically.
 
 
