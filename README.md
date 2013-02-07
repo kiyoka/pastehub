@@ -6,7 +6,7 @@ PasteHub
 
 Cloud-based cross-platform clipboard (copy and paste) service.
 
-![image](https://dl.dropbox.com/u/3870066/blog/iStock_000019296334XSmall.jpg)
+![image](./doc/client/pastehub_architecture.png)
 
 ## Open Source
 
