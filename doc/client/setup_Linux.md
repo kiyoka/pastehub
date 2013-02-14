@@ -16,8 +16,9 @@ download rpm and install by root account
 	# wget https://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub-0.2.2-1.i386.rpm
 	# rpm -ihv pastehub-0.2.2-1.i386.rpm
 
-sync start
-   
+sync start ( on [gnu screen](http://www.gnu.org/software/screen/) or [tmux](http://tmux.sourceforge.net/) )
+
+
 	$ /opt/pastehub/bin/PastehubSync
 
 
@@ -28,7 +29,7 @@ download deb and install by root account
 	# wget https://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub_0.2.2-2_i386.deb
 	# dpkg -i --force-architecture pastehub_0.2.2-2_i386.deb
 
-start to use
+sync start ( on [gnu screen](http://www.gnu.org/software/screen/) or [tmux](http://tmux.sourceforge.net/) )
 
 	$ /opt/pastehub/bin/PastehubSync 
 	Please input your account information
@@ -37,3 +38,4 @@ start to use
 	Please input password for crypted file
 	  password            : ********
 	  password(for verify): ********
+
