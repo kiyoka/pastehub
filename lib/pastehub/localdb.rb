@@ -34,6 +34,19 @@
 require 'gdbm'
 
 module PasteHub
+  class MutexSingleton
+    include Singleton
+
+    attr_reader :mutex
+
+    def self.instance
+      @@instance ||= new
+    end
+
+    def initialize( )
+      @mutex = Mutex.new
+    end
+  end
 
   ONLINE_STATE_KEY='__ONLINE_STATE'
   LOCAL_DATE_KEY  ='__LOCAL_DATE'
@@ -44,19 +57,22 @@ module PasteHub
 
   class LocalDB
     def initialize( basepath = "/tmp/")
+      @mutex = MutexSingleton.instance.mutex
       @basepath = basepath
     end
 
     def open( username, reader = false )
       (60*2).times { |n|
-        if reader
-          @db = GDBM.new( @basepath + username + ".db", nil, GDBM::READER  | GDBM::NOLOCK )
-        else
-          @db = GDBM.new( @basepath + username + ".db", nil, GDBM::WRCREAT )
-        end
-        if not @db.closed?
-          break
-        end
+        closed = false
+        @mutex.synchronize {
+          if reader
+            @db = GDBM.new( @basepath + username + ".db", nil, GDBM::READER  | GDBM::NOLOCK )
+          else
+            @db = GDBM.new( @basepath + username + ".db", nil, GDBM::WRCREAT )
+          end
+          closed = @db.closed?
+        }
+        break  unless closed
         #STDERR.puts "#Warning: DB open fail(locked) retry..."
         sleep 0.5
       }
@@ -92,7 +108,10 @@ module PasteHub
     end
 
     def getValue( key, fallback = false )
-      val = @db[ LOCAL_PREFIX + key ]
+      val = nil
+      @mutex.synchronize {
+        val = @db[ LOCAL_PREFIX + key ]
+      }
       if val
         val.force_encoding("UTF-8")
       else
@@ -101,43 +120,65 @@ module PasteHub
     end
 
     def insertValue( key, value )
-      @db[ LOCAL_PREFIX + key.force_encoding("ASCII-8BIT") ] = value.force_encoding("ASCII-8BIT")
-    end
-
-    def deleteValue( key )
-      val = @db[ LOCAL_PREFIX + key ]
-      if val
-        @db.delete( LOCAL_PREFIX + key )
-        true
-      else
-        false
-      end
-    end
-
-    def setServerFlag( key )
-      @db[ SERVER_PREFIX + key ] = '1'
-    end
-
-    def onServer?( key )
-      if @db[ SERVER_PREFIX + key ]
-        true
-      else
-        false
-      end
-    end
-
-    def forward_match_keys( prefix )
-      @db.keys( ).select {|key|
-        key.match( "^" + prefix )
+      @mutex.synchronize {
+        @db[ LOCAL_PREFIX + key.force_encoding("ASCII-8BIT") ] = value.force_encoding("ASCII-8BIT")
       }
     end
 
+    def deleteValue( key )
+      ret = false
+      @mutex.synchronize {
+        val = @db[ LOCAL_PREFIX + key ]
+        if val
+          @db.delete( LOCAL_PREFIX + key )
+          ret = true
+        else
+          ret = false
+        end
+      }
+      ret
+    end
+
+    def setServerFlag( key )
+      @mutex.synchronize {
+        @db[ SERVER_PREFIX + key ] = '1'
+      }
+    end
+
+    def onServer?( key )
+      ret = false
+      @mutex.synchronize {
+        if @db[ SERVER_PREFIX + key ]
+          ret = true
+        else
+          ret = false
+        end
+      }
+      ret
+    end
+
+    def forward_match_keys( prefix )
+      keys = []
+      @mutex.synchronize {
+        keys = @db.keys( ).select {|key|
+          key.match( "^" + prefix )
+        }
+      }
+      keys
+    end
+
     def clear
-      @db.clear
+      @mutex.synchronize {
+        @db.clear
+      }
     end
 
     def close
-      @db.close
+      ret = nil
+      @mutex.synchronize {
+        ret = @db.close
+      }
+      ret
     end
   end
 end
