@@ -9,7 +9,7 @@ Install client software (MacOS X)
 
 - download application
 
-  [PasteHub-0.2.2.dmg](https://s3-ap-northeast-1.amazonaws.com/pastehub/release/MacOSX/PasteHub-0.2.2.dmg) (9.7M)
+  [PasteHub-0.2.3.dmg](https://s3-ap-northeast-1.amazonaws.com/pastehub/release/MacOSX/PasteHub-0.2.3.dmg) (9.7M)
 
 - Please copy PasteHub.app to your Application Folder
 
@@ -40,6 +40,7 @@ Install client software (MacOS X)
 
   ![key](https://dl.dropbox.com/u/3870066/blog/iStock_000009322220XSmall.jpg)
 
+
 # Status bar icons
 
 + ![icon](pastehub_statusbar_normal.png)  ... offline
@@ -48,3 +49,9 @@ Install client software (MacOS X)
 + ![icon](pastehub_statusbar_2.png) ... two   paste data comming
 + ![icon](pastehub_statusbar_3.png) ... three paste data comming
 + ![icon](pastehub_statusbar_3plus.png) ... over three paste data comming
+
+
+# History
+
++ 0.2.3 Fixed SEGV problem of gdbm parallel operation.
++ 0.2.2 First release.
