@@ -76,7 +76,6 @@
 										<int key="NSvFlags">268</int>
 										<string key="NSFrame">{{3, 62}, {104, 24}}</string>
 										<reference key="NSSuperview" ref="972764862"/>
-										<reference key="NSNextKeyView"/>
 										<string key="NSReuseIdentifierKey">_NS:9</string>
 										<bool key="NSEnabled">YES</bool>
 										<object class="NSSegmentedCell" key="NSCell" id="594419688">
@@ -227,13 +226,12 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{62, 50}, {246, 23}}</string>
 							<reference key="NSSuperview" ref="496375673"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSAntiCompressionPriority">{250, 750}</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="675681544">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">272891904</int>
-								<string key="NSContents">PasteHub for MacOS X version 0.2.2</string>
+								<string key="NSContents">PasteHub for MacOS X version 0.2.3</string>
 								<object class="NSFont" key="NSSupport">
 									<string key="NSName">LucidaGrande</string>
 									<double key="NSSize">13</double>
@@ -551,7 +549,6 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{38, 40}, {571, 22}}</string>
 							<reference key="NSSuperview" ref="387001836"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:1535</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="669178744">
