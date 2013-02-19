@@ -324,7 +324,7 @@ module PasteHub
               serverValue = chunk.chomp
               if serverHasNew?( serverValue )
                 puts "Info: server has new data: #{serverValue}"
-                return chunk.chomp
+                return chunk.chomp.clone()
               else
                 puts "Info: server is stable:    #{serverValue}"
               end

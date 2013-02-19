@@ -62,8 +62,8 @@ module PasteHub
     end
 
     def open( username, reader = false )
+      closed = false
       (60*2).times { |n|
-        closed = false
         @mutex.synchronize {
           if reader
             @db = GDBM.new( @basepath + username + ".db", nil, GDBM::READER  | GDBM::NOLOCK )
@@ -76,7 +76,10 @@ module PasteHub
         #STDERR.puts "#Warning: DB open fail(locked) retry..."
         sleep 0.5
       }
-      if @db.closed?
+      @mutex.synchronize {
+        #closed = @db.closed?
+      }
+      if closed
         raise RuntimeError, sprintf( "DBM.new open error: file=%s", username + ".db" )
       end
       @username = username

@@ -146,7 +146,7 @@ module PasteHub
       client = PasteHub::Client.new( auth )
       if latestKey.is_a? String
         STDERR.puts "Info: fetch one entry"
-        list = [ latestKey ]
+        list = [ latestKey.clone() ]
       else
         STDERR.puts "Info: fetch ALL entries"
         list = client.getList()
@@ -253,7 +253,7 @@ module PasteHub
                 client.putValue( "_", data )
               rescue Errno::ECONNREFUSED => e
                 # if postData was fail, save to local.
-                setOnlineState( false )
+                client.setOnlineState( false )
                 client.localSaveValue( data )
                 sleep 60
               end
