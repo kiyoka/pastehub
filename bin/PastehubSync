@@ -35,6 +35,9 @@
 #
 require 'thread'
 require 'pastehub'
+require 'rbconfig'
+include Config
+
 PasteHub::Config.instance.loadClient
 RETRY_INTERVAL = 60
 
@@ -64,10 +67,18 @@ def main
 
   while true
     begin
-      Signal.trap( :SIGUSR1 ) {
-        STDERR.puts( "Info: caught signal." )
-        clientSync.syncNow( username, secretKey, password )
-      }
+
+      case CONFIG['host_os']
+      when /mswin|windows/i
+        # Windows
+      else
+        # Other
+        Signal.trap( :SIGUSR1 ) {
+          STDERR.puts( "Info: caught signal." )
+          clientSync.syncNow( username, secretKey, password )
+        }
+      end
+
       if username
         threads = []
         threads.push(Thread.new { clientSync.syncMain(    username, secretKey, password ) })
