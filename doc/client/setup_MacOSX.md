@@ -53,9 +53,6 @@ Install client software (MacOS X)
 
 # History
 
-+ 0.2.4 Fixed SEGV problem with these environment variables for MacRuby.
-    export VM_DISABLE_RBO=1
-    export VM_OPT_LEVEL=0
-    export AUTO_USE_TLC=0
++ 0.2.4 Fixed SEGV problem with three environment variables for MacRuby. ( VM_DISABLE_RBO=1 /  VM_OPT_LEVEL=0 / AUTO_USE_TLC=0 )
 + 0.2.3 Fixed SEGV problem of gdbm parallel operation.
 + 0.2.2 First release.
