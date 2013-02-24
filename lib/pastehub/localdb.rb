@@ -77,7 +77,7 @@ module PasteHub
         sleep 0.5
       }
       @mutex.synchronize {
-        #closed = @db.closed?
+        closed = @db.closed?
       }
       if closed
         raise RuntimeError, sprintf( "DBM.new open error: file=%s", username + ".db" )
