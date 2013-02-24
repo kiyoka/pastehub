@@ -9,7 +9,7 @@ Install client software (MacOS X)
 
 - download application
 
-  [PasteHub-0.2.3.dmg](https://s3-ap-northeast-1.amazonaws.com/pastehub/release/MacOSX/PasteHub-0.2.3.dmg) (9.7M)
+  [PasteHub-0.2.4.dmg](https://s3-ap-northeast-1.amazonaws.com/pastehub/release/MacOSX/PasteHub-0.2.4.dmg) (9.7M)
 
 - Please copy PasteHub.app to your Application Folder
 
@@ -53,5 +53,9 @@ Install client software (MacOS X)
 
 # History
 
++ 0.2.4 Fixed SEGV problem with these environment variables for MacRuby.
+    export VM_DISABLE_RBO=1
+    export VM_OPT_LEVEL=0
+    export AUTO_USE_TLC=0
 + 0.2.3 Fixed SEGV problem of gdbm parallel operation.
 + 0.2.2 First release.
