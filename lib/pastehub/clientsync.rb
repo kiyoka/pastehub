@@ -179,6 +179,7 @@ module PasteHub
       client.setOnlineState( false )
       client.setOnlineState( true )  # create Trigger token  ___-___
       client.setOnlineState( false )
+      result = :start
 
       while true
         begin
