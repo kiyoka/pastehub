@@ -35,8 +35,6 @@
 #
 require 'thread'
 require 'pastehub'
-require 'rbconfig'
-include Config
 
 PasteHub::Config.instance.loadClient
 RETRY_INTERVAL = 60
@@ -68,7 +66,7 @@ def main
   while true
     begin
 
-      case CONFIG['host_os']
+      case RbConfig::CONFIG['host_os']
       when /mswin|windows/i
         # Windows
       else
