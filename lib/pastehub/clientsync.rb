@@ -76,15 +76,15 @@ module PasteHub
       upList   = util.diffList( localList,  masterList )
       #pp [ "upList.size", upList.size ]
 
-      # push first element to MacOS X clipboard.
+      # push first element to clipboard.
       if 0 < downList.size
         key = downList.first
         value = client.getValue( key )
         if @prevData == value
           #p [ @prevData , value ]
-          STDERR.puts "Info: did not push to MacOS X clipboard because prevData == donwloaded-firstEntry."
+          STDERR.puts "Info: did not push to OS's clipboard because prevData == donwloaded-firstEntry."
         else
-          PasteHub::MacOSX.push( value.dup )
+          PasteHub::Clipboard.push( value.dup )
           notifyFlag = true
           @prevData = value
         end
@@ -238,18 +238,18 @@ module PasteHub
     end
 
 
-    def macosxCheck( username, secretKey, password )
+    def clipboardCheck( username, secretKey, password )
       @prevData = ""
       while true
         sleep @polling_interval
-        data = PasteHub::MacOSX.hasNew?( username )
+        data = PasteHub::Clipboard.hasNew?( username )
         if data
           if @prevData != data
             #p [ @prevData, data ]
             auth = PasteHub::AuthForClient.new( username, secretKey )
             client = PasteHub::Client.new( auth, password )
             if client.online?(  )
-              STDERR.puts( "Info: posted data from MacOS X." )
+              STDERR.puts( "Info: posted data from OS." )
               begin
                 client.putValue( "_", data )
               rescue Errno::ECONNREFUSED => e

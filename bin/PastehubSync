@@ -67,7 +67,7 @@ def main
     begin
 
       case RbConfig::CONFIG['host_os']
-      when /mswin|windows/i
+      when /mingw32|mswin|windows/i
         # Windows
       else
         # Other
@@ -79,8 +79,8 @@ def main
 
       if username
         threads = []
-        threads.push(Thread.new { clientSync.syncMain(    username, secretKey, password ) })
-        threads.push(Thread.new { clientSync.macosxCheck( username, secretKey, password ) })
+        threads.push(Thread.new { clientSync.syncMain(       username, secretKey, password ) })
+        threads.push(Thread.new { clientSync.clipboardCheck( username, secretKey, password ) })          
         threads.each {|t| t.join}
       end
 

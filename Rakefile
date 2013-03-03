@@ -75,6 +75,10 @@ task :macruby_test do
 #  sh "time macruby -I ./lib `which rspec` -b   ./test/libuserdb_spec.rb      "
 end
 
+task :win_test do
+  sh "time ruby -I ./lib `which rspec` -b   ./test/libmswindows_spec.rb       "
+end
+
 task :fluentd_for_test do
   sh "fluentd -c ./fluentd-conf-for-test/fluent.conf"
 end
