@@ -24,6 +24,10 @@ sync start ( on [gnu screen](http://www.gnu.org/software/screen/) or [tmux](http
 
 - Debian or Ubuntu
 
+prepare 32bit emulation environment by root account
+
+	# aptitude install ia32-libs
+
 download deb and install by root account
 
 	# wget http://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub_0.2.2-2_i386.deb
