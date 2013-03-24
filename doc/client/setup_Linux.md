@@ -13,7 +13,7 @@ Install client software (Linux)
 
 download rpm and install by root account
 
-	# wget https://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub-0.2.2-1.i386.rpm
+	# wget http://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub-0.2.2-1.i386.rpm
 	# rpm -ihv pastehub-0.2.2-1.i386.rpm
 
 sync start ( on [gnu screen](http://www.gnu.org/software/screen/) or [tmux](http://tmux.sourceforge.net/) )
@@ -26,7 +26,7 @@ sync start ( on [gnu screen](http://www.gnu.org/software/screen/) or [tmux](http
 
 download deb and install by root account
 
-	# wget https://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub_0.2.2-2_i386.deb
+	# wget http://s3-ap-northeast-1.amazonaws.com/pastehub/release/Linux/pastehub_0.2.2-2_i386.deb
 	# dpkg -i --force-architecture pastehub_0.2.2-2_i386.deb
 
 sync start ( on [gnu screen](http://www.gnu.org/software/screen/) or [tmux](http://tmux.sourceforge.net/) )
