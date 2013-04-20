@@ -174,6 +174,8 @@ module PasteHub
 
 
     def syncMain( username, secretKey, password )
+      freeCounter = 0
+
       auth   = PasteHub::AuthForClient.new( username, secretKey )
       client = PasteHub::Client.new( auth )
       client.setOnlineState( false )
@@ -183,7 +185,9 @@ module PasteHub
 
       while true
         begin
-          if client.getTrigger()
+          freeCounter += 1
+
+          if client.getTrigger() or (0 == (freeCounter % 60))
             STDERR.puts "Info: force sync."
             result = :sync
             gcLocalDb( auth )
