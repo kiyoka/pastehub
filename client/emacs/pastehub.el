@@ -3,7 +3,7 @@
 ;; Copyright (C) 2012 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama
-;; Version: 0.9.0
+;; Version: 0.9.1
 ;; URL: https://github.com/kiyoka/pastehub
 ;;
 ;; This file is part of PasteHub.el
@@ -29,6 +29,10 @@
 ;;
 ;; PasteHub.el can synchronize kill-ring with PasteHub.net cloud
 ;; service automatically.  You don't have to learn new key-bindings.
+;; 
+;; To get you started, add this line to your startup file:
+;;  (require 'pastehub)
+;;
 
 ;;; Code:
 
@@ -36,6 +40,12 @@
   "number of paste items to sync."
   :type 'integer
   :group 'pastehub)
+
+(defcustom pastehub-client-basepath    nil
+  "Basepath of pastehubPost and pastehubDump command. (e.g. \"/usr/local/bin\")"
+  :type 'string
+  :group 'pastehub)
+
 
 (defconst pastehub-client-post          "pastehubPost")
 (defconst pastehub-client-dump          "pastehubDump")
@@ -58,20 +68,38 @@
                             '(pastehub-mode (:eval (pastehub-modeline-string)))
                             minor-mode-alist)))
 
+(defun pastehub-concat-path (basepath filename)
+  (cond (basepath
+	 (cond ((string-match "[/]$" basepath)
+		(concat basepath filename))
+	       (t
+		(concat basepath "/" filename))))
+	(t
+	 filename)))
+
 (defun get-pastehub-client-post ()
-  (if (file-exists-p pastehub-default-client-post)
-      pastehub-default-client-post
-    pastehub-client-post))
+  (cond ((and pastehub-client-basepath
+	      (file-exists-p (pastehub-concat-path pastehub-client-basepath pastehub-client-post)))
+	 (pastehub-concat-path pastehub-client-basepath pastehub-client-post))
+	((file-exists-p pastehub-default-client-post)
+	 pastehub-default-client-post)
+	(t
+	 pastehub-client-post)))
+
 (defun get-pastehub-client-dump ()
-  (if (file-exists-p pastehub-default-client-dump)
-      pastehub-default-client-dump
-    pastehub-client-dump))
+  (cond ((and pastehub-client-basepath
+	      (file-exists-p (pastehub-concat-path pastehub-client-basepath pastehub-client-dump)))
+	 (pastehub-concat-path pastehub-client-basepath pastehub-client-dump))
+	((file-exists-p pastehub-default-client-dump)
+	 pastehub-default-client-dump)
+	(t
+	 pastehub-client-dump)))
 
 ;;
 ;; Version
 ;;
 (defconst pastehub-version
-  "0.9.0"
+  "0.9.1"
   )
 (defun pastehub-version (&optional arg)
   "display version"
