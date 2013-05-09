@@ -35,7 +35,6 @@
 require 'pastehub'
 include PasteHub
 
-# setup fake DynamoDB
 conf = PasteHub::Config.instance
 conf.setupServer( { :memcacheEp         => 'localhost:11211',
                     :domain             => 'rspec' } )

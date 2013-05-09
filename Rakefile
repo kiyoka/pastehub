@@ -1,12 +1,17 @@
 # -*- mode: ruby; -*-
 #                                          Rakefile for PasteHub
-# Release Engineering
+# Release Engineering:
 #   1. edit the VERSION.yml file
 #   2. rake test  &&  rake gemspec  &&   rake build
 #      to generate pastehub-x.x.x.gem
 #   3. install pastehub-x.x.x.gem to clean environment and test
 #   4. rake release
 #   5. gem push pkg/pastehub-x.x.x.gem   ( need gem version 1.3.6 or higer. Please "gem update --system" to update )
+#
+# Test environment:
+#   1. gem install fake_dynamo --version 0.1.3
+#   2. fake_dynamo --port 4567
+
 
 USERNAME_A='userA'
 USERNAME_B='userB'
