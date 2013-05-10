@@ -19,7 +19,7 @@ This software is distributed under the BSD-style license.
 Linux(app)     |      not yet        |         OK      
 Linux(gem)     |      not yet        |         OK      
 MacOSX(app)    |        OK           |       not yet   
-MacOSX(gem)    |        OK           |       not yet   
+MacOSX(gem)    |        OK           |         OK
 Windows(app)   |      not yet        |       not yet   
 Windows(gem)   |        OK           |       not yet   
 
