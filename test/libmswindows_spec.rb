@@ -1,8 +1,9 @@
+#!/usr/bin/env ruby
+# -*- encoding: utf-8 -*-
 #
-# pastehub.rb - PasteHub's top-level library file
+# libmswindows_spec.rb -  "RSpec file for mswindows.rb"
 #
-#
-#   Copyright (c) 2012  Kiyoka Nishiyama  <kiyoka@sumibi.org>
+#   Copyright (c) 2012-2013  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #
 #   Redistribution and use in source and binary forms, with or without
 #   modification, are permitted provided that the following conditions
@@ -31,13 +32,20 @@
 #   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-#
-require 'pastehub/config'
-require 'pastehub/util'
-require 'pastehub/crypt'
-require 'pastehub/auth'
-require 'pastehub/localdb'
-require 'pastehub/store'
-require 'pastehub/client'
-require 'pastehub/clientsync'
-require 'pastehub/clipboard'
+require 'pastehub'
+include PasteHub
+
+
+describe MSWindows, "When clipboard push and pop operation... " do
+
+  before do
+    @win = MSWindows.new
+  end
+
+  it "should" do
+    @win.push( "new pastedata(1)" ).should   == nil
+    @win.hasNew?( ).should                   == "new pastedata(1)"
+    @win.push( "new pastedata(2)" ).should   == nil
+    @win.hasNew?( ).should                   == "new pastedata(2)"
+  end
+end
