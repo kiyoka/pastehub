@@ -35,17 +35,18 @@
 require 'pastehub'
 include PasteHub
 
+describe Clipboard, "When whichOS calls... " do
+  it "should" do
+    Clipboard.whichOS.should   == :win32
+  end
+end
 
 describe MSWindows, "When clipboard push and pop operation... " do
 
-  before do
-    @win = MSWindows.new
-  end
-
   it "should" do
-    @win.push( "new pastedata(1)" ).should   == nil
-    @win.hasNew?( ).should                   == "new pastedata(1)"
-    @win.push( "new pastedata(2)" ).should   == nil
-    @win.hasNew?( ).should                   == "new pastedata(2)"
+    MSWindows.push( "new pastedata(1)" ).should   == nil
+    MSWindows.hasNew?( "dummyuser" ).should                   == "new pastedata(1)"
+    MSWindows.push( "new pastedata(2)" ).should   == nil
+    MSWindows.hasNew?( "dummyuser" ).should                   == "new pastedata(2)"
   end
 end

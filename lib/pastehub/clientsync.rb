@@ -243,6 +243,7 @@ module PasteHub
 
 
     def clipboardCheck( username, secretKey, password )
+      STDERR.printf( "Info: clipboardCheck thread start (OS=%s)\n", PasteHub::Clipboard.whichOS())
       @prevData = ""
       while true
         sleep @polling_interval

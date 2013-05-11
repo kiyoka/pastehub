@@ -26,12 +26,14 @@ Gem::Specification.new do |s|
     "lib/pastehub/auth.rb",
     "lib/pastehub/client.rb",
     "lib/pastehub/clientsync.rb",
+    "lib/pastehub/clipboard.rb",
     "lib/pastehub/config.rb",
     "lib/pastehub/crypt.rb",
     "lib/pastehub/localdb.rb",
     "lib/pastehub/log.rb",
     "lib/pastehub/macosx.rb",
     "lib/pastehub/masterdb.rb",
+    "lib/pastehub/mswindows.rb",
     "lib/pastehub/store.rb",
     "lib/pastehub/util.rb",
     "server/masterdb.rb",
@@ -48,19 +50,31 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<rake>, [">= 0"])
+      s.add_runtime_dependency(%q<json>, [">= 0"])
+      s.add_runtime_dependency(%q<win32-clipboard>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<rake>, [">= 0"])
+      s.add_runtime_dependency(%q<json>, [">= 0"])
+      s.add_runtime_dependency(%q<win32-clipboard>, [">= 0"])
     else
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<rake>, [">= 0"])
+      s.add_dependency(%q<json>, [">= 0"])
+      s.add_dependency(%q<win32-clipboard>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<rake>, [">= 0"])
+      s.add_dependency(%q<json>, [">= 0"])
+      s.add_dependency(%q<win32-clipboard>, [">= 0"])
     end
   else
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<rake>, [">= 0"])
+    s.add_dependency(%q<json>, [">= 0"])
+    s.add_dependency(%q<win32-clipboard>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<rake>, [">= 0"])
+    s.add_dependency(%q<json>, [">= 0"])
+    s.add_dependency(%q<win32-clipboard>, [">= 0"])
   end
 end
 

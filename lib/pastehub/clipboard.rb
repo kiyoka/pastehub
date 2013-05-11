@@ -41,9 +41,18 @@ end
 module PasteHub
 
   class Clipboard
+    def self.whichOS
+      case RbConfig::CONFIG['host_os']      
+      when /mingw32|mswin|windows/i      
+        :win32
+      else
+        :macos
+      end
+    end
+
     def self.push( data )
-      case RbConfig::CONFIG['host_os']
-      when /mingw32|mswin|windows/i
+      case self.whichOS()
+      when :win32
         PasteHub::MSWindows.push( data )
       else
         PasteHub::MacOSX.push( data )
@@ -51,8 +60,8 @@ module PasteHub
     end
 
     def self.hasNew?( username )
-      case RbConfig::CONFIG['host_os']
-      when /mingw32|mswin|windows/i
+      case self.whichOS()
+      when :win32
         return PasteHub::MSWindows.hasNew?( username )
       else
         return PasteHub::MacOSX.hasNew?( username )

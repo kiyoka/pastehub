@@ -39,8 +39,11 @@ begin
                               ].to_a
       gemspec.add_development_dependency "rspec"
       gemspec.add_development_dependency "rake"
-      if 'pastehub' == name
-        gemspec.add_dependency             "json"
+      gemspec.add_dependency             "json"
+      case name
+      when 'pastehub'
+        gemspec.add_dependency             "highline"
+      when 'pastehub-win32'
         gemspec.add_dependency             "win32-clipboard"
       end
     end
@@ -51,6 +54,7 @@ end
 
 task :default => [:test] do
 end
+
 
 task :test do
   sh "rm -f /tmp/usertmp.db"
@@ -78,10 +82,8 @@ task :win32_test do
   sh "rspec -I ./lib  -b   ./test/liblog_spec.rb         "
 #  sh "rspec -I ./lib  -b   ./test/libmasterdb_spec.rb    "
 #  sh "rspec -I ./lib  -b   ./test/libuserdb_spec.rb      "
-end
 
-task :win_test do
-  sh "time ruby -I ./lib `which rspec` -b   ./test/libmswindows_spec.rb       "
+  sh "rspec -I ./lib -b   ./test/libmswindows_spec.rb     "
 end
 
 task :fluentd_for_test do

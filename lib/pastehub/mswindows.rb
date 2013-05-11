@@ -40,10 +40,16 @@ module PasteHub
 
     def self.push( data )
       Win32::Clipboard.set_data( data )
+      nil
     end
 
     def self.hasNew?( username )
-      pasteData = Win32::Clipboard.data()
+      pasteData = ""
+      begin 
+        pasteData = Win32::Clipboard.data()
+      rescue Clipboard::Error => e
+        STDERR.puts( "Warning: unsupported clipboard format." )
+      end
       if 0 < pasteData.size
         pasteData
       else
