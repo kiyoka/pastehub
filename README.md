@@ -20,7 +20,7 @@ Linux(app)     |      not yet        |         OK
 Linux(gem)     |      not yet        |         OK      
 MacOSX(app)    |        OK           |       not yet   
 MacOSX(gem)    |        OK           |         OK
-Windows(app)   |      not yet        |       not yet   
+Windows(app)   |         -           |          -
 Windows(gem)   |        OK           |       not yet   
 
 ## Documents
