@@ -20,7 +20,7 @@ SETENV_A="export PASTEHUB_USER=userA ; export PASTEHUB_SECRET_KEY='ZGFiYTRkNDg5M
 require 'rake'
 begin
   require 'jeweler2'
-  ['pastehub', 'pastehub-macruby'].each do |name|
+  ['pastehub', 'pastehub-win32'].each do |name|
     Jeweler::Tasks.new do |gemspec|
       gemspec.name = name
       gemspec.summary = "PasteHub is cloud-based cross-platform clipboard sync."
@@ -41,7 +41,7 @@ begin
       gemspec.add_development_dependency "rake"
       if 'pastehub' == name
         gemspec.add_dependency             "json"
-        gemspec.add_dependency             "highline"
+        gemspec.add_dependency             "win32-clipboard"
       end
     end
   end
@@ -54,30 +54,30 @@ end
 
 task :test do
   sh "rm -f /tmp/usertmp.db"
-  sh "time ruby    -I ./lib `which rspec` -b   ./test/libstore_spec.rb       "
-  sh "time ruby    -I ./lib `which rspec` -b   ./test/libconfig_spec.rb      "
-  sh "time ruby    -I ./lib `which rspec` -b   ./test/libutil_spec.rb        "
-  sh "time ruby    -I ./lib `which rspec` -b   ./test/libcrypt_spec.rb       "
-  sh "time ruby    -I ./lib `which rspec` -b   ./test/libauth_spec.rb        "
-  sh "time ruby    -I ./lib `which rspec` -b   ./test/libauth2_spec.rb       "
-  sh "time ruby    -I ./lib `which rspec` -b   ./test/libclient_spec.rb      "
-  sh "time ruby    -I ./lib `which rspec` -b   ./test/liblog_spec.rb         "
-  sh "time ruby    -I ./lib `which rspec` -b   ./test/libmasterdb_spec.rb    "
-  sh "time ruby    -I ./lib `which rspec` -b   ./test/libuserdb_spec.rb      "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/libstore_spec.rb       "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/libconfig_spec.rb      "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/libutil_spec.rb        "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/libcrypt_spec.rb       "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/libauth_spec.rb        "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/libauth2_spec.rb       "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/libclient_spec.rb      "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/liblog_spec.rb         "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/libmasterdb_spec.rb    "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/libuserdb_spec.rb      "
 end
 
-task :macruby_test do
+task :win32_test do
   sh "rm -f /tmp/usertmp.db"
-  sh "time macruby -I ./lib `which rspec` -b   ./test/libstore_spec.rb       "
-  sh "time macruby -I ./lib `which rspec` -b   ./test/libconfig_spec.rb      "
-  sh "time macruby -I ./lib `which rspec` -b   ./test/libutil_spec.rb        "
-  sh "time macruby -I ./lib `which rspec` -b   ./test/libcrypt_spec.rb       "
-  sh "time macruby -I ./lib `which rspec` -b   ./test/libauth_spec.rb        "
-#  sh "time macruby -I ./lib `which rspec` -b   ./test/libauth2_spec.rb       "
-  sh "time macruby -I ./lib `which rspec` -b   ./test/libclient_spec.rb      "
-  sh "time macruby -I ./lib `which rspec` -b   ./test/liblog_spec.rb         "
-#  sh "time macruby -I ./lib `which rspec` -b   ./test/libmasterdb_spec.rb    "
-#  sh "time macruby -I ./lib `which rspec` -b   ./test/libuserdb_spec.rb      "
+  sh "rspec -I ./lib  -b   ./test/libstore_spec.rb       "
+  sh "rspec -I ./lib  -b   ./test/libconfig_spec.rb      "
+  sh "rspec -I ./lib  -b   ./test/libutil_spec.rb        "
+  sh "rspec -I ./lib  -b   ./test/libcrypt_spec.rb       "
+  sh "rspec -I ./lib  -b   ./test/libauth_spec.rb        "
+#  sh "rspec -I ./lib  -b   ./test/libauth2_spec.rb       "
+  sh "rspec -I ./lib  -b   ./test/libclient_spec.rb      "
+  sh "rspec -I ./lib  -b   ./test/liblog_spec.rb         "
+#  sh "rspec -I ./lib  -b   ./test/libmasterdb_spec.rb    "
+#  sh "rspec -I ./lib  -b   ./test/libuserdb_spec.rb      "
 end
 
 task :fluentd_for_test do
@@ -85,11 +85,11 @@ task :fluentd_for_test do
 end
 
 task :test_u do
-  sh "time ruby -I ./lib `which rspec` -b  -t users   ./test/aws_spec.rb            -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
+  sh "ruby -I ./lib `which rspec` -b  -t users   ./test/aws_spec.rb            -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
 end
 
 task :test_e do
-  sh "time ruby -I ./lib `which rspec` -b  -t entries ./test/aws_spec.rb            -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
+  sh "ruby -I ./lib `which rspec` -b  -t entries ./test/aws_spec.rb            -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
 end
 
 task :m do
