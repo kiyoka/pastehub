@@ -31,16 +31,11 @@
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 #
-case RbConfig::CONFIG['host_os']
-when /mingw32|mswin|windows/i
-  require 'pastehub/mswindows'
-else
-  require 'pastehub/macosx'
-end
+require 'clipboard'
 
 module PasteHub
 
-  class Clipboard
+  class AbstractClipboard
     def self.whichOS
       case RbConfig::CONFIG['host_os']      
       when /mingw32|mswin|windows/i      
@@ -51,21 +46,20 @@ module PasteHub
     end
 
     def self.push( data )
-      case self.whichOS()
-      when :win32
-        PasteHub::MSWindows.push( data )
-      else
-        PasteHub::MacOSX.push( data )
-      end
+      Encoding.default_external = "UTF-8"
+      Clipboard.copy( data.force_encoding("UTF-8") )
+      nil
     end
 
     def self.hasNew?( username )
-      case self.whichOS()
-      when :win32
-        return PasteHub::MSWindows.hasNew?( username )
-      else
-        return PasteHub::MacOSX.hasNew?( username )
+      Encoding.default_external = "UTF-8"
+      str = Clipboard.paste( )
+      str = str.force_encoding("UTF-8")
+      Clipboard.clear( )
+      if 0 == str.size
+        return nil
       end
+      return str
     end
   end
 end

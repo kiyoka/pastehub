@@ -40,12 +40,9 @@ begin
       gemspec.add_development_dependency "rspec"
       gemspec.add_development_dependency "rake"
       gemspec.add_dependency             "json"
-      case name
-      when 'pastehub'
-        gemspec.add_dependency             "highline"
-      when 'pastehub-win32'
-        gemspec.add_dependency             "win32-clipboard"
-      end
+      gemspec.add_dependency             "highline"
+      gemspec.add_dependency             "clipboard"
+      gemspec.add_dependency             "ffi"
     end
   end
 rescue LoadError
@@ -72,6 +69,7 @@ end
 
 task :win32_test do
   sh "rm -f /tmp/usertmp.db"
+  sh "rspec -I ./lib  -b   ./test/libmswindows_spec.rb     "
   sh "rspec -I ./lib  -b   ./test/libstore_spec.rb       "
   sh "rspec -I ./lib  -b   ./test/libconfig_spec.rb      "
   sh "rspec -I ./lib  -b   ./test/libutil_spec.rb        "
@@ -83,7 +81,7 @@ task :win32_test do
 #  sh "rspec -I ./lib  -b   ./test/libmasterdb_spec.rb    "
 #  sh "rspec -I ./lib  -b   ./test/libuserdb_spec.rb      "
 
-  sh "rspec -I ./lib -b   ./test/libmswindows_spec.rb     "
+
 end
 
 task :fluentd_for_test do

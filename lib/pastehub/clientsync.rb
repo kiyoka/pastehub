@@ -84,7 +84,7 @@ module PasteHub
           #p [ @prevData , value ]
           STDERR.puts "Info: did not push to OS's clipboard because prevData == donwloaded-firstEntry."
         else
-          PasteHub::Clipboard.push( value.dup )
+          PasteHub::AbstractClipboard.push( value.dup )
           notifyFlag = true
           @prevData = value
         end
@@ -243,11 +243,11 @@ module PasteHub
 
 
     def clipboardCheck( username, secretKey, password )
-      STDERR.printf( "Info: clipboardCheck thread start (OS=%s)\n", PasteHub::Clipboard.whichOS())
+      STDERR.printf( "Info: clipboardCheck thread start (OS=%s)\n", PasteHub::AbstractClipboard.whichOS())
       @prevData = ""
       while true
         sleep @polling_interval
-        data = PasteHub::Clipboard.hasNew?( username )
+        data = PasteHub::AbstractClipboard.hasNew?( username )
         if data
           if @prevData != data
             #p [ @prevData, data ]
