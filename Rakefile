@@ -20,7 +20,7 @@ SETENV_A="export PASTEHUB_USER=userA ; export PASTEHUB_SECRET_KEY='ZGFiYTRkNDg5M
 require 'rake'
 begin
   require 'jeweler2'
-  ['pastehub', 'pastehub-win32'].each do |name|
+  ['pastehub'].each do |name|
     Jeweler::Tasks.new do |gemspec|
       gemspec.name = name
       gemspec.summary = "PasteHub is cloud-based cross-platform clipboard sync."
@@ -69,7 +69,7 @@ end
 
 task :win32_test do
   sh "rm -f /tmp/usertmp.db"
-  sh "rspec -I ./lib  -b   ./test/libmswindows_spec.rb     "
+  sh "rspec -I ./lib  -b   ./test/libclipboard_spec.rb   "
   sh "rspec -I ./lib  -b   ./test/libstore_spec.rb       "
   sh "rspec -I ./lib  -b   ./test/libconfig_spec.rb      "
   sh "rspec -I ./lib  -b   ./test/libutil_spec.rb        "

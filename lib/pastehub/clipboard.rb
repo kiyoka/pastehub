@@ -36,14 +36,6 @@ require 'clipboard'
 module PasteHub
 
   class AbstractClipboard
-    def self.whichOS
-      case RbConfig::CONFIG['host_os']      
-      when /mingw32|mswin|windows/i      
-        :win32
-      else
-        :macos
-      end
-    end
 
     def self.push( data )
       Encoding.default_external = "UTF-8"
@@ -55,7 +47,6 @@ module PasteHub
       Encoding.default_external = "UTF-8"
       str = Clipboard.paste( )
       str = str.force_encoding("UTF-8")
-      Clipboard.clear( )
       if 0 == str.size
         return nil
       end

@@ -35,12 +35,6 @@
 require 'pastehub'
 include PasteHub
 
-describe AbstractClipboard, "When whichOS calls... " do
-  it "should" do
-    AbstractClipboard.whichOS.should   == :win32
-  end
-end
-
 describe AbstractClipboard, "When clipboard push and pop operation... " do
 
   it "should" do
@@ -48,6 +42,5 @@ describe AbstractClipboard, "When clipboard push and pop operation... " do
     AbstractClipboard.hasNew?( "dummyuser" ).should                   == "new pastedata(1)"
     AbstractClipboard.push( "new pastedata(2)" ).should   == nil
     AbstractClipboard.hasNew?( "dummyuser" ).should                   == "new pastedata(2)"
-    AbstractClipboard.hasNew?( "dummyuser" ).should       == nil
   end
 end

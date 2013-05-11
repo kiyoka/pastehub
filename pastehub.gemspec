@@ -33,7 +33,6 @@ Gem::Specification.new do |s|
     "lib/pastehub/log.rb",
     "lib/pastehub/macosx.rb",
     "lib/pastehub/masterdb.rb",
-    "lib/pastehub/mswindows.rb",
     "lib/pastehub/store.rb",
     "lib/pastehub/util.rb",
     "server/masterdb.rb",
