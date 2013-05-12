@@ -14,14 +14,14 @@ This software is distributed under the BSD-style license.
 
 ## Support OS
 
-   type        | Sync OS's clipboard | Sync Emacs kill-ring  
+   type        | Sync OS's clipboard | Sync Emacs kill-ring
 ---------------|---------------------|----------------------
-Linux(app)     |      not yet        |         OK      
-Linux(gem)     |      not yet        |         OK      
+Linux(app)     |      not yet        |         OK
+Linux(gem)     |      not yet        |         OK
 MacOSX(app)    |        OK           |       not yet   
 MacOSX(gem)    |        OK           |         OK
 Windows(app)   |         -           |          -
-Windows(gem)   |        OK           |       not yet   
+Windows(gem)   |        OK           |       not yet
 
 ## Documents
 
