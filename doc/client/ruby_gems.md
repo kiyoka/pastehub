@@ -6,11 +6,13 @@ Install ruby gem
 ## Linux
 
 - Ruby 1.9.3
+  (build with gdbm/openssl/readline module)
 
 ## MacOS X
 
- - Ruby 1.9.3
- 
+- Ruby 1.9.3
+  (build with gdbm/openssl/readline module)
+
 ## Windows
 
 - Ruby 1.9.3 ( please download from [http://rubyinstaller.org/](http://rubyinstaller.org/) )
