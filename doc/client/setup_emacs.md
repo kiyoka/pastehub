@@ -18,7 +18,9 @@ add this code your .emacs
 	(package-initialize)
 
 
-## install the "pastehub" package.
+## install the "pastehub" package from MELPA.
+
+  ![pastehub_el](pastehub_el_on_melpa.png)
 
 ##  and add this code to your .emacs
 
