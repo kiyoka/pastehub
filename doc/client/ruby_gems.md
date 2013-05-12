@@ -1,39 +1,39 @@
 Install ruby gem
 =======================
+ 
+## Required platforms
 
-# Required platforms
-
-## Linux
-
-- Ruby 1.9.3
-  (build with gdbm/openssl/readline module)
-
-## MacOS X
+### Linux
 
 - Ruby 1.9.3
   (build with gdbm/openssl/readline module)
 
-## Windows
+### MacOS X
+
+- Ruby 1.9.3
+  (build with gdbm/openssl/readline module)
+
+### Windows
 
 - Ruby 1.9.3 ( please download from [http://rubyinstaller.org/](http://rubyinstaller.org/) )
 
   ![siteImage](rubyinstaller_win32.png)
 
-# installation instruction
+## installation instruction
 
-## Install the "pastehub" gem
+### Install the "pastehub" gem
 
  	$ gem install pastehub
 
-# start pastehub client
+## start pastehub client
 
-## Registration
+### Registration
 
 Please regist your account
 
 + [Registration](Registration.md)
 
-## start client program
+### start client program
 
 	$ PastehubSync 
 	Please input your account information
@@ -43,7 +43,7 @@ Please regist your account
 	  password            : ********
 	  password(for verify): ********
 
-# History
+## History
 
 + 0.2.6 First release from rubygems.org.
 

@@ -1,14 +1,14 @@
 Install client software (Emacs)
 =======================
 
-# Required platforms
+## Required platforms
 
 - Linux
 - Emacs 24.1 or later
 
-# installation instruction
+## installation instruction
 
-## Setup melpa
+### Setup melpa
 
 add this code your .emacs
 
@@ -18,11 +18,11 @@ add this code your .emacs
 	(package-initialize)
 
 
-## install the "pastehub" package from MELPA.
+### install the "pastehub" package from MELPA.
 
   ![pastehub_el](pastehub_el_on_melpa.png)
 
-##  and add this code to your .emacs
+### and add this code to your .emacs
 
 	(require 'pastehub)
 

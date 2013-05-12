@@ -1,11 +1,11 @@
 Install client software (MacOS X)
 =======================
 
-# Required platform
+## Required platform
 
 - MacOS X 10.6 or later
 
-# installation instruction
+## installation instruction
 
 - download application
 
@@ -32,7 +32,7 @@ Install client software (MacOS X)
   ![ONLINE](status_bar_is_online.png)
 
 
-# Copy and Paste operation
+## Copy and Paste operation
 
   It's easy.
   please cut / copy / paste as usual.
@@ -41,7 +41,7 @@ Install client software (MacOS X)
   ![key](https://dl.dropbox.com/u/3870066/blog/iStock_000009322220XSmall.jpg)
 
 
-# Status bar icons
+## Status bar icons
 
 + ![icon](pastehub_statusbar_normal.png)  ... offline
 + ![icon](pastehub_statusbar_checked.png) ... ONLINE
@@ -51,7 +51,7 @@ Install client software (MacOS X)
 + ![icon](pastehub_statusbar_3plus.png) ... over three paste data comming
 
 
-# History
+## History
 
 + 0.2.4 Fixed SEGV problem with three environment variables for MacRuby. ( VM_DISABLE_RBO=1 /  VM_OPT_LEVEL=0 / AUTO_USE_TLC=0 )
 + 0.2.3 Fixed SEGV problem of gdbm parallel operation.

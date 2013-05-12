@@ -1,13 +1,13 @@
 Install client software (Linux)
 =======================
 
-# Required platform
+## Required platform
 
 - CentOS 6.x   (32bit/64bit)
 - Debian 6.x   (32bit/64bit)
 - Ubuntu 11_10 or later (32bit/64bit)
 
-# installation instruction
+## installation instruction
 
 - CentOS
 
@@ -43,7 +43,7 @@ sync start ( on [gnu screen](http://www.gnu.org/software/screen/) or [tmux](http
 	  password            : ********
 	  password(for verify): ********
 
-# History
+## History
 
 + 0.2.5 Support hourly GC of local database(gdbm).
 + 0.2.2 First release.
