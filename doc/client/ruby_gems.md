@@ -15,6 +15,8 @@ Install ruby gem
 
 - Ruby 1.9.3 ( please download from [http://rubyinstaller.org/](http://rubyinstaller.org/) )
 
+  ![siteImage](rubyinstaller_win32.png)
+
 # installation instruction
 
 ## Install the "pastehub" gem
