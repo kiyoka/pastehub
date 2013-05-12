@@ -41,7 +41,7 @@ begin
       gemspec.add_development_dependency "rake"
       gemspec.add_dependency             "json"
       gemspec.add_dependency             "highline"
-      gemspec.add_dependency             "clipboard"
+      gemspec.add_dependency(            "clipboard", "1.0.5" )
       gemspec.add_dependency             "ffi"
     end
   end
