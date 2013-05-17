@@ -66,6 +66,7 @@ def main
   while true
     begin
 
+      syncQ = Queue.new
       case RbConfig::CONFIG['host_os']
       when /mingw32|mswin|windows/i
         # Windows
@@ -73,7 +74,7 @@ def main
         # Other
         Signal.trap( :SIGUSR1 ) {
           STDERR.puts( "Info: caught signal." )
-          clientSync.syncNow( username, secretKey, password )
+          syncQ.push( :SIGUSR1 )
         }
       end
 
@@ -81,6 +82,12 @@ def main
         threads = []
         threads.push(Thread.new { clientSync.syncMain(       username, secretKey, password ) })
         threads.push(Thread.new { clientSync.clipboardCheck( username, secretKey, password ) })          
+        threads.push(Thread.new {
+                       while true
+                         syncQ.pop
+                         clientSync.syncNow( username, secretKey, password )
+                       end
+                     })
         threads.each {|t| t.join}
       end
 

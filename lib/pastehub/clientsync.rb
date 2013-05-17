@@ -275,7 +275,6 @@ module PasteHub
 
 
     def syncNow( username, secretKey, password )
-      STDERR.puts( "Info: caught signal." )
       store = PasteHub::LocalStore.new( username, true )
       pair = store.top()
       auth = PasteHub::AuthForClient.new( username, secretKey )
