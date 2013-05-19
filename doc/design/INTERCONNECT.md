@@ -5,28 +5,26 @@ Interconnect protocol for Client application
 
 use unix domain socket or named-pipe(win32)
 
-### getStatus
- new paste-data comes
+### getStatus:
++ new paste-data comes
 + error occurs
 + online
 + offline
 
-#### format
+#### format:
 + new\n
 + error N\n  (N is a error code)
 + online\n
 + offline\n
 
-### setNotify
+### setNotify:
 + new paste-data inserted to local DB
 
 ## Sign-in
 
 sign-in can only exec from command line argument.
 
-### command line argument of PastehubSync
->    PastehubSync password [username] [signature]
->      0) success to signin and start sync process.
->      1) fail    to signin and exit(1) process.
-
-
+### command line argument of PastehubSync:
+    PastehubSync password [username] [signature]
+      0) success to signin then start sync process.
+      1) fail    to signin then exit(1) process.
