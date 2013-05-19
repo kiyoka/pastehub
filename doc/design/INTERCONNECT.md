@@ -29,4 +29,4 @@ sign-in can only exec from command line argument.
 >      0) success to signin and start sync process.
 >      1) fail    to signin and exit(1) process.
 
-EOF
+
