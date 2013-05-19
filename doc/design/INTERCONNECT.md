@@ -6,19 +6,13 @@ Interconnect protocol for Client application
 use unix domain socket or named-pipe(win32)
 
 ### getStatus:
-+ new paste-data comes
-+ error occurs
-+ online
-+ offline
+format is JSON. client must polling every 0.5 second.
 
-#### format:
-+ new\n
-+ error N\n  (N is a error code)
-+ online\n
-+ offline\n
-
-### setNotify:
-+ new paste-data inserted to local DB
+    {
+      "online" : <0 or 1>,
+      "error"  : <errorCode>,
+      "comes"  : <items which came from server in recent minute>
+    }
 
 ## Sign-in
 
