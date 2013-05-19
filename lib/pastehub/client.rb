@@ -82,6 +82,62 @@ module PasteHub
     return true
   end
 
+  def self.signInWithPassword( password, username = nil, secretKey = nil )
+    signfile = self.signfilePath
+    util = Util.new
+
+    if ( not File.exist?( signfile )) or ( username and secretKey )
+      # initial signIn
+      if username and secretKey
+        auth = AuthForClient.new( username, secretKey )
+        client = Client.new( auth )
+        if client.authTest()
+          # save authinfo with gpg
+          begin
+            crypt = PasteHub::Crypt.new( password )
+            open( signfile, "w" ) {|f|
+              f.puts(           username  )
+              f.puts( crypt.en( secretKey ))
+            }
+            # auth OK
+            return [ :ok, username, secretKey, password ]
+          rescue Exception => e
+            STDERR.puts( "Error: can't save #{signfile}: #{e.to_s}" )
+            return [ :cantSave, nil, nil, nil ]
+          end
+        else
+          STDERR.puts( "your email or secret key is not registerd..." )
+          return [ :notRegistered, nil, nil, nil ]
+        end
+      else
+        STDERR.puts( "Please specify username and secretKey." )
+        return [ :argumentError, nil, nil, nil ]
+      end
+    else
+      # SignIn with password
+      open( signfile ) {|f|
+        username = f.readline.chomp
+        signStr = f.read
+
+        crypt = PasteHub::Crypt.new( password )
+        secretKey= crypt.de( signStr )
+        if secretKey
+          auth = AuthForClient.new( username, secretKey )
+          client = Client.new( auth )
+          if client.authTest()
+            return [ :ok, username, secretKey, password ]
+          else
+            STDERR.puts( "Error: your secretKey may be old." )
+            return [ :mayBeOld, nil, nil, nil ]
+          end
+        end
+        STDERR.puts( "Error: missing password." )
+        return [ :missingPassword, nil, nil, nil ]
+      }
+    end
+    return [ :ng, nil, nil, nil ]
+  end
+
   def self.signIn
     signfile = self.signfilePath
     util = Util.new
@@ -108,7 +164,7 @@ module PasteHub
                 f.puts( crypt.en( secretKey ))
               }
               # auth OK
-              return [ username, secretKey, password ]
+              return [ :ok, username, secretKey, password ]
             end
             STDERR.puts( "Error: password setting failed..." )
           rescue Exception => e
@@ -145,7 +201,7 @@ module PasteHub
         raise e
       end
     end
-    return [ nil, nil, nil ]
+    return [ :ng, nil, nil, nil ]
   end
 
   def self.savePid( pid )

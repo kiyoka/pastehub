@@ -40,18 +40,35 @@ PasteHub::Config.instance.loadClient
 RETRY_INTERVAL = 60
 
 
-def setup
+def setup( argv )
   if not PasteHub.setupDirectory( )
     exit( 1 )
   end
-  return PasteHub.signIn( )
+
+  case argv.size
+  when 0  # console interactive mode
+    return PasteHub.signIn()
+  when 1 # password
+    return PasteHub.signInWithPassword( argv[0] )
+  when 3 # password username signature
+    return PasteHub.signInWithPassword( argv[0], argv[1], argv[2] )
+  else
+    usage( )
+    exit( 1 ) 
+  end
 end
 
-def main
-  ret = setup()
-  username  = ret[0]
-  secretKey = ret[1]
-  password  = ret[2]
+
+def main( argv )
+  ret = setup( argv )
+  errorCode = ret[0]
+  username  = ret[1]
+  secretKey = ret[2]
+  password  = ret[3]
+
+  if not :ok == errorCode
+    exit( 1 )
+  end
 
   # save pid file
   PasteHub.savePid( Process.pid )
@@ -115,4 +132,4 @@ def main
   end
 end
 
-main
+main( ARGV )
