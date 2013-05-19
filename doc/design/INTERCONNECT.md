@@ -6,7 +6,7 @@ Interconnect protocol for Client application
 use unix domain socket or named-pipe(win32)
 
 ### getStatus:
-format is JSON. client must polling every 0.5 second.
+format is JSON. client must poll every 0.5 second.
 
     {
       "online" : <0 or 1>,
