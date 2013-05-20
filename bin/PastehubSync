@@ -59,6 +59,7 @@ def setup( argv )
 end
 
 
+
 def main( argv )
   ret = setup( argv )
   errorCode = ret[0]
@@ -78,7 +79,12 @@ def main( argv )
                                     PasteHub::Config.instance.listItems / 2,
                                     PasteHub::Config.instance.localDbPath,
                                     0.5 )
-  clientSync.addNoitfyCallback( lambda { puts '<< COUNTUP >>' }, lambda { puts '<< ONLINE >>' }, lambda { puts '<< offline >>' } )
+  
+  clientSync.addNoitfyCallback( 
+                               lambda { puts '<< COUNTUP >>' },
+                               lambda { puts '<< ONLINE >>'  },
+                               lambda { puts '<< offline >>' }
+                               )
 
   while true
     begin
@@ -99,7 +105,7 @@ def main( argv )
       if username
         threads = []
         threads.push(Thread.new { clientSync.syncMain(       username, secretKey, password ) })
-        threads.push(Thread.new { clientSync.clipboardCheck( username, secretKey, password ) })          
+        threads.push(Thread.new { clientSync.clipboardCheck( username, secretKey, password ) })
         threads.push(Thread.new {
                        while true
                          sleep 0.5
@@ -109,6 +115,7 @@ def main( argv )
                          end
                        end
                      })
+        threads.push(Thread.new { clientSync.syncStatus( ) })
         threads.each {|t| t.join}
       end
 

@@ -35,8 +35,53 @@ require 'net/http'
 require 'uri'
 require 'open-uri'
 require 'fileutils'
+require 'json'
 
 module PasteHub
+
+  class Status
+    TIMER_INIT = 60 # second
+
+    def initialize( )
+      @comes      = 0
+      @online     = false
+      @errorFlag  = false
+      @timer      = TIMER_INIT
+      @curJsonStr = ""
+    end
+    
+    def inc( )
+      @comes += 1
+      @timer     = TIMER_INIT
+    end
+    
+    def reset( )
+      @comes = 0
+      @timer     = TIMER_INIT
+    end
+    
+    def setOnline( arg )
+      @online = arg
+    end
+
+    def tick( delta )
+      if @timer <= 0
+        @comes = 0
+      else
+        @timer -= delta
+      end
+    end
+
+    def update( )
+      prev = @curJsonStr
+      h = Hash.new
+      h[ 'online' ] = @online
+      h[ 'error'  ] = @errorFlag
+      h[ 'comes'  ] = @comes
+      @curJsonStr = JSON.dump( h )
+      return [ @curJsonStr, prev ]
+    end
+  end
 
   class ClientSync
 
@@ -44,6 +89,7 @@ module PasteHub
       @alive_entries        = alive_entries
       @localdb_path         = localdb_path
       @polling_interval     = polling_interval
+      @status               = Status.new()
     end
 
 
@@ -163,14 +209,17 @@ module PasteHub
 
     def notifyCountUp()
       @countUpNotifyFunc.call() if @countUpNotifyFunc
+      @status.inc( )
     end
 
     def notifyConnect()
       @connectNotifyFunc.call() if @connectNotifyFunc
+      @status.setOnline( true )
     end
 
     def notifyDisconnect()
       @disconnectNotifyFunc.call() if @disconnectNotifyFunc      
+      @status.setOnline( false )
     end
 
 
@@ -280,6 +329,22 @@ module PasteHub
       auth = PasteHub::AuthForClient.new( username, secretKey )
       client = PasteHub::Client.new( auth, password )
       client.putValue( pair[0], pair[1] )
+    end
+
+
+    def syncStatus( )
+      while true
+        ( cur , prev ) = @status.update( )
+        if cur != prev 
+          # save current status as json file.
+          open( @localdb_path + "status.json", "w" ) {|f|
+            f.puts cur
+          }
+        end
+
+        @status.tick( 0.5 )
+        sleep 0.5
+      end
     end
 
   end
