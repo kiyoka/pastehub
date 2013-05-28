@@ -100,10 +100,10 @@ def main( argv )
           signals += 1
         }
       end
-      
 
       if username
         threads = []
+        threads.push(Thread.new { clientSync.statusServer( ) })
         threads.push(Thread.new { clientSync.syncMain(       username, secretKey, password ) })
         threads.push(Thread.new { clientSync.clipboardCheck( username, secretKey, password ) })
         threads.push(Thread.new {

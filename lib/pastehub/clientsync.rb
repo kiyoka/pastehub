@@ -81,9 +81,32 @@ module PasteHub
       @curJsonStr = JSON.dump( h )
       return [ @curJsonStr, prev ]
     end
+
+    def icon( )
+      result = if @errorFlag
+                 "error"
+               elsif not @online
+                 "offline"
+               else
+                 case @comes
+                 when 0
+                   "online"
+                 when 1
+                   "one"
+                 when 2
+                   "two"
+                 when 3
+                   "three"
+                 else
+                   "threeplus"
+                 end
+               end
+      return result
+    end
   end
 
   class ClientSync
+    ICONSOCKET = "/tmp/pastehub_icon"
 
     def initialize( alive_entries, localdb_path, polling_interval )
       @alive_entries        = alive_entries
@@ -331,7 +354,6 @@ module PasteHub
       client.putValue( pair[0], pair[1] )
     end
 
-
     def syncStatus( )
       while true
         ( cur , prev ) = @status.update( )
@@ -340,12 +362,41 @@ module PasteHub
           open( @localdb_path + "status.json", "w" ) {|f|
             f.puts cur
           }
+          # save current icon status.
+          open( @localdb_path + "status_icon.txt", "w" ) {|f|
+            f.puts @status.icon( )
+          }
         end
 
-        @status.tick( 0.5 )
-        sleep 0.5
+        @status.tick( 1.0 )
+        sleep 1.0
       end
     end
 
+    def statusServer( )
+      while true
+        begin
+          if File.exist? ( ICONSOCKET )
+            File.unlink( ICONSOCKET )
+          end
+          p "statusServer"
+          UNIXServer.open( ICONSOCKET ) {|serv|
+            s = serv.accept
+            prev = @status.icon()
+            while true
+              p "statusServer:loop"
+              if prev != @status.icon()
+                s.puts @status.icon()
+                prev = @status.icon()
+              end
+              sleep 0.1
+            end
+            s.close
+          }
+        rescue Errno::EPIPE => e
+          "statusServer:retry"
+        end
+      end
+    end
   end
 end

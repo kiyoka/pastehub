@@ -36,6 +36,7 @@ require 'net/https'
 require 'uri'
 require 'open-uri'
 require 'fileutils'
+require 'socket'
 
 module PasteHub
 
@@ -188,7 +189,7 @@ module PasteHub
               auth = AuthForClient.new( username, secretKey )
               client = Client.new( auth )
               if client.authTest()
-                return [ username, secretKey, password ]
+                return [ :ok, username, secretKey, password ]
               else
                 STDERR.puts( "Error: your secretKey may be old." )
               end
