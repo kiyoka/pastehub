@@ -2,10 +2,11 @@
 
 require 'socket'
 
-UNIXSocket.open("/tmp/sock") {|c|
-  c.send "I am CLIENT!(1)\n", 0
-  sleep 2
-  c.send "I am CLIENT!(2)\n", 0
-  sleep 2
-  c.send "I am CLIENT!(3)\n", 0
+UNIXSocket.open("/tmp/pastehub_icon") {|c|
+  i = 0
+  while true
+    val = c.readline.chomp 
+    printf( "%05d: %s\n", i, val )
+    i += 1
+  end
 }
