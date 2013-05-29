@@ -379,12 +379,10 @@ module PasteHub
           if File.exist? ( ICONSOCKET )
             File.unlink( ICONSOCKET )
           end
-          p "statusServer"
           UNIXServer.open( ICONSOCKET ) {|serv|
             s = serv.accept
             prev = @status.icon()
             while true
-              p "statusServer:loop"
               if prev != @status.icon()
                 s.puts @status.icon()
                 prev = @status.icon()
@@ -394,7 +392,7 @@ module PasteHub
             s.close
           }
         rescue Errno::EPIPE => e
-          "statusServer:retry"
+          STDERR.puts "Info: statusServer:retry"
         end
       end
     end
