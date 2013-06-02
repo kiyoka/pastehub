@@ -149,9 +149,21 @@ module PasteHub
       if 0 < downList.size
         key = downList.first
         value = client.getValue( key )
+
+        # top of localdb
+        topvalue = ""
+        lst = localdb.getList(1)
+        if 0 < lst.size 
+          topvalue = localdb.getValue( lst.first )
+        end
+        #STDERR.printf( "local.top:[%s]", topvalue  )
+        #STDERR.printf( "push Clip:[%s]", value.dup )
+
         if @prevData == value
           #p [ @prevData , value ]
           STDERR.puts "Info: did not push to OS's clipboard because prevData == donwloaded-firstEntry."
+        elsif topvalue.force_encoding("UTF-8")  == value.dup.force_encoding("UTF-8")
+          STDERR.puts "Info: got value == top entry of localStore."
         else
           STDERR.printf( "Info: push to OS's clipboard (size=%d).\n", value.size )
           PasteHub::AbstractClipboard.push( value.dup )
@@ -352,6 +364,7 @@ module PasteHub
       auth = PasteHub::AuthForClient.new( username, secretKey )
       client = PasteHub::Client.new( auth, password )
       client.putValue( pair[0], pair[1] )
+      store.close()
     end
 
     def syncStatus( )
