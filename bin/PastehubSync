@@ -45,19 +45,28 @@ def setup( argv )
     exit( 1 )
   end
 
-  case argv.size
-  when 0  # console interactive mode
-    return PasteHub.signIn()
-  when 1 # password
-    return PasteHub.signInWithPassword( argv[0] )
-  when 3 # password username signature
-    return PasteHub.signInWithPassword( argv[0], argv[1], argv[2] )
-  else
-    usage( )
-    exit( 1 ) 
+  if 0 < argv.size
+    case argv[0]
+    when "batch"
+      # batch (server) mode
+      password = STDIN.readline.chomp
+      return PasteHub.signInWithPassword( password )
+    when "auth"
+      begin
+        password  = STDIN.readline.chomp
+        username  = STDIN.readline.chomp      
+        signature = STDIN.readline.chomp      
+        return PasteHub.signInWithPassword( password, username, signature )
+      rescue EOFError
+        exit( 1 )
+      end
+    else
+      exit( 1 )
+    end
   end
+  # console interactive mode
+  return PasteHub.signIn()
 end
-
 
 
 def main( argv )
@@ -103,7 +112,9 @@ def main( argv )
 
       if username
         threads = []
-        threads.push(Thread.new { clientSync.statusServer( ) })
+        threads.push(Thread.new { clientSync.statusServer( )
+                                  STDERR.puts( "Info: disconnected from client process." )
+                                  exit( 1 ) })
         threads.push(Thread.new { clientSync.syncMain(       username, secretKey, password ) })
         threads.push(Thread.new { clientSync.clipboardCheck( username, secretKey, password ) })
         threads.push(Thread.new {
