@@ -374,26 +374,27 @@ module PasteHub
     end
 
     def statusServer( )
-      while true
-        begin
-          if File.exist? ( ICONSOCKET )
-            File.unlink( ICONSOCKET )
-          end
-          UNIXServer.open( ICONSOCKET ) {|serv|
-            s = serv.accept
-            prev = @status.icon()
-            while true
-              if prev != @status.icon()
-                s.puts @status.icon()
-                prev = @status.icon()
-              end
-              sleep 0.1
-            end
-            s.close
-          }
-        rescue Errno::EPIPE => e
-          STDERR.puts "Info: statusServer:retry"
+      begin
+        if File.exist? ( ICONSOCKET )
+          File.unlink( ICONSOCKET )
         end
+        UNIXServer.open( ICONSOCKET ) {|serv|
+          s = serv.accept
+          s.puts @status.icon()
+          prev = @status.icon()
+          while true
+            if prev != @status.icon()
+              s.puts @status.icon()
+              prev = @status.icon()
+            end
+            sleep 0.1
+          end
+          s.close
+        }
+      rescue Errno::EPIPE => e
+        STDERR.puts "Info: Broken PIPE"
+      rescue e
+        STDERR.puts "Info: Other Error"
       end
     end
   end
