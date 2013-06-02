@@ -31,22 +31,20 @@
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #  
 #
-require 'rubygems'
-require 'pastehub'
 
 class AccountInformationWindow < NSWindow
 
     attr_accessor :email, :secretKey, :password
-    attr_accessor :signin_button, :ok_button
-    attr_accessor :step1_message, :step2_message
-    
+    attr_accessor :signin_button
+    attr_accessor :message_area
+ 
+    SIGNFILEPATH = File.expand_path( "~/.pastehub/authinfo.txt" )
+
     def awakeFromNib
-        username = PasteHub.loadUsername
-        
-        if not File.exist?( PasteHub.signfilePath )
-            step1()
+        if not File.exist?( SIGNFILEPATH )
+            firstSignIn()
         else
-            step2()
+            signIn()
         end
     end
     
@@ -54,50 +52,47 @@ class AccountInformationWindow < NSWindow
         email     = @email.stringValue
         secretKey = @secretKey.stringValue
 
-        if email.size < 1
-            @step1_message.setStringValue "Please input your email address."
-            @step1_message.textColor = NSColor.redColor
-        elsif secretKey.size < 1
-            @step1_message.setStringValue "Please input your secretKey."
-            @step1_message.textColor = NSColor.redColor
-        else
-            auth = PasteHub::AuthForClient.new( email, secretKey )
-            client = PasteHub::Client.new( auth )
-            if client.authTest()
-                @saveOnly = true
-                @step1_message.setStringValue "Success!"
-                @step1_message.textColor = NSColor.blackColor
-                step2()
-            else
-                @step1_message.setStringValue "email or secretKey is incorrect."
-                @step1_message.textColor = NSColor.redColor
-                p "auth Error(1)"
+        if not File.exist?( SIGNFILEPATH )
+            if email.size < 1
+                @message_area.setStringValue "Please input your email address."
+                @message_area.textColor = NSColor.redColor
+                return
+            elsif secretKey.size < 1
+                @message_area.setStringValue "Please input your secretKey."
+                @message_area.textColor = NSColor.redColor
+                return
             end
         end
+
+        if @password.stringValue.size < 8
+            @message_area.setStringValue "A password must be at least eight characters."
+            @message_area.textColor = NSColor.redColor
+            p "less than 9 chars"
+            return
+        end
+        
+        @message_area.setStringValue "Success! please close window to start sync clipborad."
+        @message_area.textColor = NSColor.blackColor
+
+        # You must not send a auth information as notify object! for security reason.
+        NSNotificationCenter.defaultCenter.postNotificationName("auth_complete", object:nil)
+        p "send notify 'auth_complete'"
+        
+        @password.setEnabled      false
+        @signin_button.setEnabled false
     end
 
-    def step1()
-        p "step1()"
-        @password.setEnabled      false
-        @ok_button.setEnabled     false
-        
-        @step1_message.setEnabled true
-        @step2_message.setEnabled false
-
+    def firstSignIn()
+        p "firstSignIn"
+        @message_area.setEnabled  true
         select_the_field( @email )
     end
 
-    def step2()
-        p "step2()"
+    def signIn()
+        p "signIn()"
         @email.setEnabled         false
         @secretKey.setEnabled     false
-        @signin_button.setEnabled false
-        
         @password.setEnabled      true
-        @ok_button.setEnabled     true
-        
-        @step1_message.setEnabled false
-        @step2_message.setEnabled true
 
         select_the_field( @password )
     end
@@ -106,77 +101,5 @@ class AccountInformationWindow < NSWindow
         textObject.selectText self
         range = NSRange.new(textObject.stringValue.length, 0)
         textObject.currentEditor.setSelectedRange range
-    end
-    
-    def save()
-        crypt = PasteHub::Crypt.new( @password.stringValue )
-        open( PasteHub.signfilePath, "w" ) {|f|
-            f.puts( @email.stringValue )
-            f.puts( crypt.en( @secretKey.stringValue ))
-        }
-        true
-    end
-
-    def auth_and_save()
-        success = false
-        
-        signfile = PasteHub.signfilePath
-        if not File.exist?( signfile )
-            p "Error : Can't open file [#{signfile}]"
-        else
-            open( signfile ) {|f|
-                username = f.readline.chomp
-                signStr = f.read
-        
-                crypt = PasteHub::Crypt.new( @password.stringValue )
-                secretKey = crypt.de( signStr )
-                if secretKey
-                    auth = PasteHub::AuthForClient.new( username, secretKey )
-                    client = PasteHub::Client.new( auth )
-                    if client.authTest()
-                        p "auth Success"
-                        @email.setStringValue      username
-                        @secretKey.setStringValue  secretKey
-                        success = true
-                    else
-                        p "auth Error(2)"
-                    end
-                end
-            }
-        end
-        unless success
-            @step2_message.setStringValue "Password is incorrect."
-            @step2_message.textColor = NSColor.redColor
-            p "auth Error(3)"
-        end
-        success
-    end
-
-    def ok_button_pushed(sender)
-        
-        if @password.stringValue.size < 8
-            @step2_message.setStringValue "A password must be at least eight characters."
-            @step2_message.textColor = NSColor.redColor
-            p "less 8 chars"
-            return
-        end
-        
-        success = if @saveOnly
-            save()
-        else
-            auth_and_save()
-        end
-    
-        if success
-            @password.setEnabled  false
-            @ok_button.setEnabled false
-
-            # You must not send a auth information as notify object! for security reason.
-            NSNotificationCenter.defaultCenter.postNotificationName("auth_complete", object:nil)
-            p "send notify 'auth_complete'"
-
-            @step2_message.setStringValue "Success! please close window to start sync clipborad."
-            @step2_message.textColor = NSColor.blackColor
-        end
     end
 end

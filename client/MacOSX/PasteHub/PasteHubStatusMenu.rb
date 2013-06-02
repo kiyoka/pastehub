@@ -47,9 +47,9 @@ class PasteHubStatusMenu < NSMenu
 
     def setStatusIcon(sym)
         case sym
-        when :normal
+        when :offline
             image = NSImage.imageNamed 'pastehub_statusbar_normal.png'
-        when :checked
+        when :online
             image = NSImage.imageNamed 'pastehub_statusbar_checked.png'
         when :one
             image = NSImage.imageNamed 'pastehub_statusbar_1.png'
@@ -59,6 +59,8 @@ class PasteHubStatusMenu < NSMenu
             image = NSImage.imageNamed 'pastehub_statusbar_3.png'
         when :threeplus
             image = NSImage.imageNamed 'pastehub_statusbar_3plus.png'
+        when :ng
+            image = NSImage.imageNamed 'pastehub_statusbar_ng.png'
         end
         self.status_bar_item.setImage image
         self.status_bar_item.setHighlightMode true

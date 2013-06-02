@@ -31,21 +31,17 @@
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #  
 #
-require 'rubygems'
-require 'pastehub'
+require 'socket'
 
 
 class AppDelegate
     
     attr_accessor :accountInfo
+    
+    SIGNFILEPATH = File.expand_path( "~/.pastehub/authinfo.txt" )
 
     def applicationDidFinishLaunching(a_notification)
-        if not PasteHub.setupDirectory( )
-            exit( 1 )
-        end
-        
-        # save pid file
-        PasteHub.savePid( Process.pid )
+        @pid = nil
 
         # regist observer for "auth_complete"
         NSNotificationCenter.defaultCenter.addObserver(self,
@@ -53,59 +49,49 @@ class AppDelegate
                                                        name:"auth_complete", object:nil)
     end
     
-    def notifyCountUp()
-        @notify_count += 1
-        status =
-        case @notify_count
-        when 1
-            :one
-        when 2
-            :two
-        when 3
-            :three
-        else
-            :threeplus
+    def batchProcess( )
+        begin
+            IO.popen( "/usr/local/bin/PastehubSync batch", "r+" ) { |io|
+                io.puts @password
+                @pid = io.pid
+            while io.readline.chomp
+                STDERR.puts "#"
+            end
+            }
+        rescue e
+            STDERR.puts "batchProcess(): error #{e}"
+            exit( 1 )
         end
-        NSNotificationCenter.defaultCenter.postNotificationName("change_status", object:nil,
-                                                                userInfo: {:status => status})
-        puts '<< COUNTUP >>'
     end
     
-    def notifyConnect()
-        @notify_count = 0
-        NSNotificationCenter.defaultCenter.postNotificationName("change_status", object:nil,
-                                                                userInfo: {:status => :checked})
-        puts '<< ONLINE >>'
-    end
-
-    def notifyDisconnect()
-        @notify_count = 0
-        NSNotificationCenter.defaultCenter.postNotificationName("change_status", object:nil,
-                                                                userInfo: {:status => :normal})
-        puts '<< offline >>'
+    def statusCheckClient( )
+        sleep 5
+        begin
+            UNIXSocket.open("/tmp/pastehub_icon") {|c|
+                while true
+                    iconstat = c.readline.chomp
+                    STDERR.puts "iconstat=#{iconstat}"
+                    NSNotificationCenter.defaultCenter.postNotificationName("change_status",
+                                                                            object: nil,
+                                                                            userInfo: {:status => iconstat.to_sym()} )
+                end
+            }
+        rescue e
+            STDERR.puts "PastehubSync is down"
+        end
+        STDERR.puts "notifyClient(): error #{e}"
+        NSNotificationCenter.defaultCenter.postNotificationName("change_status",
+                                                                object: nil,
+                                                                userInfo: {:status => :ng} )
     end
     
     def respond_to_auth_complete(a_notification)
         p "AppDelegate:respond_to_auth_complete"
-        p "AppDelegate:email     = " + accountInfo.email.stringValue
 
-        email     = accountInfo.email.stringValue
-        secretKey = accountInfo.secretKey.stringValue
-        password  = accountInfo.password.stringValue
-
-        # create clientSync
-        clientSync = PasteHub::ClientSync.new(
-                                                PasteHub::Config.instance.listItems / 2,
-                                                PasteHub::Config.instance.localDbPath,
-                                                0.5 )
-        @notify_count = 0
-        
-        clientSync.addNoitfyCallback( lambda { notifyCountUp() }, lambda { notifyConnect() }, lambda { notifyDisconnect() } )
-        
-        notifyConnect()
+        @password  = accountInfo.password.stringValue
         
         @threads = []
-        @threads.push(Thread.new { clientSync.syncMain(    email, secretKey, password ) })
-        @threads.push(Thread.new { clientSync.macosxCheck( email, secretKey, password ) })
+        @threads.push( Thread.new { batchProcess( ) } )
+        @threads.push( Thread.new { statusCheckClient( ) } )
     end
 end
