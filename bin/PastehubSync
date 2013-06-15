@@ -52,11 +52,28 @@ def setup( argv )
       password = STDIN.readline.chomp
       return PasteHub.signInWithPassword( password )
     when "auth"
+      password = STDIN.readline.chomp
+      arr = PasteHub.signInWithPassword( password )
+      if :ok == arr[0]
+        puts "OK"
+        exit( 0 )
+      else
+        puts "NG"
+        exit( 1 )
+      end
+    when "saveauth"
       begin
         password  = STDIN.readline.chomp
         username  = STDIN.readline.chomp      
         signature = STDIN.readline.chomp      
-        return PasteHub.signInWithPassword( password, username, signature )
+        arr = PasteHub.signInWithPassword( password, username, signature )
+        if :ok == arr[0]
+          puts "OK"
+          exit( 0 )
+        else
+          puts "NG"
+          exit( 1 )
+        end
       rescue EOFError
         exit( 1 )
       end

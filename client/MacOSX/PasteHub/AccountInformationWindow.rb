@@ -34,6 +34,7 @@
 
 class AccountInformationWindow < NSWindow
 
+    attr_accessor :emailLabel, :secretKeyLabel
     attr_accessor :email, :secretKey, :password
     attr_accessor :signin_button
     attr_accessor :message_area
@@ -71,9 +72,26 @@ class AccountInformationWindow < NSWindow
             return
         end
         
-        @message_area.setStringValue "Success! please close window to start sync clipborad."
-        @message_area.textColor = NSColor.blackColor
-
+        if not File.exist?( SIGNFILEPATH )
+            if auth3( @password.stringValue, @email.stringValue, @secretKey.stringValue )
+                @message_area.setStringValue "Success! please close window."
+                @message_area.textColor = NSColor.blackColor
+            else
+                @message_area.setStringValue "email or secretkey or Password do not match."
+                @message_area.textColor = NSColor.redColor
+                return
+            end
+        else
+            if auth1( @password.stringValue )
+                @message_area.setStringValue "Success! please close window."
+                @message_area.textColor = NSColor.blackColor
+            else
+                @message_area.setStringValue "Password do not match."
+                @message_area.textColor = NSColor.redColor
+                return
+            end
+        end
+        
         # You must not send a auth information as notify object! for security reason.
         NSNotificationCenter.defaultCenter.postNotificationName("auth_complete", object:nil)
         p "send notify 'auth_complete'"
@@ -90,9 +108,11 @@ class AccountInformationWindow < NSWindow
 
     def signIn()
         p "signIn()"
-        @email.setEnabled         false
-        @secretKey.setEnabled     false
-        @password.setEnabled      true
+        @emailLabel.setTextColor      NSColor.grayColor
+        @secretKeyLabel.setTextColor  NSColor.grayColor
+        @email.setEnabled             false
+        @secretKey.setEnabled         false
+        @password.setEnabled          true
 
         select_the_field( @password )
     end
@@ -101,5 +121,43 @@ class AccountInformationWindow < NSWindow
         textObject.selectText self
         range = NSRange.new(textObject.stringValue.length, 0)
         textObject.currentEditor.setSelectedRange range
+    end
+    
+    def auth1( password )
+        ret = false
+        begin
+            IO.popen( "/usr/local/bin/PastehubSync auth", "r+" ) { |io|
+                io.puts password
+                @pid = io.pid
+                line = io.readline.chomp
+                STDERR.puts "Info: auth1: result line = [#{line}]"
+                if "OK" == line
+                    ret = true
+                end
+            }
+        rescue e
+            STDERR.puts "Error: missing auth1"
+        end
+        return ret
+    end
+    
+    def auth3( password, email, secretKey )
+        ret = false
+        begin
+            IO.popen( "/usr/local/bin/PastehubSync saveauth", "r+" ) { |io|
+                io.puts password
+                io.puts email
+                io.puts secretKey
+                @pid = io.pid
+                line = io.readline.chomp
+                STDERR.puts "Info: auth3: result line = [#{line}]"
+                if "OK" == line
+                    ret = true
+                end
+            }
+            rescue e
+            STDERR.puts "Error: missing auth3"
+        end
+        return ret
     end
 end
