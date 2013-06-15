@@ -105,8 +105,12 @@ def main( argv )
       else
         # Other
         Signal.trap( :SIGUSR1 ) {
-          STDERR.puts( "Info: caught signal." )
+          STDERR.puts( "Info: caught USR1 signal." )
           signals += 1
+        }
+        Signal.trap( :SIGTERM ) {
+          STDERR.puts( "Info: caught TERM signal to terminate." )
+          exit( 0 )
         }
       end
 

@@ -86,12 +86,21 @@ class AppDelegate
     end
     
     def respond_to_auth_complete(a_notification)
-        p "AppDelegate:respond_to_auth_complete"
+        STDERR.puts "AppDelegate:respond_to_auth_complete"
 
         @password  = accountInfo.password.stringValue
         
         @threads = []
         @threads.push( Thread.new { batchProcess( ) } )
         @threads.push( Thread.new { statusCheckClient( ) } )
+    end
+
+    def quit(sender)
+        STDERR.puts "AppDelegate.quit: sending TERM signal to PasteHub server pid=#{@pid}"
+        if @pid
+            Process.kill( :SIGTERM, @pid )
+        end
+        app = NSApplication.sharedApplication
+        app.terminate(sender)
     end
 end

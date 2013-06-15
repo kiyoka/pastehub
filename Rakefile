@@ -2,7 +2,7 @@
 #                                          Rakefile for PasteHub
 # Release Engineering:
 #   1. edit the VERSION.yml file
-#   2. rake test  &&  rake gemspec  &&   rake build
+#   2. rake test  &&  rake gemspec  &&   gem build pastehub.gemspec
 #      to generate pastehub-x.x.x.gem
 #   3. install pastehub-x.x.x.gem to clean environment and test
 #   4. rake release
