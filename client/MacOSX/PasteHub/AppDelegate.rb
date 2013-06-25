@@ -51,7 +51,7 @@ class AppDelegate
     
     def batchProcess( )
         begin
-            IO.popen( "/usr/local/bin/PastehubSync batch", "r+" ) { |io|
+            IO.popen( "/opt/pastehub/bin/PastehubSync batch", "r+" ) { |io|
                 io.puts @password
                 @pid = io.pid
             while io.readline.chomp

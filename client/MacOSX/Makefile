@@ -3,28 +3,27 @@
 #
 
 RUBYNAME=ruby-1.9.3-p429
-ROOTDIR=/opt/pastehub/
+ROOTDIR=/opt/pastehub
 
-all :  ${BASEDIR}/${RUBYNAME}/bin/ruby
+all: ${ROOTDIR}/bin/PastehubSync
 	echo "nothing to do"
 
-#~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz	: ${BASEDIR}/${RUBYNAME}/bin/ruby
-#	./gemcopy.sh ${BASEDIR}
-#	./socopy.sh ${BASEDIR}
-#	mkdir -p ${BASEDIR}/bin
-#	cp -f ./bin/pastehubDump  ${BASEDIR}/bin
-#	cp -f ./bin/pastehubPost  ${BASEDIR}/bin
-#	cp -f ./bin/PastehubSync  ${BASEDIR}/bin
-#	mkdir -p ${BASEDIR}/certs
-#	cp -f /etc/pki/tls/certs/ca-bundle.crt ${BASEDIR}/certs
-#	mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-#	tar zcfC  ~/rpmbuild/SOURCES/pastehub-${VERSION}.tar.gz ./work pastehub-${VERSION}
+${ROOTDIR}/bin/PastehubSync : ${ROOTDIR}/${RUBYNAME}/bin/ruby
+	${ROOTDIR}/${RUBYNAME}/bin/gem install   ../../pastehub-*.gem
+	${ROOTDIR}/${RUBYNAME}/bin/gem uninstall highline
+	mkdir -p ${ROOTDIR}/bin
+	ln -sf ${ROOTDIR}/${RUBYNAME}/bin/PastehubSync  ${ROOTDIR}/bin/PastehubSync
+	ln -sf ${ROOTDIR}/${RUBYNAME}/bin/pastehubPost  ${ROOTDIR}/bin/pastehubPost
+	ln -sf ${ROOTDIR}/${RUBYNAME}/bin/pastehubDump  ${ROOTDIR}/bin/pastehubDmp
 
-${BASEDIR}/${RUBYNAME}/bin/ruby : ${RUBYNAME}.tar.gz
+${ROOTDIR}/${RUBYNAME}/bin/ruby : ${RUBYNAME}.tar.gz
 	./build.sh ${RUBYNAME}
 
 ${RUBYNAME}.tar.gz :
 	wget http://ftp.ruby-lang.org/pub/ruby/1.9/${RUBYNAME}.tar.gz
+
+chown:
+	sudo chown -R root /opt/pastehub
 
 clean:
 	rm -rf ./work

@@ -126,7 +126,7 @@ class AccountInformationWindow < NSWindow
     def auth1( password )
         ret = false
         begin
-            IO.popen( "/usr/local/bin/PastehubSync auth", "r+" ) { |io|
+            IO.popen( "/opt/pastehub/bin/PastehubSync auth", "r+" ) { |io|
                 io.puts password
                 @pid = io.pid
                 line = io.readline.chomp
@@ -144,7 +144,7 @@ class AccountInformationWindow < NSWindow
     def auth3( password, email, secretKey )
         ret = false
         begin
-            IO.popen( "/usr/local/bin/PastehubSync saveauth", "r+" ) { |io|
+            IO.popen( "/opt/pastehub/bin/PastehubSync saveauth", "r+" ) { |io|
                 io.puts password
                 io.puts email
                 io.puts secretKey
