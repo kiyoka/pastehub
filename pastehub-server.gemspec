@@ -4,7 +4,7 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = "pastehub"
+  s.name = "pastehub-server"
   s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
@@ -50,26 +50,22 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
-      s.add_runtime_dependency(%q<highline>, [">= 0"])
       s.add_runtime_dependency(%q<clipboard>, ["= 1.0.5"])
       s.add_runtime_dependency(%q<ffi>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
-      s.add_runtime_dependency(%q<highline>, [">= 0"])
       s.add_runtime_dependency(%q<clipboard>, ["= 1.0.5"])
       s.add_runtime_dependency(%q<ffi>, [">= 0"])
     else
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
-      s.add_dependency(%q<highline>, [">= 0"])
       s.add_dependency(%q<clipboard>, ["= 1.0.5"])
       s.add_dependency(%q<ffi>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
-      s.add_dependency(%q<highline>, [">= 0"])
       s.add_dependency(%q<clipboard>, ["= 1.0.5"])
       s.add_dependency(%q<ffi>, [">= 0"])
     end
@@ -77,13 +73,11 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<json>, [">= 0"])
-    s.add_dependency(%q<highline>, [">= 0"])
     s.add_dependency(%q<clipboard>, ["= 1.0.5"])
     s.add_dependency(%q<ffi>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<json>, [">= 0"])
-    s.add_dependency(%q<highline>, [">= 0"])
     s.add_dependency(%q<clipboard>, ["= 1.0.5"])
     s.add_dependency(%q<ffi>, [">= 0"])
   end

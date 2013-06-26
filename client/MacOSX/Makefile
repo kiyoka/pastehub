@@ -9,8 +9,7 @@ all: ${ROOTDIR}/bin/PastehubSync
 	echo "nothing to do"
 
 ${ROOTDIR}/bin/PastehubSync : ${ROOTDIR}/${RUBYNAME}/bin/ruby
-	${ROOTDIR}/${RUBYNAME}/bin/gem install   ../../pastehub-*.gem
-	${ROOTDIR}/${RUBYNAME}/bin/gem uninstall highline
+	${ROOTDIR}/${RUBYNAME}/bin/gem install   ../../pastehub-server*.gem
 	mkdir -p ${ROOTDIR}/bin
 	ln -sf ${ROOTDIR}/${RUBYNAME}/bin/PastehubSync  ${ROOTDIR}/bin/PastehubSync
 	ln -sf ${ROOTDIR}/${RUBYNAME}/bin/pastehubPost  ${ROOTDIR}/bin/pastehubPost

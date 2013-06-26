@@ -1,4 +1,4 @@
-Install client software (MacOS X)
+How to install client software (MacOS X)
 =======================
 
 ## Required platform
@@ -7,39 +7,61 @@ Install client software (MacOS X)
 
 ## installation instruction
 
-- download application
+- download installer
 
-  [PasteHub-0.2.4.dmg](https://s3-ap-northeast-1.amazonaws.com/pastehub/release/MacOSX/PasteHub-0.2.4.dmg) (9.7M)
+      [PasteHub-0.3.0.dmg](https://s3-ap-northeast-1.amazonaws.com/pastehub/release/MacOSX/PasteHub-0.3.0.dmg) (20MByte)
 
-- Please copy PasteHub.app to your Application Folder
+- Please open dmg file, then double click Pastehub.Package to install
 
-  ![Copy opertion](DragToApplicationFolder.png) 
+     ![Double click to install](macos_dmg.png) 
 
-- double click to start application
+     ![installation1](macos_start_install.png)
 
-- input your account information
+     ... Please install PasteHub.app 
 
-  input your acction infromation
+     ![installation2](macos_installing.png)
 
-  ![signin](macos_signin.png)
+     ... Please install PasteHub.app 
 
-  decide your own password
+- Double click to start PasteHub application
+     ![start](macos_applications_folder.png)
 
-  ![password](macos_password.png)
+- setup your account information.
 
-  ONLINE icon appears
+     Please input your account infromation ( how to get your account? ... see [Registrati
+on](./doc/client/Registration.md) )
+     ![signin](macos_signin.png)
 
-  ![ONLINE](status_bar_is_online.png)
+     OK, ONLINE icon appears on status bar
+
+     ![ONLINE](status_bar_is_online.png)
 
 
 ## Copy and Paste operation
 
-  It's easy.
-  please cut / copy / paste as usual.
-  PasteHub.app sync automatically.
+- It's easy.  please cut / copy / paste as usual.
 
-  ![key](https://dl.dropbox.com/u/3870066/blog/iStock_000009322220XSmall.jpg)
+     ![key](https://dl.dropbox.com/u/3870066/blog/iStock_000009322220XSmall.jpg)
 
+     PasteHub.app sync automatically.
+
+     ![sync](https://dl.dropbox.com/u/3870066/blog/iStock_000019296334XSmall.jpg)
+
+
+## How to start PasteHub application again.
+
+- Double click to start PasteHub application
+
+     ![start](macos_applications_folder.png)
+
+- please input your own password
+
+     ![password](macos_password.png)
+
+     OK, ONLINE icon appears on status bar
+
+      ![ONLINE](status_bar_is_online.png)
+  
 
 ## Status bar icons
 
@@ -53,6 +75,7 @@ Install client software (MacOS X)
 
 ## History
 
++ 0.3.0 First installer package version.
 + 0.2.4 Fixed SEGV problem with three environment variables for MacRuby. ( VM_DISABLE_RBO=1 /  VM_OPT_LEVEL=0 / AUTO_USE_TLC=0 )
 + 0.2.3 Fixed SEGV problem of gdbm parallel operation.
 + 0.2.2 First release.

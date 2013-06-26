@@ -2,7 +2,7 @@
 #                                          Rakefile for PasteHub
 # Release Engineering:
 #   1. edit the VERSION.yml file
-#   2. rake test  &&  rake gemspec  &&   gem build pastehub.gemspec
+#   2. rake test  &&  rake gemspec  &&   gem build pastehub.gemspec  &&  gem build pastehub-server.gemspec
 #      to generate pastehub-x.x.x.gem
 #   3. install pastehub-x.x.x.gem to clean environment and test
 #   4. rake release
@@ -20,7 +20,7 @@ SETENV_A="export PASTEHUB_USER=userA ; export PASTEHUB_SECRET_KEY='ZGFiYTRkNDg5M
 require 'rake'
 begin
   require 'jeweler2'
-  ['pastehub'].each do |name|
+  ['pastehub','pastehub-server'].each do |name|
     Jeweler::Tasks.new do |gemspec|
       gemspec.name = name
       gemspec.summary = "PasteHub is cloud-based cross-platform clipboard sync."
@@ -40,7 +40,9 @@ begin
       gemspec.add_development_dependency "rspec"
       gemspec.add_development_dependency "rake"
       gemspec.add_dependency             "json"
-      gemspec.add_dependency             "highline"
+      if 'pastehub-server' != name
+        gemspec.add_dependency             "highline"
+      end
       gemspec.add_dependency(            "clipboard", "1.0.5" )
       gemspec.add_dependency             "ffi"
     end
