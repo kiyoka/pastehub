@@ -28,8 +28,7 @@ How to install client software (MacOS X)
 
 - setup your account information.
 
-     Please input your account infromation ( how to get your account? ... see [Registrati
-on](./doc/client/Registration.md) )
+     Please input your account infromation ( how to get your account? ... see [Registration](./doc/client/Registration.md) )
      ![signin](macos_signin.png)
 
      OK, ONLINE icon appears on status bar
