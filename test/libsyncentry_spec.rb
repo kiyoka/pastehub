@@ -44,21 +44,24 @@ describe Entry, "When sync entry saved to a file" do
   end
 
   it "should" do
-    @entry.save( "paste data 1" ).should    be_true
+    expect( @entry.save( "paste data 1" ) ).to  be_true
 
-    open( "/tmp/home/user1/Dropbox/pastehub/myhostname.dat" ) { |f|
-      firstline = f.readline( )
-      json =JSON.parse( firstline )
-      [ json[ 'hostname' ], json[ 'bodySize' ], json[ 'encodedBodySize' ] ]
-    }.should == [ 'myhostname', 12, 17 ]
+    expect( 
+           open( "/tmp/home/user1/Dropbox/pastehub/myhostname.dat" ) { |f|
+             firstline = f.readline( ).chomp
+             json =JSON.parse( firstline )
+             [ json[ 'hostname' ], json[ 'bodySize' ], json[ 'encodedBodySize' ] ]
+           }).to    eq( [ 'myhostname', 12, 17 ] )
 
-    open( "/tmp/home/user1/Dropbox/pastehub/myhostname.dat" ) { |f|
-      firstline  = f.readline( )
-      secondline = f.readline( )
-      secondline
-    }.should == "cGFzdGUgZGF0YSAx\n"
+    expect( 
+           open( "/tmp/home/user1/Dropbox/pastehub/myhostname.dat" ) { |f|
+             firstline  = f.readline( ).chomp
+             secondline = f.readline( ).chomp
+             secondline
+           }).to    eq( "cGFzdGUgZGF0YSAx" )
   end
 end
+
 
 describe Entry, "When sync entry loaded from a file" do
 
@@ -66,23 +69,58 @@ describe Entry, "When sync entry loaded from a file" do
     ENV[ 'HOME' ] = "/tmp/home/user1"
     @entry = Entry.new( "myhostname" )
 
-    #{"create_date":"2014-02-23 17:31:24 +0900","hostname":"myhostname","bodySize":25,"encodedBodySize":37}
+    #{"create_date":"2014-02-23 17:31:24 +0900","hostname":"myhostname","bodySize":25,"encodedBodySize":36}
     #"bGFyZ2UgcGFzdGUgc3RyaW5nIC4uLi4uLg=="
 
     open( "/tmp/home/user1/Dropbox/pastehub/myhostname.dat", "w" ) { |f|
-      json = JSON.dump( { :hostname => "myhostname", :bodySize => 25, :encodedBodySize => 37 } )
+      json = JSON.dump( { :hostname => "myhostname", :bodySize => 25, :encodedBodySize => 36 } )
       f.puts json
       f.puts "bGFyZ2UgcGFzdGUgc3RyaW5nIC4uLi4uLg=="
     }
   end
 
   it "should" do
+    expect( @entry.canLoad?( ) ).to                       be_true
     expect( @entry.load( )[0][ 'hostname' ] ).to          eq( "myhostname" )
     expect( @entry.load( )[0][ 'bodySize' ] ).to          eq( 25 )
-    expect( @entry.load( )[0][ 'encodedBodySize' ] ).to   eq( 37 )
+    expect( @entry.load( )[0][ 'encodedBodySize' ] ).to   eq( 36 )
     expect( @entry.load( )[1].should ).to                 eq( "large paste string ......" )
   end
+end
 
+
+describe Entry, "When sync entry is incomplete" do
+
+  before do
+    ENV[ 'HOME' ] = "/tmp/home/user1"
+    @entry1 = Entry.new( "myhostname1" )
+    @entry2 = Entry.new( "myhostname2" )
+    @entry3 = Entry.new( "myhostname3" )
+
+    #{"create_date":"2014-02-23 17:31:24 +0900","hostname":"myhostname","bodySize":25,"encodedBodySize":36}
+    #"bGFyZ2UgcGFzdGUgc3RyaW5nIC4uLi4uLg=="
+
+    open( "/tmp/home/user1/Dropbox/pastehub/myhostname1.dat", "w" ) { |f|
+      f.puts '{"create_date":"2014-02-23 17:31:2' # json is incomplete
+    }
+    
+    open( "/tmp/home/user1/Dropbox/pastehub/myhostname2.dat", "w" ) { |f|
+      f.puts '{"create_date":"2014-02-23 17:31:24 +0900","hostname":"myhostname","bodySize":25,"encodedBodySize":36}' # json is complete
+      f.puts ''  # body is incomplete
+    }
+
+    open( "/tmp/home/user1/Dropbox/pastehub/myhostname3.dat", "w" ) { |f|
+      f.puts '{"create_date":"2014-02-23 17:31:24 +0900","hostname":"myhostname","bodySize":25,"encodedBodySize":36}' # json is complete
+      f.puts 'bGFyZ2UgcGFzdGUgc3RyaW5'  # body is incomplete
+    }
+
+  end
+
+  it "should" do
+    expect( @entry1.canLoad?( ) ).to                      be_false
+    expect( @entry2.canLoad?( ) ).to                      be_false
+    expect( @entry3.canLoad?( ) ).to                      be_false
+  end
 end
 
 

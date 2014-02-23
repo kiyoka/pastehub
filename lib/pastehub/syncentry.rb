@@ -79,8 +79,33 @@ module PasteHub
       true
     end
 
-    # check whether the file is complete data.
+    # check the file saved completely
     def canLoad?()
+      if not File.exist?( @filepath )
+        false
+      else
+        json = nil
+        open( @filepath, "r" ) {|f|
+          firstline = f.readline.chomp
+          begin
+            json = JSON.parse( firstline )
+          rescue JSON::JSONError
+            return false
+          end
+#         p "json[encodedBodySize]", json[ 'encodedBodySize' ]
+          if not json[ 'encodedBodySize' ]
+            return false
+          end
+
+          secondline = f.readline.chomp
+#         p "secondline", secondline
+#         p "secondline.size()", secondline.size()
+          if json[ 'encodedBodySize' ] != secondline.size()
+            return false # body is incomplete
+          end
+        }
+        return true
+      end
     end
 
     # load from file
