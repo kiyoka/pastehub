@@ -80,7 +80,7 @@ describe Entry, "When sync entry loaded from a file" do
   end
 
   it "should" do
-    expect( @entry.canLoad?( ) ).to                       be_true
+    expect( @entry.can_load?( ) ).to                      be_true
     expect( @entry.load( )[0][ 'hostname' ] ).to          eq( "myhostname" )
     expect( @entry.load( )[0][ 'bodySize' ] ).to          eq( 25 )
     expect( @entry.load( )[0][ 'encodedBodySize' ] ).to   eq( 36 )
@@ -117,9 +117,9 @@ describe Entry, "When sync entry is incomplete" do
   end
 
   it "should" do
-    expect( @entry1.canLoad?( ) ).to                      be_false
-    expect( @entry2.canLoad?( ) ).to                      be_false
-    expect( @entry3.canLoad?( ) ).to                      be_false
+    expect( @entry1.can_load?( ) ).to                     be_false
+    expect( @entry2.can_load?( ) ).to                     be_false
+    expect( @entry3.can_load?( ) ).to                     be_false
   end
 end
 

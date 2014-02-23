@@ -43,15 +43,15 @@ module PasteHub
       @filepath = config.localSyncPath + @hostname + ".dat"
     end
 
-    def encodeBody( bin )
+    def encode_body( bin )
       return Base64.encode64( bin )
     end
 
-    def decodeBody( str )
+    def decode_body( str )
       return Base64.decode64( str )
     end
 
-    def genHeader( create_date, bin, encoded )
+    def gen_header( create_date, bin, encoded )
       h = Hash.new
       h[ :create_date ] = create_date
       h[ :hostname    ] = @hostname
@@ -70,8 +70,8 @@ module PasteHub
     # save as file
     def save( bin )
       create_date = Time.now()
-      encoded = encodeBody( bin )
-      json_str = genHeader( create_date, bin, encoded )
+      encoded = encode_body( bin )
+      json_str = gen_header( create_date, bin, encoded )
       open( @filepath, "w" ) { |f|
         f.puts json_str
         f.puts encoded
@@ -80,7 +80,7 @@ module PasteHub
     end
 
     # check the file saved completely
-    def canLoad?()
+    def can_load?()
       if not File.exist?( @filepath )
         false
       else
@@ -114,7 +114,7 @@ module PasteHub
         firstline  = f.readline.chomp
         h = JSON.parse( firstline )
         secondline = f.readline.chomp
-        return [h, decodeBody( secondline ) ]
+        return [h, decode_body( secondline ) ]
       }
     end
   end
