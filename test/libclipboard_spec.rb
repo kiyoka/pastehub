@@ -38,9 +38,9 @@ include PasteHub
 describe AbstractClipboard, "When clipboard push and pop operation... " do
 
   it "should" do
-    AbstractClipboard.push( "new pastedata(1)" ).should   == nil
-    AbstractClipboard.hasNew?( "dummyuser" ).should                   == "new pastedata(1)"
-    AbstractClipboard.push( "new pastedata(2)" ).should   == nil
-    AbstractClipboard.hasNew?( "dummyuser" ).should                   == "new pastedata(2)"
+    expect( AbstractClipboard.push( "new pastedata(1)" )).to  be_nil
+    expect( AbstractClipboard.hasNew?( "dummyuser" )).to      eq( "new pastedata(1)" )
+    expect( AbstractClipboard.push( "new pastedata(2)" )).to  be_nil
+    expect( AbstractClipboard.hasNew?( "dummyuser" )).to      eq( "new pastedata(2)" )
   end
 end

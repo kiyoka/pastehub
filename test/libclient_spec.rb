@@ -42,9 +42,8 @@ describe Client, "when Setup API use ... " do
   end
   
   it "should" do
-    File.exist?( "/tmp/home/user1/.pastehub" ).should         be_true
-    File.exist?( "/tmp/home/user1/Dropbox/pastehub" ).should  be_true
+    expect( File.exist?( "/tmp/home/user1/.pastehub" )).to         be_true
+    expect( File.exist?( "/tmp/home/user1/Dropbox/pastehub" )).to  be_true
   end
   
 end
-

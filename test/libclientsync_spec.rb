@@ -46,8 +46,8 @@ describe ClientSync, "when file check function use ... " do
   end
   
   it "should" do
-    File.exist?( "/tmp/home/user1/.pastehub" ).should         be_true
-    File.exist?( "/tmp/home/user1/Dropbox/pastehub" ).should  be_true
+    expect( File.exist?( "/tmp/home/user1/.pastehub" )).to        be_true
+    expect( File.exist?( "/tmp/home/user1/Dropbox/pastehub" )).to be_true
     
     @cs.get_other_hostfiles.should    == []
   end
@@ -65,8 +65,8 @@ describe ClientSync, "when paste from localhost " do
   end
   
   it "should" do
-    @cs.get_other_hostfiles.should    == []
-    @cs.exist_sync_data?.should       be_false
+    expect( @cs.get_other_hostfiles ).to    eq( [] )
+    expect( @cs.exist_sync_data? ).to       be_false
   end
 end
 
@@ -82,8 +82,8 @@ describe ClientSync, "when paste data comes from other host " do
   end
   
   it "should" do
-    @cs.get_other_hostfiles.should    == [ "/tmp/home/user1/Dropbox/pastehub/otherhostname.dat" ]
-    @cs.exist_sync_data?.should       be_true
+    expect( @cs.get_other_hostfiles ).to    eq( [ "/tmp/home/user1/Dropbox/pastehub/otherhostname.dat" ] )
+    expect( @cs.exist_sync_data? ).to       be_true
   end
 end
 

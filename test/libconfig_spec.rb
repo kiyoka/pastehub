@@ -41,8 +41,8 @@ describe PasteHub::Config, "When use config object...  " do
   end
 
   it "should" do
-    @config.localDbPath.should         == File.expand_path( "~/.pastehub/" ) + "/"
-    @config.localSyncPath.should       == File.expand_path( "~/Dropbox/pastehub/" ) + "/"
+    expect( @config.localDbPath ).to   eq( File.expand_path( "~/.pastehub/" ) + "/" )
+    expect( @config.localSyncPath ).to eq( File.expand_path( "~/Dropbox/pastehub/" ) + "/" )
   end
 end
 
@@ -56,8 +56,8 @@ describe PasteHub::Config, "When use config object...  " do
   end
 
   it "should" do
-    @config.localDbPath.should           == "/tmp/local/"
-    @config.localSyncPath.should         == "/tmp/pastehub_sync/"
+    expect( @config.localDbPath ).to   eq( "/tmp/local/" )
+    expect( @config.localSyncPath ).to eq( "/tmp/pastehub_sync/" )
   end
 end
 
@@ -71,8 +71,8 @@ describe PasteHub::Config, "When use config object...  " do
   end
 
   it "should" do
-    @config.localDbPath.should           == "/tmp/tmp/tmp/"
-    @config.localSyncPath.should         == "/tmp/tmp/tmp/pastehub_sync/"
+    expect( @config.localDbPath ).to   eq( "/tmp/tmp/tmp/" )
+    expect( @config.localSyncPath ).to eq( "/tmp/tmp/tmp/pastehub_sync/" )
   end
 end
 

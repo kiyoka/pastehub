@@ -42,8 +42,8 @@ describe PasteHub::Config, "When use config object...  " do
   end
 
   it "should" do
-    @config.localDbPath.should         == "/tmp/home/user1/.pastehub/"
-    @config.localSyncPath.should       == "/tmp/home/user1/Dropbox/pastehub/"
+    expect( @config.localDbPath ).to    eq( "/tmp/home/user1/.pastehub/" )
+    expect( @config.localSyncPath ).to  eq( "/tmp/home/user1/Dropbox/pastehub/" )
   end
 end
 
