@@ -40,171 +40,34 @@ require 'socket'
 
 module PasteHub
 
-  def self.signfilePath
-    signfile = PasteHub::Config.instance.localDbPath + "authinfo.txt"
-  end
-
-  def self.loadUsername
-    signfile = self.signfilePath
-
-    # load authenticate information
-    if not File.exist?( signfile )
-      return nil
-    else
-      begin
-        open( signfile ) {|f|
-          # first line is email (is username)
-          username = f.readline.chomp
-          if username.match( /^[a-z]+/ )
-            return username
-          end
-        }
-      rescue Exception => e
-        STDERR.puts( "Error: can't load #{signfile}: #{e.to_s}" )
-        raise e
-      end
-      return nil
-    end
-  end
-
-  # setup user's directory
+  # setup user's directory and sync directory
   #   result: true ... success / false ... fail
   def self.setupDirectory
-    localdb_path = PasteHub::Config.instance.localDbPath
+    localdb_path   = PasteHub::Config.instance.localDbPath
+    localsync_path = PasteHub::Config.instance.localSyncPath
     # Create directory
     if not File.exist?(  localdb_path )
-      if 0 == Dir.mkdir( localdb_path, 0700 )
-        STDERR.puts( "Info:  created directory #{localdb_path}" )
-      else
-        STDERR.puts( "Error: can't create directory #{localdb_path}" )
-        return false
-      end
+      FileUtils.mkdir_p( localdb_path, { :mode => 0700 } )
+    end
+
+    # Create directory for Sync
+    if not File.exist?(  localsync_path )
+      FileUtils.mkdir_p( localsync_path, { :mode => 0700 } )
     end
     return true
   end
 
-  def self.signInWithPassword( password, username = nil, secretKey = nil )
-    signfile = self.signfilePath
-    util = Util.new
-
-    if ( not File.exist?( signfile )) or ( username and secretKey )
-      # initial signIn
-      if username and secretKey
-        auth = AuthForClient.new( username, secretKey )
-        client = Client.new( auth )
-        if client.authTest()
-          # save authinfo with gpg
-          begin
-            crypt = PasteHub::Crypt.new( password )
-            open( signfile, "w" ) {|f|
-              f.puts(           username  )
-              f.puts( crypt.en( secretKey ))
-            }
-            # auth OK
-            return [ :ok, username, secretKey, password ]
-          rescue Exception => e
-            STDERR.puts( "Error: can't save #{signfile}: #{e.to_s}" )
-            return [ :cantSave, nil, nil, nil ]
-          end
-        else
-          STDERR.puts( "your email or secret key is not registerd..." )
-          return [ :notRegistered, nil, nil, nil ]
-        end
-      else
-        STDERR.puts( "Please specify username and secretKey." )
-        return [ :argumentError, nil, nil, nil ]
-      end
+  def self.hostname( )
+    hostname = open( "hostname" ) { |f| 
+      f.read
+    }
+    if 0 < hostname
+      hostname
     else
-      # SignIn with password
-      open( signfile ) {|f|
-        username = f.readline.chomp
-        signStr = f.read
-
-        crypt = PasteHub::Crypt.new( password )
-        secretKey= crypt.de( signStr )
-        if secretKey
-          auth = AuthForClient.new( username, secretKey )
-          client = Client.new( auth )
-          if client.authTest()
-            return [ :ok, username, secretKey, password ]
-          else
-            STDERR.puts( "Error: your secretKey may be old." )
-            return [ :mayBeOld, nil, nil, nil ]
-          end
-        end
-        STDERR.puts( "Error: missing password." )
-        return [ :missingPassword, nil, nil, nil ]
-      }
+      raise RuntimeError, "Can't resolve hostname"
     end
-    return [ :ng, nil, nil, nil ]
   end
-
-  def self.signIn
-    signfile = self.signfilePath
-    util = Util.new
-
-    # authenticate information
-    if not File.exist?( signfile )
-      3.times { |n|
-        util.say( "Please input your account information" )
-        username  = util.inputText("       email: ")
-        secretKey = util.inputText("  secret-key: " )
-        auth = AuthForClient.new( username, secretKey )
-        client = Client.new( auth )
-        if client.authTest()
-          # save authinfo with gpg
-          begin
-            password = util.inputPasswordTwice(
-                            "Please input password for crypted file",
-                            "  password            : ",
-                            "  password(for verify): " )
-            if password
-              crypt = PasteHub::Crypt.new( password )
-              open( signfile, "w" ) {|f|
-                f.puts(           username  )
-                f.puts( crypt.en( secretKey ))
-              }
-              # auth OK
-              return [ :ok, username, secretKey, password ]
-            end
-            STDERR.puts( "Error: password setting failed..." )
-          rescue Exception => e
-            STDERR.puts( "Error: can't save #{signfile}: #{e.to_s}" )
-          end
-        else
-          STDERR.puts( "your email or secret key is not registerd..." )
-        end
-      }
-    else
-      begin
-        open( signfile ) {|f|
-          util.say( "Please input password for crypted file" )
-          username = f.readline.chomp
-          signStr = f.read
-          3.times { |n|
-            password  = util.inputPassword("  crypt password: ")
-            crypt = PasteHub::Crypt.new( password )
-            secretKey= crypt.de( signStr )
-            if secretKey
-              auth = AuthForClient.new( username, secretKey )
-              client = Client.new( auth )
-              if client.authTest()
-                return [ :ok, username, secretKey, password ]
-              else
-                STDERR.puts( "Error: your secretKey may be old." )
-              end
-            end
-            STDERR.puts( "Error: missing password." )
-          }
-        }
-      rescue Exception => e
-        STDERR.puts( "Error: can't load #{signfile}: #{e.to_s}" )
-        raise e
-      end
-    end
-    return [ :ng, nil, nil, nil ]
-  end
-
+  
   def self.savePid( pid )
     pidFile = PasteHub::Config.instance.localDbPath + "pid"
     open( pidFile, "w" ) {|f|
@@ -227,70 +90,7 @@ module PasteHub
   end
 
 
-  class ClientBase
-
-    # return:  Net::HTTPResponse
-    def httpGet( uriStr, headerHash, errorMessage )
-      uri = URI.parse( uriStr )
-      begin
-        https = Net::HTTP.new(uri.host, uri.port)
-        if ( Net::HTTP.https_default_port == uri.port ) or ( "https" == uri.scheme )
-          https.use_ssl     = true
-          https.verify_mode = OpenSSL::SSL::VERIFY_PEER
-        end
-        https.start {|http|
-          resp = http.get(uri.request_uri, headerHash)
-          if "200" == resp.code
-            return resp
-          end
-        }
-      rescue Exception => e
-        STDERR.puts errorMessage + ":" + e.to_s
-      end
-      return nil
-    end
-
-    # return:  Net::HTTPResponse
-    def httpPost( uriStr, bodyStr, headerHash, errorMessage )
-      uri = URI.parse( uriStr )
-      begin
-        https = Net::HTTP.new(uri.host, uri.port)
-        if ( Net::HTTP.https_default_port == uri.port ) or ( "https" == uri.scheme )
-          https.use_ssl     = true
-          https.verify_mode = OpenSSL::SSL::VERIFY_PEER
-        end
-        https.start {|http|
-          resp = http.post(uri.request_uri, bodyStr, headerHash)
-          if "200" == resp.code
-            return resp
-          end
-        }
-      rescue Exception => e
-        STDERR.puts errorMessage + ":" + e.to_s
-      end
-      return nil
-    end
-
-    # return:  [ Net::HTTP, Net::HTTP::Get ]
-    def httpGetRequest( uriStr, headerHash, errorMessage )
-      uri = URI.parse( uriStr )
-      begin
-        https = Net::HTTP.new(uri.host, uri.port)
-        if ( Net::HTTP.https_default_port == uri.port ) or ( "https" == uri.scheme )
-          https.use_ssl     = true
-          https.verify_mode = OpenSSL::SSL::VERIFY_PEER
-        end
-        return [ https, Net::HTTP::Get.new(uri.request_uri, headerHash) ]
-      rescue Exception => e
-        STDERR.puts errorMessage + ":" + e.to_s
-      end
-      return nil
-    end
-
-  end
-
-
-  class Client < ClientBase
+  class Client
     def initialize( auth, password = nil )
       @auth = auth
       ins = PasteHub::Config.instance

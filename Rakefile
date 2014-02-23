@@ -57,16 +57,17 @@ end
 
 task :test do
   sh "rm -f /tmp/usertmp.db"
-  sh "ruby    -I ./lib `which rspec` -b   ./test/libstore_spec.rb       "
   sh "ruby    -I ./lib `which rspec` -b   ./test/libconfig_spec.rb      "
-  sh "ruby    -I ./lib `which rspec` -b   ./test/libutil_spec.rb        "
-  sh "ruby    -I ./lib `which rspec` -b   ./test/libcrypt_spec.rb       "
-  sh "ruby    -I ./lib `which rspec` -b   ./test/libauth_spec.rb        "
-  sh "ruby    -I ./lib `which rspec` -b   ./test/libauth2_spec.rb       "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/libconfig2_spec.rb     "
   sh "ruby    -I ./lib `which rspec` -b   ./test/libclient_spec.rb      "
-  sh "ruby    -I ./lib `which rspec` -b   ./test/liblog_spec.rb         "
-  sh "ruby    -I ./lib `which rspec` -b   ./test/libmasterdb_spec.rb    "
-  sh "ruby    -I ./lib `which rspec` -b   ./test/libuserdb_spec.rb      "
+#  sh "ruby    -I ./lib `which rspec` -b   ./test/libstore_spec.rb       "
+#  sh "ruby    -I ./lib `which rspec` -b   ./test/libutil_spec.rb        "
+#  sh "ruby    -I ./lib `which rspec` -b   ./test/libcrypt_spec.rb       "
+#  sh "ruby    -I ./lib `which rspec` -b   ./test/libauth_spec.rb        "
+#  sh "ruby    -I ./lib `which rspec` -b   ./test/libauth2_spec.rb       "
+#  sh "ruby    -I ./lib `which rspec` -b   ./test/liblog_spec.rb         "
+#  sh "ruby    -I ./lib `which rspec` -b   ./test/libmasterdb_spec.rb    "
+#  sh "ruby    -I ./lib `which rspec` -b   ./test/libuserdb_spec.rb      "
 end
 
 task :win32_test do

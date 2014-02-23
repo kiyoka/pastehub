@@ -35,29 +35,17 @@
 require 'pastehub'
 include PasteHub
 
-
-describe Client, "when Client API use ... " do
-
+describe Client, "when Setup API use ... " do
   before do
     # Create dbm file
-    authForClient = AuthForClient.new( 'userA', @secretKey )
-    @client = Client.new( authForClient )
+    ENV[ 'HOME' ] = "/tmp/home/user1"
+    PasteHub.setupDirectory( )
   end
-
+  
   it "should" do
-    @client.getTrigger().should == false
-    @client.setOnlineState( false )
-    @client.getTrigger().should == false
-    @client.setOnlineState( true )
-    @client.getTrigger().should == true
-    @client.getTrigger().should == false
-
-    @client.setOnlineState( false )
-    @client.setOnlineState( true )
-    @client.setOnlineState( false )
-    @client.setOnlineState( true )
-    @client.getTrigger().should == true
-    @client.getTrigger().should == true
-    @client.getTrigger().should == false
+    File.exist?( "/tmp/home/user1/.pastehub" ).should         be_true
+    File.exist?( "/tmp/home/user1/Dropbox/pastehub" ).should  be_true
   end
+  
 end
+
