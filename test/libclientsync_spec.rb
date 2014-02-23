@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 # -*- encoding: utf-8 -*-
 #
-# libclient_spec.rb -  "RSpec file for client.rb"
+# libclientsync_spec.rb -  "RSpec file for clientsync.rb"
 #
-#   Copyright (c) 2012-2012  Kiyoka Nishiyama  <kiyoka@sumibi.org>
+#   Copyright (c) 2012-2014  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #
 #   Redistribution and use in source and binary forms, with or without
 #   modification, are permitted provided that the following conditions
@@ -35,16 +35,56 @@
 require 'pastehub'
 include PasteHub
 
-describe Client, "when Setup API use ... " do
+describe ClientSync, "when file check function use ... " do
   before do
     ENV[ 'HOME' ] = "/tmp/home/user1"
+    PasteHub::Config.instance
     PasteHub.setupDirectory( )
+
+    @cs = ClientSync.new( "myhostname",
+                          1              ) # interval time
   end
   
   it "should" do
     File.exist?( "/tmp/home/user1/.pastehub" ).should         be_true
     File.exist?( "/tmp/home/user1/Dropbox/pastehub" ).should  be_true
+    
+    @cs.get_other_hostfiles.should    == []
+  end
+end
+
+
+describe ClientSync, "when paste from localhost " do
+  before do
+    @cs = ClientSync.new( "myhostname",
+                          1              ) # interval time
+    sleep 2
+    open( "/tmp/home/user1/Dropbox/pastehub/myhostname.dat", "w" ) { |f|
+      f.write( "abc" );
+    }
   end
   
+  it "should" do
+    @cs.get_other_hostfiles.should    == []
+    @cs.exist_sync_data?.should       be_false
+  end
 end
+
+
+describe ClientSync, "when paste data comes from other host " do
+  before do
+    @cs = ClientSync.new( "myhostname",
+                          1              ) # interval time
+    sleep 2
+    open( "/tmp/home/user1/Dropbox/pastehub/otherhostname.dat", "w" ) { |f|
+      f.write( "def" );
+    }
+  end
+  
+  it "should" do
+    @cs.get_other_hostfiles.should    == [ "/tmp/home/user1/Dropbox/pastehub/otherhostname.dat" ]
+    @cs.exist_sync_data?.should       be_true
+  end
+end
+
 

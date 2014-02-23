@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # -*- encoding: utf-8 -*-
 #
-# libclient_spec.rb -  "RSpec file for client.rb"
+# libsyncentry_spec.rb -  "RSpec file for syncentry.rb"
 #
 #   Copyright (c) 2012-2012  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #
@@ -33,18 +33,58 @@
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 require 'pastehub'
+require 'json'
 include PasteHub
 
-describe Client, "when Setup API use ... " do
+describe Entry, "When sync entry saved to a file" do
+
   before do
     ENV[ 'HOME' ] = "/tmp/home/user1"
-    PasteHub.setupDirectory( )
+    @entry = Entry.new( "myhostname" )
   end
-  
+
   it "should" do
-    File.exist?( "/tmp/home/user1/.pastehub" ).should         be_true
-    File.exist?( "/tmp/home/user1/Dropbox/pastehub" ).should  be_true
+    @entry.save( "paste data 1" ).should    be_true
+
+    open( "/tmp/home/user1/Dropbox/pastehub/myhostname.dat" ) { |f|
+      firstline = f.readline( )
+      json =JSON.parse( firstline )
+      [ json[ 'hostname' ], json[ 'bodySize' ], json[ 'encodedBodySize' ] ]
+    }.should == [ 'myhostname', 12, 17 ]
+
+    open( "/tmp/home/user1/Dropbox/pastehub/myhostname.dat" ) { |f|
+      firstline  = f.readline( )
+      secondline = f.readline( )
+      secondline
+    }.should == "cGFzdGUgZGF0YSAx\n"
   end
-  
 end
+
+describe Entry, "When sync entry loaded from a file" do
+
+  before do
+    ENV[ 'HOME' ] = "/tmp/home/user1"
+    @entry = Entry.new( "myhostname" )
+
+    #{"create_date":"2014-02-23 17:31:24 +0900","hostname":"myhostname","bodySize":25,"encodedBodySize":37}
+    #"bGFyZ2UgcGFzdGUgc3RyaW5nIC4uLi4uLg=="
+
+    open( "/tmp/home/user1/Dropbox/pastehub/myhostname.dat", "w" ) { |f|
+      json = JSON.dump( { :hostname => "myhostname", :bodySize => 25, :encodedBodySize => 37 } )
+      f.puts json
+      f.puts "bGFyZ2UgcGFzdGUgc3RyaW5nIC4uLi4uLg=="
+    }
+  end
+
+  it "should" do
+    expect( @entry.load( )[0][ 'hostname' ] ).to          eq( "myhostname" )
+    expect( @entry.load( )[0][ 'bodySize' ] ).to          eq( 25 )
+    expect( @entry.load( )[0][ 'encodedBodySize' ] ).to   eq( 37 )
+    expect( @entry.load( )[1].should ).to                 eq( "large paste string ......" )
+  end
+
+end
+
+
+
 
