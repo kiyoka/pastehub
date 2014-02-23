@@ -3,7 +3,7 @@
 #
 # PastehubSync - PasteHub's sync program for UNIX client.
 #  
-#   Copyright (c) 2009-2011  Kiyoka Nishiyama  <kiyoka@sumibi.org>
+#   Copyright (c) 2013-2014  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #   
 #   Redistribution and use in source and binary forms, with or without
 #   modification, are permitted provided that the following conditions
@@ -37,7 +37,6 @@ require 'thread'
 require 'pastehub'
 
 PasteHub::Config.instance.loadClient
-RETRY_INTERVAL = 60
 
 
 def setup( argv )
@@ -48,50 +47,20 @@ def setup( argv )
   if 0 < argv.size
     case argv[0]
     when "batch"
-      # batch (server) mode
-      password = STDIN.readline.chomp
-      return PasteHub.signInWithPassword( password )
-    when "auth"
-      password = STDIN.readline.chomp
-      arr = PasteHub.signInWithPassword( password )
-      if :ok == arr[0]
-        puts "OK"
-        exit( 0 )
-      else
-        puts "NG"
-        exit( 1 )
-      end
-    when "saveauth"
-      begin
-        password  = STDIN.readline.chomp
-        username  = STDIN.readline.chomp      
-        signature = STDIN.readline.chomp      
-        arr = PasteHub.signInWithPassword( password, username, signature )
-        if :ok == arr[0]
-          puts "OK"
-          exit( 0 )
-        else
-          puts "NG"
-          exit( 1 )
-        end
-      rescue EOFError
-        exit( 1 )
-      end
+      return [ :ok, PasteHub.hostname( ) ]
     else
       exit( 1 )
     end
+  else
+    return [ :ok, PasteHub.hostname( ) ]
   end
-  # console interactive mode
-  return PasteHub.signIn()
 end
 
 
 def main( argv )
   ret = setup( argv )
   errorCode = ret[0]
-  username  = ret[1]
-  secretKey = ret[2]
-  password  = ret[3]
+  hostname  = ret[1]
 
   if not :ok == errorCode
     exit( 1 )
@@ -101,72 +70,35 @@ def main( argv )
   PasteHub.savePid( Process.pid )
 
   # create clientSync
-  clientSync = PasteHub::ClientSync.new(
-                                    PasteHub::Config.instance.listItems / 2,
-                                    PasteHub::Config.instance.localDbPath,
-                                    0.5 )
+  clientSync = PasteHub::ClientSync.new( hostname, 1.0 )
   
   clientSync.addNoitfyCallback( 
-                               lambda { puts '<< COUNTUP >>' },
-                               lambda { puts '<< ONLINE >>'  },
-                               lambda { puts '<< offline >>' }
+                               lambda { puts '<< COUNTUP >>' }
                                )
 
   while true
-    begin
-      signals = 0
-
-      case RbConfig::CONFIG['host_os']
-      when /mingw32|mswin|windows/i
-        # Windows
-      else
-        # Other
-        Signal.trap( :SIGUSR1 ) {
-          STDERR.puts( "Info: caught USR1 signal." )
-          signals += 1
-        }
-        Signal.trap( :SIGTERM ) {
-          STDERR.puts( "Info: caught TERM signal to terminate." )
-          exit( 0 )
-        }
-      end
-
-      if username
-        threads = []
-        threads.push(Thread.new { clientSync.statusServer( )
-                                  STDERR.puts( "Info: disconnected from client process." )
-                                  exit( 1 ) })
-        threads.push(Thread.new { clientSync.syncMain(       username, secretKey, password ) })
-        threads.push(Thread.new { clientSync.clipboardCheck( username, secretKey, password ) })
-        threads.push(Thread.new {
-                       while true
-                         sleep 0.5
-                         if 0 < signals
-                           clientSync.syncNow( username, secretKey, password )
-                           signals -= 1
-                         end
-                       end
-                     })
-        threads.push(Thread.new { clientSync.syncStatus( ) })
-        threads.each {|t| t.join}
-      end
-
-    rescue Errno::ECONNREFUSED => e
-      STDERR.puts "retrying... pastehub server is down(1)"
-      sleep RETRY_INTERVAL
-    rescue Errno::ETIMEDOUT => e
-      STDERR.puts "retrying... network is offline(1)"
-      sleep RETRY_INTERVAL
-    rescue SocketError => e
-      STDERR.puts "retrying... network is offline(2)"
-      sleep RETRY_INTERVAL
-    rescue Timeout::Error => e
-      # ONLINE, but server is not helthy
-      STDERR.puts "retrying... pastehub server is down(2)"
-      sleep RETRY_INTERVAL
-    rescue Errno::ECONNRESET => e
-      STDERR.puts "retrying... pastehub server is down(3)"
-      sleep RETRY_INTERVAL
+    signals = 0
+    
+    case RbConfig::CONFIG['host_os']
+    when /mingw32|mswin|windows/i
+      # Windows
+    else
+      # Other
+      Signal.trap( :SIGUSR1 ) {
+        STDERR.puts( "Info: caught USR1 signal." )
+        signals += 1
+      }
+      Signal.trap( :SIGTERM ) {
+        STDERR.puts( "Info: caught TERM signal to terminate." )
+        exit( 0 )
+      }
+    end
+    
+    if hostname
+      threads = []
+      threads.push(Thread.new { clientSync.sync_main( ) })
+#      threads.push(Thread.new { clientSync.clipboard_check( ) })
+      threads.each {|t| t.join}
     end
   end
 end

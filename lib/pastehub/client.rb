@@ -58,10 +58,10 @@ module PasteHub
   end
 
   def self.hostname( )
-    hostname = open( "hostname" ) { |f| 
+    hostname = open( "|hostname" ) { |f| 
       f.read
     }
-    if 0 < hostname
+    if 0 < hostname.size()
       hostname
     else
       raise RuntimeError, "Can't resolve hostname"

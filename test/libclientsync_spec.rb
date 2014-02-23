@@ -66,7 +66,7 @@ describe ClientSync, "when paste from localhost " do
   
   it "should" do
     expect( @cs.get_other_hostfiles ).to    eq( [] )
-    expect( @cs.exist_sync_data? ).to       be_false
+    expect( @cs.exist_sync_data? ).to       be_nil
   end
 end
 
@@ -83,7 +83,9 @@ describe ClientSync, "when paste data comes from other host " do
   
   it "should" do
     expect( @cs.get_other_hostfiles ).to    eq( [ "/tmp/home/user1/Dropbox/pastehub/otherhostname.dat" ] )
-    expect( @cs.exist_sync_data? ).to       be_true
+    expect( @cs.exist_sync_data? ).to       eq( "/tmp/home/user1/Dropbox/pastehub/otherhostname.dat" )
+    expect( @cs.path_to_hostname( "/tmp/home/user1/Dropbox/pastehub/otherhostname.dat" )).to    eq( "otherhostname" )
+    
   end
 end
 

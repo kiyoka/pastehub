@@ -79,33 +79,6 @@ task :win32_test do
 
 end
 
-task :fluentd_for_test do
-  sh "fluentd -c ./fluentd-conf-for-test/fluent.conf"
-end
-
-task :test_u do
-  sh "ruby -I ./lib `which rspec` -b  -t users   ./test/aws_spec.rb            -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
-end
-
-task :test_e do
-  sh "ruby -I ./lib `which rspec` -b  -t entries ./test/aws_spec.rb            -r ./test/rspec_formatter_for_emacs.rb -f CustomFormatter"
-end
-
-task :m do
-  sh "vertx run    server/masterdb.rb -instance 2"
-end
-
-task :n do
-  sh "vertx run    server/notifier.rb -instance 2"
-end
-
-task :d do
-  sh "ruby -I ./lib server/pastehub-admin    gc   "
-end
-
-task :setupTable do
-  sh "ruby -I ./lib server/pastehub-admin    setup "
-end
 
 task :sync do
   sh "ruby -I ./lib bin/PastehubSync"

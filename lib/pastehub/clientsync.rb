@@ -1,7 +1,7 @@
 #
 # clientsync.rb - PasteHub's client sync library
 #  
-#   Copyright (c) 2009-2011  Kiyoka Nishiyama  <kiyoka@sumibi.org>
+#   Copyright (c) 2009-2014  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #   
 #   Redistribution and use in source and binary forms, with or without
 #   modification, are permitted provided that the following conditions
@@ -108,226 +108,97 @@ module PasteHub
   class ClientSync
     ICONSOCKET = "/tmp/pastehub_icon"
 
-    def initialize( alive_entries, localdb_path, polling_interval )
-      @alive_entries        = alive_entries
-      @localdb_path         = localdb_path
+    def initialize( hostname, polling_interval )
+      @hostname             = hostname
       @polling_interval     = polling_interval
       @status               = Status.new()
+      @last_modify_time     = Time.now()
     end
 
-
-    def syncDb( auth, password )
-      notifyFlag = false
-
-      STDERR.puts "synchronizing..."
-      client = PasteHub::Client.new( auth, password )
-      util   = PasteHub::Util.new
-      # open local db
-      localdb = PasteHub::LocalDB.new( @localdb_path )
-      localdb.open( auth.username, true )
-
-      masterList = localdb.getServerList()
-      #pp [ "masterList.size", masterList.size ]
-
-      # calc difference between master and local.
-      localList = localdb.getList()
-      #pp [ "localList.size(1)", localList.size ]
-
-      # pickup first ALIVE_ENTRIES from localList
-      #_half0 = util.takeList( localList,  @alive_entries )
-      _half1 = util.dropList( masterList,  @alive_entries )
-      localList = localList + _half1
-      #pp [ "localList.size(2)", localList.size ]
-
-      downList = util.diffList( masterList, localList )
-      #pp [ "downList.size", downList.size ]
-
-      upList   = util.diffList( localList,  masterList )
-      #pp [ "upList.size", upList.size ]
-
-      # push first element to clipboard.
-      if 0 < downList.size
-        key = downList.first
-        value = client.getValue( key )
-
-        # top of localdb
-        topvalue = ""
-        lst = localdb.getList(1)
-        if 0 < lst.size 
-          topvalue = localdb.getValue( lst.first )
-        end
-        #STDERR.printf( "local.top:[%s]", topvalue  )
-        #STDERR.printf( "push Clip:[%s]", value.dup )
-
-        if @prevData == value
-          #p [ @prevData , value ]
-          STDERR.puts "Info: did not push to OS's clipboard because prevData == donwloaded-firstEntry."
-        elsif topvalue.force_encoding("UTF-8")  == value.dup.force_encoding("UTF-8")
-          STDERR.puts "Info: got value == top entry of localStore."
-        else
-          STDERR.printf( "Info: push to OS's clipboard (size=%d).\n", value.size )
-          PasteHub::AbstractClipboard.push( value.dup )
-          notifyFlag = true
-          @prevData = value
-        end
-      end
-
-      # donwload
-      downList.each {|key|
-        value = client.getValue( key )
-        localdb_w = PasteHub::LocalDB.new( @localdb_path )
-        localdb_w.open( auth.username )
-        localdb_w.insertValue( key.dup, value.dup )
-        localdb_w.close
-        sleep( 0.2 )
-      }
-      # upload
-      upList.each {|key|
-        value = localdb.getValue( key )
-        client.putValue(     key.dup, value.dup )
-      }
-
-      STDERR.puts "Info: download #{downList.size} records."
-      downList.each { |x|
-        #STDERR.puts "  key=#{x}"
-      }
-      STDERR.puts "Info:   upload #{upList.size} records."
-      upList.each { |x|
-        #STDERR.puts "  key=#{x}"
-      }
-      localdb.close()
-
-      if 0 < downList.size or 0 < upList.size
-        STDERR.puts "Info:   send signal to Emacs."
-        system( "killall -SIGUSR1 Emacs emacs" )
-      end
-
-      return notifyFlag
-    end
-
-
-    def gcLocalDb( auth )
-      STDERR.puts "GCing..."
-
-      # open local db
-      localdb_w = PasteHub::LocalDB.new( @localdb_path )
-      localdb_w.open( auth.username )
-      localList = localdb_w.getList()
-      deleteList = localList[@alive_entries..(localList.size)]
-      if deleteList and 0 < deleteList.size
-        STDERR.puts "Info:   delete #{deleteList.size} records."
-        deleteList.each { |key|
-          localdb_w.deleteValue( key.dup )
-        }
-      end
-      localdb_w.close
-    end
-
-
-    def fetchServerList( latestKey, auth )
-      client = PasteHub::Client.new( auth )
-      if latestKey.is_a? String
-        STDERR.puts "Info: fetch one entry"
-        list = [ latestKey.clone() ]
-      else
-        STDERR.puts "Info: fetch ALL entries"
-        list = client.getList()
-      end
-      client.setServerFlags( list )
-    end
-
-    def addNoitfyCallback( countUpNotifyFunc, connectNotifyFunc, disconnectNotifyFunc )
+    def addNoitfyCallback( countUpNotifyFunc )
       @countUpNotifyFunc     = countUpNotifyFunc
-      @connectNotifyFunc     = connectNotifyFunc
-      @disconnectNotifyFunc  = disconnectNotifyFunc
     end
-
+ 
     def notifyCountUp()
       @countUpNotifyFunc.call() if @countUpNotifyFunc
       @status.inc( )
     end
 
-    def notifyConnect()
-      @connectNotifyFunc.call() if @connectNotifyFunc
-      @status.setOnline( true )
+    # host's sync data file excludes local hostname
+    def get_other_hostfiles()
+      config = PasteHub::Config.instance
+      arr = Dir.glob( config.localSyncPath + "*.dat" )
+      retArr = arr.select { |path|
+        not path.match( "/" + @hostname + ".dat$" )
+      }
+      retArr
     end
 
-    def notifyDisconnect()
-      @disconnectNotifyFunc.call() if @disconnectNotifyFunc      
-      @status.setOnline( false )
+    # return: pathname of sync data of other host
+    def exist_sync_data?()
+      # check directory changes
+      config = PasteHub::Config.instance
+
+      paths = get_other_hostfiles()
+      result = paths.select { |path|
+        fs = File::Stat.new( path )
+        fs.mtime
+
+        #printf( "last_modify_time: %s \n", @last_modify_time )
+        #printf( "mtime of [%s]: %s \n", path, fs.mtime )
+        1 == (fs.mtime <=> @last_modify_time)
+      }
+      if 0 < result.size
+        result[0]
+      else
+        nil
+      end
     end
 
+    def path_to_hostname( path )
+      File.basename( path, ".dat" )
+    end
 
-    def syncMain( username, secretKey, password )
-      freeCounter = 0
+    def get_sync_entry( path )
+      hostname = path_to_hostname( path )
+      entry = Entry.new( hostname )
+      if entry.can_load?()
+        entry.load()[1]
+      else
+        nil
+      end
+    end
 
-      auth   = PasteHub::AuthForClient.new( username, secretKey )
-      client = PasteHub::Client.new( auth )
-      client.setOnlineState( false )
-      client.setOnlineState( true )  # create Trigger token  ___-___
-      client.setOnlineState( false )
-      result = :start
+    def touch( )
+      @last_modify_time     = Time.now()
+    end
+
+    def sync_main()
+      free_counter = 0
 
       while true
-        begin
-          freeCounter += 1
+        free_counter += 1
 
-          if client.getTrigger() or (0 == (freeCounter % 60))
-            STDERR.puts "Info: force sync."
-            result = :sync
-            gcLocalDb( auth )
+        path = exist_sync_data?()
+        if path
+          body = get_sync_entry( path )
+          if body
+            STDERR.printf( "Info: push to OS's clipboard ([%s...] size=%d).\n", body[0...3], body.size )
+            PasteHub::AbstractClipboard.push( body.dup )
+            touch()
           else
-            auth   = PasteHub::AuthForClient.new( username, secretKey )
-            result = client.wait_notify( auth )
+            STDERR.printf( "Debug: get_sync_entry => nil.\n" )
           end
-
-          case result
-          when :timeout
-            STDERR.puts "waiting..."
-            client.setOnlineState( true )
-            notifyConnect()
-          when :retry
-            STDERR.puts "retrying...."
-            client.setOnlineState( false )
-            notifyDisconnect()
-            sleep 60
-          else
-            if not client.online?()
-              notifyConnect()
-            end
-            client.setOnlineState( true )
-            fetchServerList( result, auth )
-            if syncDb( auth, password )
-              notifyCountUp()
-            end
-          end
-        rescue Errno::EAGAIN => e
-          STDERR.puts "retrying... DB is locked"
-          notifyDisconnect()
-          sleep 2
-        rescue Errno::ECONNREFUSED => e
-          STDERR.puts "retrying... pastehub server is down(1)"
-          notifyDisconnect()
-          sleep 60
-        rescue Errno::ETIMEDOUT => e
-          STDERR.puts "retrying... network is offline(1)"
-          notifyDisconnect()
-          sleep 60
-        rescue SocketError => e
-          STDERR.puts "retrying... network is offline(2)"
-          notifyDisconnect()
-          sleep 60
-        rescue Timeout::Error => e
-          # ONLINE, but server is not helthy
-          notifyDisconnect()
-          STDERR.puts "retrying... pastehub server is down(2)"
-          sleep 60
+        else
+          STDERR.printf( "Debug: exist_sync_data? => nil.\n" )
         end
+        # interval time
+        sleep @polling_interval
       end
     end
 
 
-    def clipboardCheck( username, secretKey, password )
+    def clipboard_check()
       STDERR.puts "Info: clipboardCheck thread start"
       @prevData = ""
       while true
@@ -354,60 +225,6 @@ module PasteHub
             @prevData = data
           end
         end
-      end
-    end
-
-
-    def syncNow( username, secretKey, password )
-      store = PasteHub::LocalStore.new( username, true )
-      pair = store.top()
-      auth = PasteHub::AuthForClient.new( username, secretKey )
-      client = PasteHub::Client.new( auth, password )
-      client.putValue( pair[0], pair[1] )
-      store.close()
-    end
-
-    def syncStatus( )
-      while true
-        ( cur , prev ) = @status.update( )
-        if cur != prev 
-          # save current status as json file.
-          open( @localdb_path + "status.json", "w" ) {|f|
-            f.puts cur
-          }
-          # save current icon status.
-          open( @localdb_path + "status_icon.txt", "w" ) {|f|
-            f.puts @status.icon( )
-          }
-        end
-
-        @status.tick( 1.0 )
-        sleep 1.0
-      end
-    end
-
-    def statusServer( )
-      begin
-        if File.exist? ( ICONSOCKET )
-          File.unlink( ICONSOCKET )
-        end
-        UNIXServer.open( ICONSOCKET ) {|serv|
-          s = serv.accept
-          s.puts @status.icon()
-          prev = @status.icon()
-          while true
-            if prev != @status.icon()
-              s.puts @status.icon()
-              prev = @status.icon()
-            end
-            sleep 0.1
-          end
-          s.close
-        }
-      rescue Errno::EPIPE => e
-        STDERR.puts "Info: Broken PIPE"
-      rescue e
-        STDERR.puts "Info: Other Error"
       end
     end
   end
