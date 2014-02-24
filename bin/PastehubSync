@@ -97,7 +97,7 @@ def main( argv )
     if hostname
       threads = []
       threads.push(Thread.new { clientSync.sync_main( ) })
-#      threads.push(Thread.new { clientSync.clipboard_check( ) })
+      threads.push(Thread.new { clientSync.clipboard_check( ) })
       threads.each {|t| t.join}
     end
   end

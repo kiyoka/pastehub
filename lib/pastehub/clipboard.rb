@@ -43,7 +43,7 @@ module PasteHub
       nil
     end
 
-    def self.hasNew?( username )
+    def self.hasNew?( )
       Encoding.default_external = "UTF-8"
       str = Clipboard.paste( )
       str = str.force_encoding("UTF-8")

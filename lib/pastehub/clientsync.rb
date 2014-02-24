@@ -174,6 +174,7 @@ module PasteHub
     end
 
     def sync_main()
+      STDERR.puts "Info: sync_main thread start"
       free_counter = 0
 
       while true
@@ -183,48 +184,35 @@ module PasteHub
         if path
           body = get_sync_entry( path )
           if body
-            STDERR.printf( "Info: push to OS's clipboard ([%s...] size=%d).\n", body[0...3], body.size )
+            STDERR.printf( "\nInfo: push to OS's clipboard ([%s...] size=%d).\n", body[0...3], body.size )
             PasteHub::AbstractClipboard.push( body.dup )
             touch()
           else
-            STDERR.printf( "Debug: get_sync_entry => nil.\n" )
+            STDERR.printf( "X" )
           end
         else
-          STDERR.printf( "Debug: exist_sync_data? => nil.\n" )
+          STDERR.printf( "x" )
         end
         # interval time
         sleep @polling_interval
       end
     end
 
-
     def clipboard_check()
       STDERR.puts "Info: clipboardCheck thread start"
       @prevData = ""
       while true
         sleep @polling_interval
-        data = PasteHub::AbstractClipboard.hasNew?( username )
+        data = PasteHub::AbstractClipboard.hasNew?( )
         if data
           if @prevData != data
-            #p [ @prevData, data ]
-            auth = PasteHub::AuthForClient.new( username, secretKey )
-            client = PasteHub::Client.new( auth, password )
-            if client.online?(  )
-              STDERR.puts( "Info: posted data from OS." )
-              begin
-                client.putValue( "_", data )
-              rescue Errno::ECONNREFUSED => e
-                # if postData was fail, save to local.
-                client.setOnlineState( false )
-                client.localSaveValue( data )
-                sleep 60
-              end
-            else
-              client.localSaveValue( data )
-            end
+            entry = Entry.new( @hostname )
+            entry.save( data )
+            STDERR.printf( "\nInfo: clipboard to File ([%s...] size=%d).\n", data[0...3], data.size )
             @prevData = data
           end
         end
+        STDERR.printf( "." )
       end
     end
   end

@@ -59,7 +59,7 @@ module PasteHub
 
   def self.hostname( )
     hostname = open( "|hostname" ) { |f| 
-      f.read
+      f.read.chomp
     }
     if 0 < hostname.size()
       hostname
