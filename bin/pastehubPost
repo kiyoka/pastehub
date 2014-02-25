@@ -45,7 +45,11 @@ def main
   # singal to pastehubSync
   pid = PasteHub.loadPid
   if 0 < pid
-    Process.kill( :SIGUSR1, pid )
+    begin
+      Process.kill( :SIGUSR1, pid )
+    rescue Errno::ESRCH => e
+      #STDERR.puts( "no such process: pid=#{pid}" )
+    end
   end
 end
 
