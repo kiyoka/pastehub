@@ -2,7 +2,7 @@
 #                                          Rakefile for PasteHub
 # Release Engineering:
 #   1. edit the VERSION.yml file
-#   2. rake test  &&  rake gemspec  &&   gem build pastehub.gemspec  &&  gem build pastehub-server.gemspec
+#   2. rake test  &&  rake gemspec  &&   gem build pastehub.gemspec
 #      to generate pastehub-x.x.x.gem
 #   3. install pastehub-x.x.x.gem to clean environment and test
 #   4. rake release
@@ -16,32 +16,25 @@
 require 'rake'
 begin
   require 'jeweler2'
-  ['pastehub','pastehub-server'].each do |name|
-    Jeweler::Tasks.new do |gemspec|
-      gemspec.name = name
-      gemspec.summary = "PasteHub is cloud-based cross-platform clipboard sync."
-      gemspec.description = "PasteHub is cloud-based cross-platform clipboard sync."
-      gemspec.email = "kiyoka@sumibi.org"
-      gemspec.homepage = "http://github.com/kiyoka/pastehub"
-      gemspec.authors = ["Kiyoka Nishiyama"]
-      gemspec.files = FileList['Rakefile',
-                               '.gemtest',
-                               'VERSION.yml',
-                               'README.txt',
-                               'bin/*',
-                               'lib/*.rb',
-                               'lib/*/*.rb',
-                               'server/*.rb'
-                              ].to_a
-      gemspec.add_development_dependency "rspec"
-      gemspec.add_development_dependency "rake"
-      gemspec.add_dependency             "json"
-      if 'pastehub-server' != name
-        gemspec.add_dependency             "highline"
-      end
-      gemspec.add_dependency(            "clipboard", "1.0.5" )
-      gemspec.add_dependency             "ffi"
-    end
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = 'pastehub'
+    gemspec.summary = "PasteHub is cloud-based cross-platform clipboard sync."
+    gemspec.description = "PasteHub is cloud-based cross-platform clipboard sync."
+    gemspec.email = "kiyoka@sumibi.org"
+    gemspec.license = 'New BSD'
+    gemspec.homepage = "http://github.com/kiyoka/pastehub"
+    gemspec.authors = ["Kiyoka Nishiyama"]
+    gemspec.files = FileList['Rakefile',
+                             '.gemtest',
+                             'VERSION.yml',
+                             'README.txt',
+                             'bin/*',
+                             'lib/*.rb',
+                             'lib/*/*.rb',
+                            ].to_a
+    gemspec.add_dependency(            "json", "1.8.1")
+    gemspec.add_dependency(            "clipboard", "1.0.5" )
+    gemspec.add_dependency(            "ffi", "1.9.3")
   end
 rescue LoadError
   puts 'Jeweler2 not available. If you want to build a gemfile, please install with "sudo gem install jeweler2"'

@@ -51,7 +51,7 @@ describe Entry, "When sync entry saved to a file" do
              firstline = f.readline( ).chomp
              json =JSON.parse( firstline )
              [ json[ 'hostname' ], json[ 'bodySize' ], json[ 'encodedBodySize' ] ]
-           }).to    eq( [ 'myhostname', 12, 17 ] )
+           }).to    eq( [ 'myhostname', 12, 16 ] )
 
     expect( 
            open( "/tmp/home/user1/Dropbox/pastehub/myhostname.dat" ) { |f|

@@ -2,4 +2,5 @@
 /.gitignore~
 /libdb_spec.rb~
 /nendo_spec.rb
+/pastehub-0.3.1.gem
 /pkg
