@@ -273,38 +273,5 @@ module PasteHub
       end
       return false
     end
-
-    def localSaveValue( argKey = nil, data )
-      # open local db
-      util = PasteHub::Util.new( )
-      if argKey
-        key = argKey
-      else
-        key = util.currentTime( ) + "=" + util.digest( data )
-      end
-
-      localdb = PasteHub::LocalDB.new( @localdb_path )
-      localdb.open( @auth.username )
-      list = localdb.getList( )
-      if util.key_digest( list[0] ) == util.digest( data )
-        # duplicate
-        localdb.close()
-        list[0]
-      else
-        localdb.insertValue( key, data.dup )
-        localdb.insertValue( PasteHub::LOCAL_DATE_KEY, util.currentTime( ) )
-        localdb.close()
-        key
-      end
-    end
-
-    def setServerFlags( keys )
-      localdb = PasteHub::LocalDB.new( @localdb_path )
-      localdb.open( @auth.username )
-      keys.each { |key|
-        localdb.setServerFlag( key )
-      }
-      localdb.close()
-    end
   end
 end

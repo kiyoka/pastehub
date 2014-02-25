@@ -93,15 +93,11 @@ task :syncA do
 end
 
 task :postA1 do
-  sh SETENV_A + "; echo 'aaa1' | ruby -I ./lib bin/pastehubPost"
+  sh "echo 'aaa1' | ruby -I ./lib bin/pastehubPost"
 end
 
 task :postA2 do
-  sh SETENV_A + "; echo 'aaa2' | ruby -I ./lib bin/pastehubPost"
-end
-
-task :postB1 do
-  sh "echo 'bbb1' | ruby -I ./lib bin/pastehubPost"
+  sh "echo 'aaa2' | ruby -I ./lib bin/pastehubPost"
 end
 
 task :dumpA do
