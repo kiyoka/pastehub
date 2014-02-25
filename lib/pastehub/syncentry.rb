@@ -44,7 +44,7 @@ module PasteHub
     end
 
     def encode_body( bin )
-      return Base64.encode64( bin ).chomp
+      return Base64.strict_encode64( bin ).chomp
     end
 
     def decode_body( str )

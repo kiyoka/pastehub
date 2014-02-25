@@ -90,7 +90,7 @@ task :postA1 do
 end
 
 task :postA2 do
-  sh "echo 'aaa2' | ruby -I ./lib bin/pastehubPost"
+  sh "echo 'The quick brown fox jumps over the lazy dog and run' | ruby -I ./lib bin/pastehubPost"
 end
 
 task :dumpA do

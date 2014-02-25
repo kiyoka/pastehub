@@ -67,24 +67,39 @@ describe Entry, "When sync entry loaded from a file" do
 
   before do
     ENV[ 'HOME' ] = "/tmp/home/user1"
-    @entry = Entry.new( "myhostname" )
+    @entry1 = Entry.new( "myhostname1" )
+    @entry2 = Entry.new( "myhostname2" )
 
-    #{"create_date":"2014-02-23 17:31:24 +0900","hostname":"myhostname","bodySize":25,"encodedBodySize":36}
+    #{"create_date":"2014-02-23 17:31:24 +0900","hostname":"myhostname1","bodySize":25,"encodedBodySize":36}
     #"bGFyZ2UgcGFzdGUgc3RyaW5nIC4uLi4uLg=="
 
-    open( "/tmp/home/user1/Dropbox/pastehub/myhostname.dat", "w" ) { |f|
-      json = JSON.dump( { :hostname => "myhostname", :bodySize => 25, :encodedBodySize => 36 } )
+    open( "/tmp/home/user1/Dropbox/pastehub/myhostname1.dat", "w" ) { |f|
+      json = JSON.dump( { :hostname => "myhostname1", :bodySize => 25, :encodedBodySize => 36 } )
       f.puts json
       f.puts "bGFyZ2UgcGFzdGUgc3RyaW5nIC4uLi4uLg=="
+    }
+
+    #{"create_date":"2014-02-25 22:35:44 +0900","hostname":"myhostname2","bodySize":52,"encodedBodySize":72}
+    #VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgcnVuCg==
+
+    open( "/tmp/home/user1/Dropbox/pastehub/myhostname2.dat", "w" ) { |f|
+      json = JSON.dump( { :hostname => "myhostname2", :bodySize => 52, :encodedBodySize => 72 } )
+      f.puts json
+      f.puts "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgcnVuCg=="
     }
   end
 
   it "should" do
-    expect( @entry.can_load?( ) ).to                      be_true
-    expect( @entry.load( )[0][ 'hostname' ] ).to          eq( "myhostname" )
-    expect( @entry.load( )[0][ 'bodySize' ] ).to          eq( 25 )
-    expect( @entry.load( )[0][ 'encodedBodySize' ] ).to   eq( 36 )
-    expect( @entry.load( )[1].should ).to                 eq( "large paste string ......" )
+    expect( @entry1.can_load?( ) ).to                      be_true
+    expect( @entry1.load( )[0][ 'hostname' ] ).to          eq( "myhostname1" )
+    expect( @entry1.load( )[0][ 'bodySize' ] ).to          eq( 25 )
+    expect( @entry1.load( )[0][ 'encodedBodySize' ] ).to   eq( 36 )
+    expect( @entry1.load( )[1].should ).to                 eq( "large paste string ......" )
+    expect( @entry2.can_load?( ) ).to                      be_true
+    expect( @entry2.load( )[0][ 'hostname' ] ).to          eq( "myhostname2" )
+    expect( @entry2.load( )[0][ 'bodySize' ] ).to          eq( 52 )
+    expect( @entry2.load( )[0][ 'encodedBodySize' ] ).to   eq( 72 )
+    expect( @entry2.load( )[1].should ).to                 eq( "The quick brown fox jumps over the lazy dog and run\n" )
   end
 end
 
