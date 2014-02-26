@@ -1,9 +1,0 @@
-source "http://rubygems.org"
-gem 'gdbm'
-gem 'highline'
-gem 'dynamoid', "<= 0.5.0"
-
-# need to add JRuby properties for memcache native extention. 
-# $ cat ~/.jrubyrc 
-# cext.enabled=true
-gem 'memcache'
