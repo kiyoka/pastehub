@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 #
-# pastehubDump - PasteHub's dump utility for UNIX client.
+# pastehubDump - PasteHub's get utility for UNIX client.
 #  
-#   Copyright (c) 2009-2011  Kiyoka Nishiyama  <kiyoka@sumibi.org>
+#   Copyright (c) 2009-2014  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #   
 #   Redistribution and use in source and binary forms, with or without
 #   modification, are permitted provided that the following conditions
@@ -35,77 +35,35 @@
 #
 require 'pastehub'
 
-def dumpDb( username, command, key )
-  config = PasteHub::Config.instance
-  config.loadClient
+def print_latest( command )
+  hostname = PasteHub.hostname
+  config   = PasteHub::Config.instance()
 
-  # open local store
-  store = PasteHub::LocalStore.new( username, true )
+  cs = PasteHub::ClientSync.new( hostname, 1 )
+
+  # print latest entry data
   case command
-  when "list"
-    localList = store.getList()
-    if key and key.match( /^[0-9]+$/ )
-      localList = localList.take( key.to_i )
-    end
-    localList.each { |x|
-      puts x
-    }
-
-  when "slist"
-    serverList = store.getServerList()
-    serverList.each { |x|
-      puts x
-    }
-
-  when "top"
-    pair = store.top()
-    print pair[1]  if pair[1]
-
-  when "latest"
-    arr = store.latest()
-    puts 'server=' + arr[0]
-    puts 'local =' + arr[1]
-
+  when "time"
+    puts   cs.get_latest_entry( )[0]['create_unixtime']
   when "get"
-    print store.getValue( key )
+    print  cs.get_latest_entry( )[1]
   end
-
-  store.close()
 end
 
 def main
-  username  = PasteHub.loadUsername
-  if not username
-    STDERR.puts "clientDump: setup problem. Please setup pastehub application."
-    exit 1
-  end
-
   if 0 == ARGV.length
-    STDERR.puts "clientDump [command] [arg]"
-    STDERR.puts "  1) clientDump  list"
-    STDERR.puts "  2) clientDump slist"
-    STDERR.puts "  3) clientDump get  key"
-    STDERR.puts "  4) clientDump top"
-    STDERR.puts "  5) clientDump latest"
+    STDERR.puts "clientGet [command] [arg]"
+    STDERR.puts "  1) clientGet time"
+    STDERR.puts "  2) clientGet get"
     exit 1
   end
 
   command = ARGV[0].downcase
   case command
-  when "list"
-    dumpDb( username, command, ARGV[1] )
-  when "slist"
-    dumpDb( username, command, "" )
-  when "top"
-    dumpDb( username, command, "" )
-  when "latest"
-    dumpDb( username, command, "" )
+  when "time"
+    print_latest( command )
   when "get"
-    if 2 > ARGV.length
-      STDERR.puts "Error: please spacify key."
-      exit 1
-    end
-    dumpDb( username, command, ARGV[1] )
+    print_latest( command )
   else
     STDERR.puts "unknown command [#{command}]"
   end

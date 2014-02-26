@@ -93,11 +93,7 @@ task :postA2 do
   sh "echo 'The quick brown fox jumps over the lazy dog and run' | ruby -I ./lib bin/pastehubPost"
 end
 
-task :dumpA do
-  open( "|" + SETENV_A + "; ruby -I ./lib bin/pastehubDump list" ) {|f|
-    firstKey = f.readline.chomp
-    sh SETENV_A + "; ruby -I ./lib bin/pastehubDump get '#{firstKey}'"
-  }
-  sh SETENV_A + "; ruby -I ./lib bin/pastehubDump top"
-  sh SETENV_A + "; ruby -I ./lib bin/pastehubDump latest"
+task :getA do
+  sh "ruby -I ./lib bin/pastehubGet time"
+  sh "ruby -I ./lib bin/pastehubGet get"
 end

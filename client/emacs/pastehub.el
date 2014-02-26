@@ -3,7 +3,7 @@
 ;; Copyright (C) 2012 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama
-;; Version: 0.9.1
+;; Version: 0.9.2
 ;; URL: https://github.com/kiyoka/pastehub
 ;;
 ;; This file is part of PasteHub.el
@@ -45,15 +45,15 @@
   :group 'pastehub)
 
 (defcustom pastehub-client-basepath    nil
-  "Basepath of pastehubPost and pastehubDump command. (e.g. \"/usr/local/bin\")"
+  "Basepath of pastehubPost and pastehubGet command. (e.g. \"/usr/local/bin\")"
   :type 'string
   :group 'pastehub)
 
 
 (defconst pastehub-client-post          "pastehubPost")
-(defconst pastehub-client-dump          "pastehubDump")
+(defconst pastehub-client-get           "pastehubGet")
 (defconst pastehub-default-client-post "/opt/pastehub/bin/pastehubPost")
-(defconst pastehub-default-client-dump "/opt/pastehub/bin/pastehubDump")
+(defconst pastehub-default-client-get  "/opt/pastehub/bin/pastehubGet")
 
 
 (defvar pastehub-latest-date ""         "latest synced date.")
@@ -89,20 +89,20 @@
 	(t
 	 pastehub-client-post)))
 
-(defun get-pastehub-client-dump ()
+(defun get-pastehub-client-get ()
   (cond ((and pastehub-client-basepath
-	      (file-exists-p (pastehub-concat-path pastehub-client-basepath pastehub-client-dump)))
-	 (pastehub-concat-path pastehub-client-basepath pastehub-client-dump))
-	((file-exists-p pastehub-default-client-dump)
-	 pastehub-default-client-dump)
+	      (file-exists-p (pastehub-concat-path pastehub-client-basepath pastehub-client-get)))
+	 (pastehub-concat-path pastehub-client-basepath pastehub-client-get))
+	((file-exists-p pastehub-default-client-get)
+	 pastehub-default-client-get)
 	(t
-	 pastehub-client-dump)))
+	 pastehub-client-get)))
 
 ;;
 ;; Version
 ;;
 (defconst pastehub-version
-  "0.9.1"
+  "0.9.2"
   )
 (defun pastehub-version (&optional arg)
   "display version"
@@ -162,7 +162,7 @@
       ;;(message (format "%s:%s" (car pair) (cdr pair)))
       (cdr pair))
      (t
-      (let ((value (pastehub-call-process (get-pastehub-client-dump) "get" key)))
+      (let ((value (pastehub-call-process (get-pastehub-client-get) "get" key)))
         (setq pastehub-sync-cache
               (cons
                (cons key value)
@@ -177,7 +177,7 @@
 (defun pastehub-sync-kill-ring ()
   "sync kill-ring"
   (message "syncing kill-ring...")
-  (let* ((keys-string (pastehub-call-process (get-pastehub-client-dump) "list" (format "%d" pastehub-sync-items)))
+  (let* ((keys-string (pastehub-call-process (get-pastehub-client-get) "list" (format "%d" pastehub-sync-items)))
          (keys
           (pastehub-take (split-string
                           keys-string
@@ -201,7 +201,7 @@
   "polling process handler for pastehub service."
   (when pastehub-mode
     (let ((latest-date
-           (pastehub-call-process (get-pastehub-client-dump) "latest" "")))
+           (pastehub-call-process (get-pastehub-client-get) "latest" "")))
       (if (not (string-equal pastehub-latest-date latest-date))
           (progn
             (setq pastehub-latest-date latest-date)

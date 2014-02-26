@@ -159,7 +159,7 @@ module PasteHub
       File.basename( path, ".dat" )
     end
 
-    def get_sync_entry( path )
+    def get_sync_entry_body( path )
       hostname = path_to_hostname( path )
       entry = Entry.new( hostname )
       if entry.can_load?()
@@ -167,6 +167,27 @@ module PasteHub
       else
         nil
       end
+    end
+
+    def get_latest_entry( )
+      # check directory changes
+      config = PasteHub::Config.instance
+
+      paths = get_other_hostfiles()
+      result = paths.map { |path|
+        hostname = path_to_hostname( path )
+        entry = Entry.new( hostname )
+        if entry.can_load?()
+          ret = entry.load()
+          [ ret[0]['create_unixtime'].to_i, ret[0], ret[1] ]
+        else
+          [ 0, nil, nil ]
+        end
+      }
+      result = result.sort {|a,b| a[0] <=> b[0]}.reverse
+      [
+       result[0][1], result[0][2]
+      ]
     end
 
     def touch( )
@@ -182,7 +203,7 @@ module PasteHub
 
         path = exist_sync_data?()
         if path
-          body = get_sync_entry( path )
+          body = get_sync_entry_body( path )
           if body
             STDERR.printf( "\nInfo: push to OS's clipboard ([%s...] size=%d).\n", body[0...3], body.size )
             PasteHub::AbstractClipboard.push( body.dup )

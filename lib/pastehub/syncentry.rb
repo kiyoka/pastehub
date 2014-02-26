@@ -53,7 +53,8 @@ module PasteHub
 
     def gen_header( create_date, bin, encoded )
       h = Hash.new
-      h[ :create_date ] = create_date
+      h[ :create_date     ] = create_date
+      h[ :create_unixtime ] = create_date.to_i
       h[ :hostname    ] = @hostname
       h[ :bodySize    ] = bin.size()
       h[ :encodedBodySize ] = encoded.size()
