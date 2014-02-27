@@ -39,14 +39,14 @@
 
 ;;; Code:
 
-(defcustom pastehub-sync-items 10
-  "number of paste items to sync."
-  :type 'integer
-  :group 'pastehub)
-
 (defcustom pastehub-client-basepath    nil
   "Basepath of pastehubPost and pastehubGet command. (e.g. \"/usr/local/bin\")"
   :type 'string
+  :group 'pastehub)
+
+(defcustom pastehub-check-interval     2.0
+  "Interval second for polling new comming data."
+  :type 'integer
   :group 'pastehub)
 
 
@@ -154,21 +154,6 @@
       (let ((result-str (buffer-substring-no-properties (point-min) (point-max))))
         result-str))))
 
-(defun pastehub-get-value (key)
-  "get value from localDB. ( cache feature built-in )"
-  (let ((pair (assoc key pastehub-sync-cache)))
-    (cond
-     (pair
-      ;;(message (format "%s:%s" (car pair) (cdr pair)))
-      (cdr pair))
-     (t
-      (let ((value (pastehub-call-process (get-pastehub-client-get) "get" key)))
-        (setq pastehub-sync-cache
-              (cons
-               (cons key value)
-               pastehub-sync-cache))
-        value)))))
-
 ;; like scheme's `take'
 (defun pastehub-take (lst n)
   (reverse (last (reverse lst)
@@ -177,23 +162,13 @@
 (defun pastehub-sync-kill-ring ()
   "sync kill-ring"
   (message "syncing kill-ring...")
-  (let* ((keys-string (pastehub-call-process (get-pastehub-client-get) "list" (format "%d" pastehub-sync-items)))
-         (keys
-          (pastehub-take (split-string
-                          keys-string
-                          "\n")
-                         pastehub-sync-items)))
-    (let ((old (car kill-ring)))
-      (setq kill-ring
-            (mapcar
-             (lambda (key)
-               (pastehub-get-value key))
-             keys))
-      (setq kill-ring-yank-pointer kill-ring)
-      (when (and old (car kill-ring))
-        (when (not (string-equal old (car kill-ring)))
-          (setq pastehub-unread-count
-                (+ pastehub-unread-count 1))))))
+  (let ((value (pastehub-call-process (get-pastehub-client-get) "get" ""))
+	(old   (car kill-ring)))
+    (push value kill-ring)
+    (setq kill-ring-yank-pointer kill-ring)
+    (when (not (string-equal old (car kill-ring)))
+      (setq pastehub-unread-count
+	    (+ pastehub-unread-count 1))))
   (message nil))
 
 
@@ -201,7 +176,7 @@
   "polling process handler for pastehub service."
   (when pastehub-mode
     (let ((latest-date
-           (pastehub-call-process (get-pastehub-client-get) "latest" "")))
+           (pastehub-call-process (get-pastehub-client-get) "time" "")))
       (if (not (string-equal pastehub-latest-date latest-date))
           (progn
             (setq pastehub-latest-date latest-date)
@@ -216,7 +191,7 @@
 ;; initialize
 (define-key special-event-map [sigusr1] 'pastehub-sigusr-handler)
 (setq pastehub-timer-object
-      (run-at-time t  60.0  'pastehub-timer-handler))
+      (run-at-time t  pastehub-check-interval  'pastehub-timer-handler))
 
 
 ;; mode changer

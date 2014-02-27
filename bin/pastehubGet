@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 #
-# pastehubDump - PasteHub's get utility for UNIX client.
+# pastehubGet - PasteHub's get utility for UNIX client.
 #  
 #   Copyright (c) 2009-2014  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #   
