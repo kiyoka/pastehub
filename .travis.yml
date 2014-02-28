@@ -4,11 +4,6 @@ rvm:
  - 1.9.3
  - 2.0.0
  - 2.1.0
- - jruby-19mode # JRuby in 1.9 mode
-
-env:
- - NENDO_CLEAN_TEST=0
-# - NENDO_CLEAN_TEST=1
 
 gemfile:
- - gemfiles/Gemfile
+ - Gemfile
