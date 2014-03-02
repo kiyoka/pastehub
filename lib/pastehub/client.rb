@@ -226,6 +226,17 @@ module PasteHub
     return pid
   end
 
+  def self.isWin32
+    case RbConfig::CONFIG['host_os']
+    when /mingw32|mswin|windows/i
+      # Windows
+      return true
+    else
+      # Other ( Linux and MacOS X )
+      return false
+    end
+    return false
+  end
 
   class ClientBase
 

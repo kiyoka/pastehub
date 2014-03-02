@@ -116,8 +116,7 @@ def main( argv )
     begin
       signals = 0
 
-      case RbConfig::CONFIG['host_os']
-      when /mingw32|mswin|windows/i
+      if PasteHub.isWin32
         # Windows
       else
         # Other
@@ -133,9 +132,9 @@ def main( argv )
 
       if username
         threads = []
-        threads.push(Thread.new { clientSync.statusServer( )
-                                  STDERR.puts( "Info: disconnected from client process." )
-                                  exit( 1 ) })
+#        threads.push(Thread.new { clientSync.statusServer( )
+#                                  STDERR.puts( "Info: disconnected from client process." )
+#                                  exit( 1 ) })
         threads.push(Thread.new { clientSync.syncMain(       username, secretKey, password ) })
         threads.push(Thread.new { clientSync.clipboardCheck( username, secretKey, password ) })
         threads.push(Thread.new {

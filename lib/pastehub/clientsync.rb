@@ -106,7 +106,9 @@ module PasteHub
   end
 
   class ClientSync
-    ICONSOCKET = "/tmp/pastehub_icon"
+    require 'win32/pipe' if PasteHub.isWin32 
+    ICONSOCKET       = "/tmp/pastehub_icon"
+    ICONSOCKET_WIN32 = "pastehub_icon"
 
     def initialize( alive_entries, localdb_path, polling_interval )
       @alive_entries        = alive_entries
@@ -387,6 +389,41 @@ module PasteHub
     end
 
     def statusServer( )
+      if PasteHub.isWin32 
+        win32StatusServer()
+      else
+        unixStatusServer()
+      end
+    end
+
+    def win32StatusServer( )
+      serv = Win32::Pipe::Server.new( ICONSOCKET_WIN32,
+                                      Win32::Pipe::PIPE_TYPE_BYTE | Win32::Pipe::PIPE_READMODE_BYTE | Win32::Pipe::PIPE_WAIT )
+      STDERR.puts "Info: waiting for client connection."
+      serv.connect # wait for client
+      STDERR.puts "Info: connected from status client."
+
+      begin
+        serv.write @status.icon()
+        prev = @status.icon()
+        while true
+          if prev != @status.icon()
+            serv.write @status.icon()
+            prev = @status.icon()
+          end
+          sleep 0.1
+        end
+      rescue SystemCallError => e
+        STDERR.puts "Error: Can't open PIPE."
+      rescue e
+        STDERR.puts "Error: Other Error"
+      ensure
+        serv.close if serv
+      end
+    end
+
+    def unixStatusServer( )
+      s = nil
       begin
         if File.exist? ( ICONSOCKET )
           File.unlink( ICONSOCKET )
@@ -402,12 +439,13 @@ module PasteHub
             end
             sleep 0.1
           end
-          s.close
         }
       rescue Errno::EPIPE => e
-        STDERR.puts "Info: Broken PIPE"
+        STDERR.puts "Error: Broken PIPE"
       rescue e
-        STDERR.puts "Info: Other Error"
+        STDERR.puts "Error: Other Error"
+      ensure
+        s.close if s
       end
     end
   end
