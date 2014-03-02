@@ -4,7 +4,7 @@ PasteHub
 
 ## Concept
 
-Cloud-based cross-platform clipboard (copy and paste) service.
+Cross-platform clipboard (copy and paste) sync tool.
 
 ![image](./doc/client/pastehub_architecture.png)
 
