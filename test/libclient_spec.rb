@@ -33,9 +33,8 @@
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 require 'pastehub'
-include PasteHub
 
-describe Client, "when Setup API use ... " do
+describe PasteHub, "when Setup API use ... " do
   before do
     ENV[ 'HOME' ] = "/tmp/home/user1"
     PasteHub.setupDirectory( )
