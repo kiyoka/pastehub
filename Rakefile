@@ -74,7 +74,7 @@ end
 
 
 task :sync do
-  sh "ruby -I ./lib bin/PastehubSync"
+  sh "ruby -I ./lib bin/PastehubSync -v"
 end
 
 task :macruby_sync do

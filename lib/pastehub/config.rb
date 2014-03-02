@@ -44,6 +44,7 @@ module PasteHub
 
     def initialize( )
       self.setupClient( {} )
+      @verbose_flag = false
     end
 
     def getHomeDirectory( )
@@ -54,7 +55,16 @@ module PasteHub
       end
     end
 
+    def setVerbose( verbose_flag )
+      @verbose_flag = verbose_flag
+    end
+    
+    def getVerbose( )
+      @verbose_flag
+    end
+
     def setupClient( hash )
+
       @localDbPath         = if hash[ :localDbPath ]
                                hash[ :localDbPath ]
                              else

@@ -195,6 +195,8 @@ module PasteHub
     end
 
     def sync_main()
+      config = PasteHub::Config.instance
+
       STDERR.puts "Info: sync_main thread start"
       free_counter = 0
 
@@ -205,14 +207,14 @@ module PasteHub
         if path
           body = get_sync_entry_body( path )
           if body
-            STDERR.printf( "\nInfo: push to OS's clipboard ([%s...] size=%d).\n", body[0...3], body.size )
+            STDERR.printf( "Info: push to OS's clipboard ([%s...] size=%d).\n", body[0...4], body.size )
             PasteHub::AbstractClipboard.push( body.dup )
             touch()
           else
-            STDERR.printf( "X" )
+            STDERR.printf( "X" )   if config.getVerbose( )
           end
         else
-          STDERR.printf( "x" )
+          STDERR.printf( "x" )    if config.getVerbose( )
         end
         # interval time
         sleep @polling_interval
@@ -220,6 +222,8 @@ module PasteHub
     end
 
     def clipboard_check()
+      config = PasteHub::Config.instance
+
       STDERR.puts "Info: clipboardCheck thread start"
       @prevData = ""
       while true
@@ -229,11 +233,11 @@ module PasteHub
           if @prevData != data
             entry = Entry.new( @hostname )
             entry.save( data )
-            STDERR.printf( "\nInfo: clipboard to File ([%s...] size=%d).\n", data[0...3], data.size )
+            STDERR.printf( "Info: clipboard to File ([%s...] size=%d).\n", data[0...4], data.size )
             @prevData = data
           end
         end
-        STDERR.printf( "." )
+        STDERR.printf( "." )    if config.getVerbose( )
       end
     end
   end

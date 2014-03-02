@@ -47,6 +47,19 @@ describe PasteHub::Config, "When use config object...  " do
 end
 
 
+describe PasteHub::Config, "When on/off verboser mode...  " do
+
+  before do
+    @config = PasteHub::Config.instance
+  end
+
+  it "should" do
+    expect( @config.getVerbose ).to           be_false
+    expect( @config.setVerbose( true )).to    be_true
+    expect( @config.getVerbose ).to           be_true
+  end
+end
+
 describe PasteHub::Config, "When use config object...  " do
 
   before do
@@ -75,4 +88,3 @@ describe PasteHub::Config, "When use config object...  " do
     expect( @config.localSyncPath ).to eq( "/tmp/tmp/tmp/pastehub_sync/" )
   end
 end
-

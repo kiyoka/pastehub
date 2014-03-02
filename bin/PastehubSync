@@ -56,8 +56,13 @@ def setup( argv )
   end
 end
 
-
 def main( argv )
+  params = OptionParser.getopts( argv, "v" )
+  if params[ 'v' ]
+    config   = PasteHub::Config.instance()
+    config.setVerbose( true )
+  end
+
   ret = setup( argv )
   errorCode = ret[0]
   hostname  = ret[1]
