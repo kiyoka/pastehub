@@ -12,10 +12,10 @@ Cross-platform clipboard (copy and paste) sync tool.
 
    type        | Sync OS's clipboard | Sync Emacs kill-ring
 ---------------|---------------------|----------------------
-MacOSX(app)    |        OK           |         OK
+MacOSX(app)    |      not yet        |         OK
 MacOSX(gem)    |        OK           |         OK
 Windows(app)   |         -           |          -
-Windows(gem)   |        OK           |       not yet
+Windows(gem)   |      not yet        |       not yet
 Linux(app)     |      not yet        |         OK
 Linux(gem)     |      not yet        |         OK
 
