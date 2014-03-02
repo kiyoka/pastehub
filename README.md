@@ -21,7 +21,6 @@ Linux(gem)     |      not yet        |         OK
 
 ## Documents
 
-+ [Registration](./doc/client/Registration.md)
 + [MacOSX](./doc/client/setup_MacOSX.md)
 + [Linux](./doc/client/setup_Linux.md)
 + [RubyGems](./doc/client/ruby_gems.md)
