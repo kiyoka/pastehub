@@ -3,7 +3,7 @@ Install client software (Emacs)
 
 ## Required platforms
 
-- Linux
+- Linux or MacOS X
 - Emacs 24.1 or later
 
 ## installation instruction
