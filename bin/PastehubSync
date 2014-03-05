@@ -77,9 +77,30 @@ def main( argv )
   # create clientSync
   clientSync = PasteHub::ClientSync.new( hostname, 1.0 )
   
-  clientSync.addNoitfyCallback( 
-                               lambda { puts '<< COUNTUP >>' }
-                               )
+  # add notification handler
+  receiveNotifyFunc = 
+    case RbConfig::CONFIG['host_os']
+    when /^darwin/
+      # MacOS X
+      notifier_path = RbConfig::CONFIG['bindir'] + "/" + "terminal-notifier"
+      if File.exist?( notifier_path )
+        lambda { |x|
+        str = if config.notifyMessageMax < x.size
+                x[0...config.notifyMessageMax] + " ..."
+              else
+                x
+              end
+        command = sprintf( "%s -title 'PasteHub' -message '%s' ", notifier_path, str )
+        system( command )
+        }
+      else
+        nil
+      end
+    else
+      lambda { |x| STDERR.puts '<< COUNTUP >>' }
+    end
+
+  clientSync.addNoitfyCallback( receiveNotifyFunc )
 
   while true
     signals = 0

@@ -115,12 +115,12 @@ module PasteHub
       @last_modify_time     = Time.now()
     end
 
-    def addNoitfyCallback( countUpNotifyFunc )
-      @countUpNotifyFunc     = countUpNotifyFunc
+    def addNoitfyCallback( receiveNotifyFunc )
+      @receiveNotifyFunc    = receiveNotifyFunc 
     end
  
-    def notifyCountUp()
-      @countUpNotifyFunc.call() if @countUpNotifyFunc
+    def notifyToReceive( message )
+      @receiveNotifyFunc.call( message ) if @receiveNotifyFunc
       @status.inc( )
     end
 
@@ -234,6 +234,7 @@ module PasteHub
             entry = Entry.new( @hostname )
             entry.save( data )
             STDERR.printf( "Info: clipboard to File ([%s...] size=%d).\n", data[0...4], data.size )
+            notifyToReceive( data )
             @prevData = data
           end
         end

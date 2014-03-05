@@ -45,6 +45,7 @@ module PasteHub
     def initialize( )
       self.setupClient( {} )
       @verbose_flag = false
+      @notifyMessageMax = 80
     end
 
     def getHomeDirectory( )
@@ -89,6 +90,6 @@ module PasteHub
       end
     end
 
-    attr_reader :localDbPath, :localSyncPath
+    attr_reader :localDbPath, :localSyncPath, :notifyMessageMax
   end
 end
