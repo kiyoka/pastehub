@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "pastehub"
-  s.version = "0.3.1"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kiyoka Nishiyama"]
-  s.date = "2014-02-28"
+  s.date = "2014-03-06"
   s.description = "PasteHub is cloud-based cross-platform clipboard sync."
   s.email = "kiyoka@sumibi.org"
   s.executables = ["PastehubSync", "pastehubGet", "pastehubPost"]
@@ -43,10 +43,22 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<json>, ["= 1.8.1"])
       s.add_runtime_dependency(%q<clipboard>, ["= 1.0.5"])
       s.add_runtime_dependency(%q<ffi>, ["= 1.9.3"])
+      s.add_runtime_dependency(%q<rspec>, [">= 0"])
+      s.add_runtime_dependency(%q<jeweler2>, [">= 0"])
+      s.add_runtime_dependency(%q<rake>, [">= 0"])
+      s.add_runtime_dependency(%q<json>, ["= 1.8.1"])
+      s.add_runtime_dependency(%q<clipboard>, ["= 1.0.5"])
+      s.add_runtime_dependency(%q<ffi>, ["= 1.9.3"])
       s.add_runtime_dependency(%q<json>, ["= 1.8.1"])
       s.add_runtime_dependency(%q<clipboard>, ["= 1.0.5"])
       s.add_runtime_dependency(%q<ffi>, ["= 1.9.3"])
     else
+      s.add_dependency(%q<json>, ["= 1.8.1"])
+      s.add_dependency(%q<clipboard>, ["= 1.0.5"])
+      s.add_dependency(%q<ffi>, ["= 1.9.3"])
+      s.add_dependency(%q<rspec>, [">= 0"])
+      s.add_dependency(%q<jeweler2>, [">= 0"])
+      s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<json>, ["= 1.8.1"])
       s.add_dependency(%q<clipboard>, ["= 1.0.5"])
       s.add_dependency(%q<ffi>, ["= 1.9.3"])
@@ -55,6 +67,12 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<ffi>, ["= 1.9.3"])
     end
   else
+    s.add_dependency(%q<json>, ["= 1.8.1"])
+    s.add_dependency(%q<clipboard>, ["= 1.0.5"])
+    s.add_dependency(%q<ffi>, ["= 1.9.3"])
+    s.add_dependency(%q<rspec>, [">= 0"])
+    s.add_dependency(%q<jeweler2>, [">= 0"])
+    s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<json>, ["= 1.8.1"])
     s.add_dependency(%q<clipboard>, ["= 1.0.5"])
     s.add_dependency(%q<ffi>, ["= 1.9.3"])
