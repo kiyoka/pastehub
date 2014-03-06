@@ -8,6 +8,10 @@ Install client software (Emacs)
 
 ## installation instruction
 
+### Setup ruby gems
+
++ see [RubyGems](./ruby_gems.md)
+
 ### Setup melpa
 
 add this code your .emacs
@@ -22,7 +26,7 @@ add this code your .emacs
 
   ![pastehub_el](pastehub_el_on_melpa.png)
 
-### and add this code to your .emacs
+### add this code to your .emacs
 
 	(require 'pastehub)
 

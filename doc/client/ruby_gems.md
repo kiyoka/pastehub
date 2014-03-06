@@ -33,6 +33,9 @@ Install ruby gem
 	$ PastehubSync 
 	Info: sync_main thread start
 	Info: clipboardCheck thread start
+	.
+	.
+	.
 
 ## History
 

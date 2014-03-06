@@ -8,6 +8,10 @@ Install client software (Vim)
 
 ## installation instruction
 
+### Setup ruby gems
+
++ see [RubyGems](./ruby_gems.md)
+
 ### Copy pastehub.vim to your plugin directory.
 
-$ cp pastehub.vim ~/.vim/plugin/
+	$ cp pastehub.vim ~/.vim/plugin/
