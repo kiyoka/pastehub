@@ -1,6 +1,8 @@
-" Vim plugin to copy paste helper for PasteHub.
+" copy and paste helper for PasteHub.
 " Maintainer: Kiyoka Nishiyama <kiyoka@sumibi.org>
 " Requirements: PasteHub client.
+" How to Install:
+"   copy this file to ~/.vim/plugin/
 
 if exists("loaded_pastehub")
     finish
@@ -10,11 +12,11 @@ let loaded_pastehub = 1
 let s:pastehub_latest_key = ""
 let s:pastehub_last_paste = ""
 
-if !exists("g:pastehub_dump_program")
-	if executable( "pastehubDump" ) == 1
-		let g:pastehub_dump_program = "pastehubDump"
+if !exists("g:pastehub_get_program")
+	if executable( "pastehubGet" ) == 1
+		let g:pastehub_get_program = "pastehubGet"
 	else
-		let g:pastehub_dump_program = "/opt/pastehub/bin/pastehubDump"
+		let g:pastehub_get_program = "/opt/pastehub/bin/pastehubGet"
 	endif
 endif
 
@@ -40,7 +42,7 @@ func! PastehubExecutable(prog)
 endfunc
 
 func! PastehubSync( key )
-	if !PastehubExecutable( g:pastehub_dump_program )
+	if !PastehubExecutable( g:pastehub_get_program )
 		return
 	endif
 	if !PastehubExecutable( g:pastehub_post_program )
@@ -57,7 +59,7 @@ func! PastehubSync( key )
 
 	" --- get  ---
 	if s:pastehub_latest_key != a:key
-		let result = system( g:pastehub_dump_program . " top" )
+		let result = system( g:pastehub_get_program . " get" )
 		let s:pastehub_latest_key = a:key
 		if @" != result
 			let @" = result
@@ -67,14 +69,14 @@ func! PastehubSync( key )
 endfunc
 
 func! PastehubEventOccur()
-	if !PastehubExecutable( g:pastehub_dump_program )
+	if !PastehubExecutable( g:pastehub_get_program )
 		return
 	endif
 	
-	let result = system( g:pastehub_dump_program . " latest" )
+	let result = system( g:pastehub_get_program . " time" )
 
 	if v:shell_error
-		echo "Problem while executing \"" . args . "\""
+		echo "Problem while executing \"" . g:pastehub_get_program . "\""
 		return
 	endif
 
