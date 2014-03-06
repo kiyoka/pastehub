@@ -10,21 +10,17 @@ Cross-platform clipboard (copy and paste) sync tool.
 
 ## Support OS
 
-   type        | Sync OS's clipboard | Sync Emacs kill-ring
----------------|---------------------|----------------------
-MacOSX(app)    |      not yet        |         OK
-MacOSX(gem)    |        OK           |         OK
-Windows(app)   |         -           |          -
-Windows(gem)   |      not yet        |       not yet
-Linux(app)     |      not yet        |         OK
-Linux(gem)     |      not yet        |         OK
+   type        | OS's clipboard |   Emacs kill-ring  |    vim    |
+---------------|----------------|--------------------|-----------|
+MacOSX(gem)    |        OK      |         OK         |    OK     |
+Windows(gem)   |        OK      |      not yet       |  not yet  |
+Linux(gem)     |      not yet   |         OK         |    OK     |
 
 ## Documents
 
-+ [MacOSX](./doc/client/setup_MacOSX.md)
-+ [Linux](./doc/client/setup_Linux.md)
 + [RubyGems](./doc/client/ruby_gems.md)
 + [Setup Emacs](./doc/client/setup_emacs.md)
++ [Setup Vim](./doc/client/setup_vim.md)
 
 ## Open Source
 
