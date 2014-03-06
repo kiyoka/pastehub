@@ -58,8 +58,8 @@ end
 
 def main( argv )
   params = OptionParser.getopts( argv, "v" )
+  config = PasteHub::Config.instance()
   if params[ 'v' ]
-    config   = PasteHub::Config.instance()
     config.setVerbose( true )
   end
 
@@ -84,13 +84,14 @@ def main( argv )
       # MacOS X
       notifier_path = RbConfig::CONFIG['bindir'] + "/" + "terminal-notifier"
       if File.exist?( notifier_path )
+        STDERR.puts( "Info: found terminal-notifier for MacOS X." )
         lambda { |x|
         str = if config.notifyMessageMax < x.size
                 x[0...config.notifyMessageMax] + " ..."
               else
                 x
               end
-        command = sprintf( "%s -title 'PasteHub' -message '%s' ", notifier_path, str )
+        command = sprintf( "%s -title 'PasteHub' -message '\\%s' ", notifier_path, str )
         system( command )
         }
       else
