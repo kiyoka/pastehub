@@ -23,9 +23,12 @@ Install ruby gem
 
  	$ gem install pastehub
 
-## start pastehub client
+### Install the "terminal-notifier" gem ( MacOSX only )
 
-### start client program
+ 	$ gem install terminal-notifier
+
+
+## start pastehub client
 
 	$ PastehubSync 
 	Info: sync_main thread start
