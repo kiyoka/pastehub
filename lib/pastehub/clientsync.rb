@@ -184,10 +184,14 @@ module PasteHub
           [ 0, nil, nil ]
         end
       }
-      result = result.sort {|a,b| a[0] <=> b[0]}.reverse
-      [
-       result[0][1], result[0][2]
-      ]
+      if 0 == result.size()
+        nil
+      else 
+        result = result.sort {|a,b| a[0] <=> b[0]}.reverse
+        [
+         result[0][1], result[0][2]
+        ]
+      end
     end
 
     def touch( )

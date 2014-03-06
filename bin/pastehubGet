@@ -42,11 +42,20 @@ def print_latest( command )
   cs = PasteHub::ClientSync.new( hostname, 1 )
 
   # print latest entry data
+  result = cs.get_latest_entry( )
   case command
   when "time"
-    puts   cs.get_latest_entry( )[0]['create_unixtime']
+    if result
+      puts   cs.get_latest_entry( )[0]['create_unixtime']
+    else
+      puts   '0'
+    end
   when "get"
-    print  cs.get_latest_entry( )[1]
+    if result
+      print  cs.get_latest_entry( )[1]
+    else
+      puts   ''
+    end
   end
 end
 
