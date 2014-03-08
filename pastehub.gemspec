@@ -40,43 +40,34 @@ Gem::Specification.new do |s|
     s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<json>, ["= 1.8.1"])
       s.add_runtime_dependency(%q<clipboard>, ["= 1.0.5"])
       s.add_runtime_dependency(%q<ffi>, ["= 1.9.3"])
       s.add_runtime_dependency(%q<rspec>, [">= 0"])
       s.add_runtime_dependency(%q<jeweler2>, [">= 0"])
       s.add_runtime_dependency(%q<rake>, [">= 0"])
-      s.add_runtime_dependency(%q<json>, ["= 1.8.1"])
       s.add_runtime_dependency(%q<clipboard>, ["= 1.0.5"])
       s.add_runtime_dependency(%q<ffi>, ["= 1.9.3"])
-      s.add_runtime_dependency(%q<json>, ["= 1.8.1"])
       s.add_runtime_dependency(%q<clipboard>, ["= 1.0.5"])
       s.add_runtime_dependency(%q<ffi>, ["= 1.9.3"])
     else
-      s.add_dependency(%q<json>, ["= 1.8.1"])
       s.add_dependency(%q<clipboard>, ["= 1.0.5"])
       s.add_dependency(%q<ffi>, ["= 1.9.3"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<jeweler2>, [">= 0"])
       s.add_dependency(%q<rake>, [">= 0"])
-      s.add_dependency(%q<json>, ["= 1.8.1"])
       s.add_dependency(%q<clipboard>, ["= 1.0.5"])
       s.add_dependency(%q<ffi>, ["= 1.9.3"])
-      s.add_dependency(%q<json>, ["= 1.8.1"])
       s.add_dependency(%q<clipboard>, ["= 1.0.5"])
       s.add_dependency(%q<ffi>, ["= 1.9.3"])
     end
   else
-    s.add_dependency(%q<json>, ["= 1.8.1"])
     s.add_dependency(%q<clipboard>, ["= 1.0.5"])
     s.add_dependency(%q<ffi>, ["= 1.9.3"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<jeweler2>, [">= 0"])
     s.add_dependency(%q<rake>, [">= 0"])
-    s.add_dependency(%q<json>, ["= 1.8.1"])
     s.add_dependency(%q<clipboard>, ["= 1.0.5"])
     s.add_dependency(%q<ffi>, ["= 1.9.3"])
-    s.add_dependency(%q<json>, ["= 1.8.1"])
     s.add_dependency(%q<clipboard>, ["= 1.0.5"])
     s.add_dependency(%q<ffi>, ["= 1.9.3"])
   end
