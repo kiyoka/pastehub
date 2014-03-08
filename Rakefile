@@ -52,7 +52,7 @@ task :test do
   sh "/bin/rm -rf /tmp/home/user1"
   sh "ruby    -I ./lib `which rspec` -b   ./test/libclientsync_spec.rb  "
   sh "ruby    -I ./lib `which rspec` -b   ./test/libsyncentry_spec.rb   "
-#  sh "ruby    -I ./lib `which rspec` -b   ./test/libutil_spec.rb        "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/libutil_spec.rb        "
 end
 
 task :win32_test do

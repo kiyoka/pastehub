@@ -43,31 +43,14 @@ describe Util, "When message digest util is called...  " do
   end
 
   it "should" do
-    @util.digest( "text data1" ).should   == "f0c62da87f30bff2543cbd44733c17ea9ba84f68"
-    @util.digest( "line 1
+    expect( @util.digest( "text data1" )).to eq( "f0c62da87f30bff2543cbd44733c17ea9ba84f68" )
+    expect( @util.digest( "line 1
 line 2
 line 3
 line 4
 "
-                  ).should                == "0a95120b8f964aed834e1781898d5243f6878a69"
-    @util.currentTime().should            match( /^[0-9]+=[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/ )
-  end
-end
-
-
-describe Util, "When key util is called...  " do
-
-  before do
-    @util = Util.new
-
-    @key1 = "1338738983=06/04/12:00:56:22=f0c62da87f30bff2543cbd44733c17ea9ba84f68"
-    @key2 = "1338814085=06/04/12:21:48:04=0a95120b8f964aed834e1781898d5243f6878a69"
-  end
-
-  it "should" do
-    @util.key_seconds( @key1 ).should    == 1338738983
-    @util.key_timestamp( @key1 ).should  == '06/04/12:00:56:22'
-    @util.key_digest( @key1 ).should     == 'f0c62da87f30bff2543cbd44733c17ea9ba84f68'
+                  )).to                      eq( "0a95120b8f964aed834e1781898d5243f6878a69" )
+    expect( @util.currentTime().match( /^[0-9]+=[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/ )).to be_true
   end
 end
 
@@ -81,25 +64,24 @@ describe Util, "When use list utils " do
   end
 
   it "should" do
-    @util.takeList( @list1, -2 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
-    @util.takeList( @list1, -1 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
-    @util.takeList( @list1,  0 ).should     == [                      ]
-    @util.takeList( @list1,  1 ).should     == [ 1                    ]
-    @util.takeList( @list1,  2 ).should     == [ 1,2                  ]
-    @util.takeList( @list1,  3 ).should     == [ 1,2,3                ]
-    @util.takeList( @list1,  8 ).should     == [ 1,2,3,4,5,6,7,8      ]
-    @util.takeList( @list1,  9 ).should     == [ 1,2,3,4,5,6,7,8,9    ]
-    @util.takeList( @list1, 10 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
-    @util.takeList( @list1, 11 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
-
-    @util.dropList( @list1, -2 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
-    @util.dropList( @list1, -1 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
-    @util.dropList( @list1,  0 ).should     == [ 1,2,3,4,5,6,7,8,9,10 ]
-    @util.dropList( @list1,  1 ).should     == [   2,3,4,5,6,7,8,9,10 ]
-    @util.dropList( @list1,  2 ).should     == [     3,4,5,6,7,8,9,10 ]
-    @util.dropList( @list1,  9 ).should     == [                   10 ]
-    @util.dropList( @list1, 10 ).should     == [                      ]
-    @util.dropList( @list1, 11 ).should     == [                      ]
+    expect( @util.takeList( @list1, -2 )).to     eq( [ 1,2,3,4,5,6,7,8,9,10 ] )
+    expect( @util.takeList( @list1, -1 )).to     eq( [ 1,2,3,4,5,6,7,8,9,10 ] )
+    expect( @util.takeList( @list1,  0 )).to     eq( [                      ] )
+    expect( @util.takeList( @list1,  1 )).to     eq( [ 1                    ] )
+    expect( @util.takeList( @list1,  2 )).to     eq( [ 1,2                  ] )
+    expect( @util.takeList( @list1,  3 )).to     eq( [ 1,2,3                ] )
+    expect( @util.takeList( @list1,  8 )).to     eq( [ 1,2,3,4,5,6,7,8      ] )
+    expect( @util.takeList( @list1,  9 )).to     eq( [ 1,2,3,4,5,6,7,8,9    ] )
+    expect( @util.takeList( @list1, 10 )).to     eq( [ 1,2,3,4,5,6,7,8,9,10 ] )
+    expect( @util.takeList( @list1, 11 )).to     eq( [ 1,2,3,4,5,6,7,8,9,10 ] )
+    expect( @util.dropList( @list1, -2 )).to     eq( [ 1,2,3,4,5,6,7,8,9,10 ] )
+    expect( @util.dropList( @list1, -1 )).to     eq( [ 1,2,3,4,5,6,7,8,9,10 ] )
+    expect( @util.dropList( @list1,  0 )).to     eq( [ 1,2,3,4,5,6,7,8,9,10 ] )
+    expect( @util.dropList( @list1,  1 )).to     eq( [   2,3,4,5,6,7,8,9,10 ] )
+    expect( @util.dropList( @list1,  2 )).to     eq( [     3,4,5,6,7,8,9,10 ] )
+    expect( @util.dropList( @list1,  9 )).to     eq( [                   10 ] )
+    expect( @util.dropList( @list1, 10 )).to     eq( [                      ] )
+    expect( @util.dropList( @list1, 11 )).to     eq( [                      ] )
   end
 end
 
@@ -114,8 +96,8 @@ describe Util, "When master's diffList is larger " do
   end
 
   it "should" do
-    @util.diffList( @masterList, @localList  ).should == [ "a", "d" ]
-    @util.diffList( @localList,  @masterList ).should == [ ]
+    expect( @util.diffList( @masterList, @localList  )).to  eq( [ "a", "d" ] )
+    expect( @util.diffList( @localList,  @masterList )).to  eq( [ ] )
   end
 end
 
@@ -129,8 +111,8 @@ describe Util, "When local's diffList is larger " do
   end
 
   it "should" do
-    @util.diffList( @masterList, @localList  ).should == [ ]
-    @util.diffList( @localList,  @masterList ).should == [ "1", "3" ]
+    expect( @util.diffList( @masterList, @localList  )).to  eq( [ ] )
+    expect( @util.diffList( @localList,  @masterList )).to  eq( [ "1", "3" ] )
   end
 end
 
@@ -144,8 +126,23 @@ describe Util, "When differs in first 5 entries " do
   end
 
   it "should" do
-    @util.diffList( @masterList, @localList  ).should == [ "2" ]
-    @util.diffList( @localList,  @masterList ).should == [ "1", "4" ]
+    expect( @util.diffList( @masterList, @localList  )).to  eq( [ "2" ] )
+    expect( @util.diffList( @localList,  @masterList )).to  eq( [ "1", "4" ] )
   end
 end
 
+
+describe Util, "When string util is called...  " do
+
+  before do
+    @util = Util.new
+  end
+
+  it "should" do
+    expect( @util.stringLimit( '123456789A', 5 )).to      eq( '12345...' )
+    expect( @util.stringLimit( '123456789ABCD', 10 )).to  eq( '123456789A...' )
+    expect( @util.stringLimit( '1', 2 )).to               eq( '1' )
+    expect( @util.stringLimit( '12', 2 )).to              eq( '12' )
+    expect( @util.stringLimit( '123', 2 )).to             eq( '12...' )
+  end
+end

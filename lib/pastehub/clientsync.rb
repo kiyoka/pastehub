@@ -200,6 +200,7 @@ module PasteHub
 
     def sync_main()
       config = PasteHub::Config.instance
+      util   = PasteHub::Util.new
 
       STDERR.puts "Info: sync_main thread start"
       free_counter = 0
@@ -211,7 +212,7 @@ module PasteHub
         if path
           body = get_sync_entry_body( path )
           if body
-            STDERR.printf( "Info: push to OS's clipboard ([%s...] size=%d).\n", body[0...4], body.size )
+            STDERR.printf( "Info: push to OS's clipboard ([[%s]] size=%d).\n", util.stringLimit(body,config.notifyMessageMax), body.size )
             PasteHub::AbstractClipboard.push( body.dup )
             touch()
           else
@@ -227,6 +228,7 @@ module PasteHub
 
     def clipboard_check()
       config = PasteHub::Config.instance
+      util   = PasteHub::Util.new
 
       STDERR.puts "Info: clipboardCheck thread start"
       @prevData = ""
@@ -237,7 +239,7 @@ module PasteHub
           if @prevData != data
             entry = Entry.new( @hostname )
             entry.save( data )
-            STDERR.printf( "Info: clipboard to File ([%s...] size=%d).\n", data[0...4], data.size )
+            STDERR.printf( "Info: clipboard to File ([[%s]]] size=%d).\n", util.stringLimit(data,config.notifyMessageMax) , data.size )
             notifyToReceive( data )
             @prevData = data
           end
