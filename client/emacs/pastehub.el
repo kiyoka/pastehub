@@ -31,7 +31,7 @@
 ;; service automatically.  You don't have to learn new key-bindings.
 ;; 
 ;; To get you started, you need to install PasteHub client for your client OS.
-;;  http://pastehub.net/
+;;  https://github.com/kiyoka/pastehub
 ;; 
 ;; and then, add this line to your .emacs file:
 ;;  (require 'pastehub)
