@@ -98,7 +98,9 @@ def main( argv )
         nil
       end
     else
-      lambda { |x| STDERR.puts '<< COUNTUP >>' }
+      lambda { |x|
+        # nothing to do.
+      }
     end
 
   clientSync.addNoitfyCallback( receiveNotifyFunc )
