@@ -1,5 +1,6 @@
 Install client software (Vim)
 =======================
+If your vim can handle OS's clipboard, you don't have to install this plug-in.
 
 ## Required platforms
 
