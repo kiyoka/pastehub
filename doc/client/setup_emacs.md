@@ -28,6 +28,7 @@ add this code your .emacs
 
 ### add this code to your .emacs
 
+	(setq pastehub-client-basepath "/usr/local/bin") ;; for Emacs.app on MacOS X
 	(require 'pastehub)
 
   PasteHub's mode line appears 

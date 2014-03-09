@@ -16,8 +16,9 @@ MacOSX(gem)    |        OK      |         OK         |    OK     |
 Windows(gem)   |        OK      |      not yet       |  not yet  |
 Linux(gem)     |      not yet   |         OK         |    OK     |
 
-## Documents
+## How to install
 
++ [Dropbox](./doc/client/dropbox.md)
 + [RubyGems](./doc/client/ruby_gems.md)
 + [Setup Emacs](./doc/client/setup_emacs.md)
 + [Setup Vim](./doc/client/setup_vim.md)

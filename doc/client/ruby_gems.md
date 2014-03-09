@@ -39,6 +39,6 @@ Install ruby gem
 
 ## History
 
++ 0.4.1 Fixed some bugs.
 + 0.4.0 First release Dropbox cooperation.
 + 0.2.6 First release from rubygems.org.
-
