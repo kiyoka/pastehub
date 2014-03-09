@@ -15,6 +15,6 @@ Install Dropbox
 
 ![Dropbox basic setting](dropbox_basic_setting.png)
 
-### Disalbe the check.
+### Disable the check.
 
 ![Dropbox basic setting dialog](dropbox_basic_setting_dialog.png)
