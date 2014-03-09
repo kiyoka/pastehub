@@ -69,5 +69,16 @@ module PasteHub
         str
       end
     end
+
+    # pullout URL string from the string
+    def pulloutURL( str )
+      m = str.match( /(^|[\t\s])(http[s]?:\/\/[^\t\s]+)/ )
+      if m
+        return m[2]
+      else
+        return nil
+      end
+    end
+
   end
 end

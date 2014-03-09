@@ -144,5 +144,17 @@ describe Util, "When string util is called...  " do
     expect( @util.stringLimit( '1', 2 )).to               eq( '1' )
     expect( @util.stringLimit( '12', 2 )).to              eq( '12' )
     expect( @util.stringLimit( '123', 2 )).to             eq( '12...' )
+
+    expect( @util.pulloutURL( 'abc' )).to                 be_nil
+    expect( @util.pulloutURL( 'this is normal text' )).to be_nil
+    expect( @util.pulloutURL( 'http://localhost/dir1/dir2/a.html' )).to               eq( 'http://localhost/dir1/dir2/a.html' )
+    expect( @util.pulloutURL( 'aaa http://localhost/dir1/dir2/a.html bbb' )).to       eq( 'http://localhost/dir1/dir2/a.html' )
+    expect( @util.pulloutURL( 'aaa https://localhost/dir1/dir2/a.html bbb' )).to      eq( 'https://localhost/dir1/dir2/a.html' )
+    expect( @util.pulloutURL( 'ahttp://localhost/dir1/dir2/a.html'  )).to             be_nil
+    expect( @util.pulloutURL( 'ahttps://localhost/dir1/dir2/a.html' )).to             be_nil
+    expect( @util.pulloutURL( 'ahttp://localhost/dir1/dir2/a.html '  )).to            be_nil
+    expect( @util.pulloutURL( 'ahttps://localhost/dir1/dir2/a.html ' )).to            be_nil
+    expect( @util.pulloutURL( 'http://localhost/dir1/dir2/a.html bbb' )).to          eq( 'http://localhost/dir1/dir2/a.html' )
+    expect( @util.pulloutURL( 'https://localhost/dir1/dir2/a.html bbb' )).to         eq( 'https://localhost/dir1/dir2/a.html' )
   end
 end

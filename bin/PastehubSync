@@ -91,7 +91,12 @@ def main( argv )
               else
                 x
               end
-        command = sprintf( "%s -title 'PasteHub' -message '\\%s' ", notifier_path, str )
+        url_option = ''
+        util = PasteHub::Util.new
+        if util.pulloutURL( str )
+          url_option = '-open \'' + util.pulloutURL( str ) + '\''
+        end
+        command = sprintf( "%s -title 'PasteHub' -message '\\%s' %s", notifier_path, str, url_option )
         system( command )
         }
       else
