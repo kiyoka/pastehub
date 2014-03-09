@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/kiyoka/pastehub"
   s.licenses = ["New BSD"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "2.0.14"
+  s.rubygems_version = "2.0.3"
   s.summary = "PasteHub is cloud-based cross-platform clipboard sync."
 
   if s.respond_to? :specification_version then
