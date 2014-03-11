@@ -1,9 +1,9 @@
 ;;; pastehub.el --- A client for the PasteHub cloud service
 ;;
-;; Copyright (C) 2012 Kiyoka Nishiyama
+;; Copyright (C) 2012-2014 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama
-;; Version: 0.9.2
+;; Version: 0.9.3
 ;; URL: https://github.com/kiyoka/pastehub
 ;;
 ;; This file is part of PasteHub.el
@@ -47,6 +47,11 @@
 (defcustom pastehub-check-interval     2.0
   "Interval second for polling new comming data."
   :type 'integer
+  :group 'pastehub)
+
+(defcustom pastehub-sync-dir          "~/Dropbox/pastehub/."
+  "Sync data directory path"
+  :type 'string
   :group 'pastehub)
 
 
@@ -172,11 +177,21 @@
   (message nil))
 
 
+(defun latest-date-of-file (file-name)
+  "Latest modify time of file-name"
+  (progn
+    (let* (
+	   (f-attr (file-attributes file-name))
+	   (m-time (nth 5 f-attr)))
+      (format-time-string "%s" m-time))))
+	   
 (defun pastehub-timer-handler ()
   "polling process handler for pastehub service."
   (when pastehub-mode
-    (let ((latest-date
-           (pastehub-call-process (get-pastehub-client-get) "time" "")))
+    (let ((lates-date
+	   (if (file-exists-p pastehub-sync-dir)
+	       (latest-date-of-file pastehub-sync-dir)
+	     (pastehub-call-process (get-pastehub-client-get) "time" ""))))
       (if (not (string-equal pastehub-latest-date latest-date))
           (progn
             (setq pastehub-latest-date latest-date)
