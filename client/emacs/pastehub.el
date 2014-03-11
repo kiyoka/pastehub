@@ -188,7 +188,7 @@
 (defun pastehub-timer-handler ()
   "polling process handler for pastehub service."
   (when pastehub-mode
-    (let ((lates-date
+    (let ((latest-date
 	   (if (file-exists-p pastehub-sync-dir)
 	       (latest-date-of-file pastehub-sync-dir)
 	     (pastehub-call-process (get-pastehub-client-get) "time" ""))))
