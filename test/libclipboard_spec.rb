@@ -39,8 +39,8 @@ describe AbstractClipboard, "When clipboard push and pop operation... " do
 
   it "should" do
     expect( AbstractClipboard.push( "new pastedata(1)" )).to  be_nil
-    expect( AbstractClipboard.hasNew?( "dummyuser" )).to      eq( "new pastedata(1)" )
+    expect( AbstractClipboard.hasNew?( )).to      eq( "new pastedata(1)" )
     expect( AbstractClipboard.push( "new pastedata(2)" )).to  be_nil
-    expect( AbstractClipboard.hasNew?( "dummyuser" )).to      eq( "new pastedata(2)" )
+    expect( AbstractClipboard.hasNew?( )).to      eq( "new pastedata(2)" )
   end
 end

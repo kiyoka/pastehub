@@ -49,25 +49,8 @@ task :test do
   sh "ruby    -I ./lib `which rspec` -b   ./test/libclientsync_spec.rb  "
   sh "ruby    -I ./lib `which rspec` -b   ./test/libsyncentry_spec.rb   "
   sh "ruby    -I ./lib `which rspec` -b   ./test/libutil_spec.rb        "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/libclipboard_spec.rb   "
 end
-
-task :win32_test do
-  sh "rm -f /tmp/usertmp.db"
-  sh "rspec -I ./lib  -b   ./test/libclipboard_spec.rb   "
-  sh "rspec -I ./lib  -b   ./test/libstore_spec.rb       "
-  sh "rspec -I ./lib  -b   ./test/libconfig_spec.rb      "
-  sh "rspec -I ./lib  -b   ./test/libutil_spec.rb        "
-  sh "rspec -I ./lib  -b   ./test/libcrypt_spec.rb       "
-  sh "rspec -I ./lib  -b   ./test/libauth_spec.rb        "
-#  sh "rspec -I ./lib  -b   ./test/libauth2_spec.rb       "
-  sh "rspec -I ./lib  -b   ./test/libclient_spec.rb      "
-  sh "rspec -I ./lib  -b   ./test/liblog_spec.rb         "
-#  sh "rspec -I ./lib  -b   ./test/libmasterdb_spec.rb    "
-#  sh "rspec -I ./lib  -b   ./test/libuserdb_spec.rb      "
-
-
-end
-
 
 task :sync do
   sh "ruby -I ./lib bin/PastehubSync -v"
