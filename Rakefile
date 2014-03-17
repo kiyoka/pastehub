@@ -50,6 +50,7 @@ task :test do
   sh "ruby    -I ./lib `which rspec` -b   ./test/libsyncentry_spec.rb   "
   sh "ruby    -I ./lib `which rspec` -b   ./test/libutil_spec.rb        "
   sh "ruby    -I ./lib `which rspec` -b   ./test/libclipboard_spec.rb   "
+  sh "ruby    -I ./lib `which rspec` -b   ./test/libplugin_spec.rb      "
 end
 
 task :sync do

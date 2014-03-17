@@ -1,8 +1,9 @@
+#!/usr/bin/env ruby
+# -*- encoding: utf-8 -*-
 #
-# pastehub.rb - PasteHub's top-level library file
+# libplugin_spec.rb -  "RSpec file for plugin.rb"
 #
-#
-#   Copyright (c) 2014  Kiyoka Nishiyama  <kiyoka@sumibi.org>
+#   Copyright (c) 2014-2014  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #
 #   Redistribution and use in source and binary forms, with or without
 #   modification, are permitted provided that the following conditions
@@ -31,11 +32,17 @@
 #   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-#
-require 'pastehub/config'
-require 'pastehub/util'
-require 'pastehub/client'
-require 'pastehub/clientsync'
-require 'pastehub/clipboard'
-require 'pastehub/syncentry'
-require 'pastehub/plugin'
+require 'pastehub'
+
+describe PasteHub::Plugin, "When initialize Plugins" do
+
+  before do
+    @plugin = PasteHub::Plugin
+  end
+
+  it "should" do
+    expect( @plugin.plugins.each { |x| x.class } ).to  eq( [] )
+    expect( @plugin.load_plugins() ).to                be_nil
+    expect( @plugin.plugins.each { |x| x.class } ).to  eq( [PasteHub::PluginSample] )
+  end
+end

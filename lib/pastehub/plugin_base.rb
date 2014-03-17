@@ -1,24 +1,23 @@
 #
-# pastehub.rb - PasteHub's top-level library file
-#
-#
-#   Copyright (c) 2014  Kiyoka Nishiyama  <kiyoka@sumibi.org>
-#
+# plugin_base.rb - Base class for plugin implementation.
+#  
+#   Copyright (c) 2014-2014  Kiyoka Nishiyama  <kiyoka@sumibi.org>
+#   
 #   Redistribution and use in source and binary forms, with or without
 #   modification, are permitted provided that the following conditions
 #   are met:
-#
+#   
 #   1. Redistributions of source code must retain the above copyright
 #      notice, this list of conditions and the following disclaimer.
-#
+#  
 #   2. Redistributions in binary form must reproduce the above copyright
 #      notice, this list of conditions and the following disclaimer in the
 #      documentation and/or other materials provided with the distribution.
-#
+#  
 #   3. Neither the name of the authors nor the names of its contributors
 #      may be used to endorse or promote products derived from this
 #      software without specific prior written permission.
-#
+#  
 #   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 #   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 #   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -30,12 +29,15 @@
 #   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#  
 #
-#
-require 'pastehub/config'
-require 'pastehub/util'
-require 'pastehub/client'
-require 'pastehub/clientsync'
-require 'pastehub/clipboard'
-require 'pastehub/syncentry'
-require 'pastehub/plugin'
+module PasteHub
+  class PluginBase
+    def initialize
+    end
+
+    # for customization of newly arraived message.
+    def newly_arrived (message)
+    end
+  end
+end
