@@ -32,33 +32,38 @@
 #  
 #
 require 'pastehub/plugin_base'
+
 module PasteHub
   class NotificationCenter < PluginBase
-    def newly_arrived(message)
+    def initialize()
+      @enable = false
       case RbConfig::CONFIG['host_os']
       when /^darwin/
         # MacOS X
-        notifier_path = RbConfig::CONFIG['bindir'] + "/" + "terminal-notifier"
-        if File.exist?( notifier_path )
+        @notifier_path = RbConfig::CONFIG['bindir'] + "/" + "terminal-notifier"
+        if File.exist?( @notifier_path )
           STDERR.puts( "Info: found terminal-notifier for MacOS X." )
-          lambda { |x|
-            str = if config.notifyMessageMax < x.size
-                    x[0...config.notifyMessageMax] + " ..."
-                  else
-                    x
-                  end
-            url_option = ''
-            util = PasteHub::Util.new
-            if util.pulloutURL( str )
-              url_option = '-open \'' + util.pulloutURL( str ) + '\''
-            end
-            command = sprintf( "%s -title 'PasteHub' -message '\\%s' %s", notifier_path, str, url_option )
-            system( command )
-          }
-        else
-          nil
+          @enable = true
         end
       end
+    end
+
+    def newly_arrived(message,max_length)
+      if @enable
+        str = if max_length < message.size
+                message[0...max_length] + " ..."
+              else
+                message
+              end
+        url_option = ''
+        util = PasteHub::Util.new
+        if util.pulloutURL( str )
+          url_option = '-open \'' + util.pulloutURL( str ) + '\''
+        end
+        command = sprintf( "%s -title 'PasteHub' -message '\\%s' %s", @notifier_path, str, url_option )
+        system( command )
+      end
+      nil
     end
   end
 

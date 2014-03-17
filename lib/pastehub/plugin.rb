@@ -37,6 +37,7 @@ module PasteHub
 
     def initialize
       @plugins = []
+      @config  = PasteHub::Config.instance()
     end
 
     def load_plugins
@@ -61,7 +62,7 @@ module PasteHub
 
     def distribute_newly_arrived(message)
       @plugins.each { |obj|
-        obj.newly_arrived(message)
+        obj.newly_arrived(message,@config.notifyMessageMax)
       }
     end
   end

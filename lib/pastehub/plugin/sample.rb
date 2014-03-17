@@ -34,7 +34,7 @@
 require 'pastehub/plugin_base'
 module PasteHub
   class PluginSample < PluginBase
-    def newly_arrived(message)
+    def newly_arrived(message,max_length)
       # STDERR.puts "PluginSample: message arrived [#{message}]"
     end
   end
