@@ -55,10 +55,11 @@ module PasteHub
     end
 
     def register_plugin(obj)
+      STDERR.printf( "Info: plugin [%s] loaded.\n", obj.class.to_s )
       @plugins << obj
     end
 
-    def exec_newly_arrived(message)
+    def distribute_newly_arrived(message)
       @plugins.each { |obj|
         obj.newly_arrived(message)
       }

@@ -1,5 +1,5 @@
 #
-# sample.rb - a PasteHub's plugin sample ( nothing to do )
+# notification_center.rb - NotificationCenter plugin for MacOS X
 #  
 #   Copyright (c) 2014-2014  Kiyoka Nishiyama  <kiyoka@sumibi.org>
 #   
@@ -33,11 +33,34 @@
 #
 require 'pastehub/plugin_base'
 module PasteHub
-  class PluginSample < PluginBase
+  class NotificationCenter < PluginBase
     def newly_arrived(message)
-      # STDERR.puts "PluginSample: message arrived [#{message}]"
+      case RbConfig::CONFIG['host_os']
+      when /^darwin/
+        # MacOS X
+        notifier_path = RbConfig::CONFIG['bindir'] + "/" + "terminal-notifier"
+        if File.exist?( notifier_path )
+          STDERR.puts( "Info: found terminal-notifier for MacOS X." )
+          lambda { |x|
+            str = if config.notifyMessageMax < x.size
+                    x[0...config.notifyMessageMax] + " ..."
+                  else
+                    x
+                  end
+            url_option = ''
+            util = PasteHub::Util.new
+            if util.pulloutURL( str )
+              url_option = '-open \'' + util.pulloutURL( str ) + '\''
+            end
+            command = sprintf( "%s -title 'PasteHub' -message '\\%s' %s", notifier_path, str, url_option )
+            system( command )
+          }
+        else
+          nil
+        end
+      end
     end
   end
 
-  Plugin.register_plugin(PluginSample.new)
+  Plugin.register_plugin(NotificationCenter.new)
 end

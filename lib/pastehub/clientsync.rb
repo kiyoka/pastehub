@@ -113,15 +113,12 @@ module PasteHub
       @polling_interval     = polling_interval
       @status               = Status.new()
       @last_modify_time     = Time.now()
-    end
-
-    def addNoitfyCallback( receiveNotifyFunc )
-      @receiveNotifyFunc    = receiveNotifyFunc 
+      @plugin               = PasteHub::Plugin
+      @plugin.load_plugins
     end
  
-    def notifyToReceive( message )
-      @receiveNotifyFunc.call( message ) if @receiveNotifyFunc
-      @status.inc( )
+    def notifyToReceive(message)
+      @plugin.distribute_newly_arrived(message)
     end
 
     # host's sync data file excludes local hostname

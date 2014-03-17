@@ -41,8 +41,8 @@ describe PasteHub::Plugin, "When initialize Plugins" do
   end
 
   it "should" do
-    expect( @plugin.plugins.each { |x| x.class } ).to  eq( [] )
-    expect( @plugin.load_plugins() ).to                be_nil
-    expect( @plugin.plugins.each { |x| x.class } ).to  eq( [PasteHub::PluginSample] )
+    expect( @plugin.plugins.map { |x| x.class } ).to  eq( [] )
+    expect( @plugin.load_plugins() ).to               be_nil
+    expect( @plugin.plugins.map { |x| x.class } ).to  eq( [PasteHub::NotificationCenter, PasteHub::PluginSample] )
   end
 end
