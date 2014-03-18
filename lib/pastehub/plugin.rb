@@ -61,7 +61,7 @@ module PasteHub
 
     def distribute_newly_arrived(message)
       @plugins.each { |obj|
-        obj.newly_arrived(message,100)
+        obj.newly_arrived(message)
       }
     end
   end

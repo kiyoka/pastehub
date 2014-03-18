@@ -45,7 +45,11 @@ module PasteHub
     def initialize( )
       self.setupClient( {} )
       @verbose_flag = false
-      @notifyMessageMax = 80
+      @notifyMessageMax = 100
+    end
+
+    def reinitialize()
+      initialize()
     end
 
     def getHomeDirectory( )

@@ -35,6 +35,7 @@ require 'pastehub/plugin_base'
 
 module PasteHub
   class NotificationCenter < PluginBase
+
     def initialize()
       @enable = false
       case RbConfig::CONFIG['host_os']
@@ -48,10 +49,11 @@ module PasteHub
       end
     end
 
-    def newly_arrived(message,max_length)
+    def newly_arrived(message)
+      config = PasteHub::Config.instance
       if @enable
-        str = if max_length < message.size
-                message[0...max_length] + " ..."
+        str = if config.notifyMessageMax < message.size
+                message[0...config.notifyMessageMax] + " ..."
               else
                 message
               end
