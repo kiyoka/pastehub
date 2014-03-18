@@ -45,6 +45,7 @@ module PasteHub
   def self.setupDirectory
     localdb_path   = PasteHub::Config.instance.localDbPath
     localsync_path = PasteHub::Config.instance.localSyncPath
+    public_path    = PasteHub::Config.instance.publicPath
     # Create directory
     if not File.exist?(  localdb_path )
       FileUtils.mkdir_p( localdb_path, { :mode => 0700 } )
@@ -54,6 +55,12 @@ module PasteHub
     if not File.exist?(  localsync_path )
       FileUtils.mkdir_p( localsync_path, { :mode => 0700 } )
     end
+
+    # Create Dropbox/Public directory
+    if not File.exist?(  public_path )
+      FileUtils.mkdir_p( public_path, { :mode => 0700 } )
+    end
+
     return true
   end
 

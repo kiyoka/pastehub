@@ -1,25 +1,23 @@
-#!/usr/bin/env ruby
-# -*- encoding: utf-8 -*-
 #
-# libplugin_spec.rb -  "RSpec file for plugin.rb"
-#
+# dropbox_todo.rb - Plugin: Add todo as dropbox file.
+#  
 #   Copyright (c) 2014-2014  Kiyoka Nishiyama  <kiyoka@sumibi.org>
-#
+#   
 #   Redistribution and use in source and binary forms, with or without
 #   modification, are permitted provided that the following conditions
 #   are met:
-#
+#   
 #   1. Redistributions of source code must retain the above copyright
 #      notice, this list of conditions and the following disclaimer.
-#
+#  
 #   2. Redistributions in binary form must reproduce the above copyright
 #      notice, this list of conditions and the following disclaimer in the
 #      documentation and/or other materials provided with the distribution.
-#
+#  
 #   3. Neither the name of the authors nor the names of its contributors
 #      may be used to endorse or promote products derived from this
 #      software without specific prior written permission.
-#
+#  
 #   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 #   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 #   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -31,18 +29,35 @@
 #   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#  
 #
-require 'pastehub'
+require 'pastehub/plugin_base'
 
-describe PasteHub::Plugin, "When initialize Plugins" do
+module PasteHub
+  class DropboxTodo < PluginBase
 
-  before do
-    @plugin = PasteHub::Plugin
+    def todo?(message)
+      m = message.match( /(^|[ ])[#]todo([ ]|$)/i )
+      if m
+        message.gsub( /[ ]?[#]todo[ ]?/i, "" )
+      else
+        nil
+      end
+    end
+
+    def newly_arrived(message)
+      config = PasteHub::Config.instance
+      path = config.publicPath
+      filename = todo?(message)
+      if filename
+        FileUtils.mkdir_p( path + "pastehub_todo/", { :mode => 0700 } )
+        open( path + "pastehub_todo/" + filename, "w" ) {|f|
+          f.puts "pastehub todo"
+        }
+      end
+      nil
+    end
   end
 
-  it "should" do
-    expect( @plugin.plugins.map { |x| x.class } ).to  eq( [] )
-    expect( @plugin.load_plugins() ).to               be_nil
-    expect( @plugin.plugins.map { |x| x.class } ).to  eq( [PasteHub::DropboxTodo, PasteHub::NotificationCenter, PasteHub::PluginSample] )
-  end
+  Plugin.register_plugin(DropboxTodo.new)
 end

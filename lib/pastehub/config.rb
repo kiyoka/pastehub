@@ -80,6 +80,11 @@ module PasteHub
                              else
                                File.expand_path( sprintf( "%s/Dropbox/pastehub/", getHomeDirectory() )) + "/"
                              end
+      @publicPath       = if hash[ :publicPath ]
+                            hash[ :publicPath ]
+                          else
+                            File.expand_path( sprintf( "%s/Dropbox/Public/", getHomeDirectory() )) + "/"
+                          end
     end
 
     def loadClient()
@@ -94,6 +99,6 @@ module PasteHub
       end
     end
 
-    attr_reader :localDbPath, :localSyncPath, :notifyMessageMax
+    attr_reader :localDbPath, :localSyncPath, :publicPath, :notifyMessageMax
   end
 end
