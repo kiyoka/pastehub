@@ -56,26 +56,26 @@ describe PasteHub::DropboxTodo, "when todo plugin exec... " do
     expect( @todo.todo?("with white space. #todo #todo") ).to     eq( "with white space." )
     expect( @todo.todo?("with  white  space . #todo #todo") ).to  eq( "with  white  space ." )
 
-    expect( @todo.newly_arrived("message1") ).to   be_nil
-    expect( File.exist?( @path + "message1" )).to  be_false
+    expect( @todo.newly_arrived("message1") ).to       be_nil
+    expect( File.exist?( @path + "message1.txt" )).to  be_false
     
-    expect( @todo.newly_arrived("message2 #todo") ).to  be_nil
-    expect( File.exist?( @path + "message2" )).to       be_true
+    expect( @todo.newly_arrived("message2 #todo") ).to    be_nil
+    expect( File.exist?( @path + "message2.txt" )).to     be_true
 
     expect( @todo.newly_arrived("#todo message3") ).to    be_nil
-    expect( File.exist?( @path + "message3" )).to         be_true
+    expect( File.exist?( @path + "message3.txt" )).to     be_true
 
     expect( @todo.newly_arrived("#todo 日本語TODO") ).to  be_nil
-    expect( File.exist?( @path + "日本語TODO" )).to       be_true
+    expect( File.exist?( @path + "日本語TODO.txt" )).to   be_true
 
     expect( @todo.newly_arrived("#todo with white spaces.") ).to  be_nil
-    expect( File.exist?( @path + "with white spaces." )).to       be_true
+    expect( File.exist?( @path + "with white spaces..txt" )).to   be_true
 
     expect( @todo.newly_arrived("#todo  with  white  spaces .") ).to  be_nil
-    expect( File.exist?( @path + " with  white  spaces ." )).to       be_true
+    expect( File.exist?( @path + " with  white  spaces ..txt" )).to   be_true
 
     expect( @todo.newly_arrived("#todo dies ist todo-Stück") ).to  be_nil
-    expect( File.exist?( @path + "dies ist todo-Stück" )).to       be_true
+    expect( File.exist?( @path + "dies ist todo-Stück.txt" )).to   be_true
   end
   
 end

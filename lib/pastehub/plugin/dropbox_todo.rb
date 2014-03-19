@@ -51,7 +51,7 @@ module PasteHub
       filename = todo?(message)
       if filename
         FileUtils.mkdir_p( path + "pastehub_todo/", { :mode => 0700 } )
-        open( path + "pastehub_todo/" + filename, "w" ) {|f|
+        open( path + "pastehub_todo/" + filename + ".txt", "w" ) {|f|
           f.puts "pastehub todo"
         }
       end
