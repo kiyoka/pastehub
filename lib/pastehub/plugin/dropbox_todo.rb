@@ -54,6 +54,7 @@ module PasteHub
         open( path + "pastehub_todo/" + filename + ".txt", "w" ) {|f|
           f.puts "pastehub todo"
         }
+        STDERR.printf( "Info: Added todo [%s]\n", filename )
       end
       nil
     end

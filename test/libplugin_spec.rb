@@ -43,6 +43,10 @@ describe PasteHub::Plugin, "When initialize Plugins" do
   it "should" do
     expect( @plugin.plugins.map { |x| x.class } ).to  eq( [] )
     expect( @plugin.load_plugins() ).to               be_nil
-    expect( @plugin.plugins.map { |x| x.class } ).to  eq( [PasteHub::DropboxTodo, PasteHub::NotificationCenter, PasteHub::PluginSample] )
+    expect( @plugin.plugins.map { |x| x.class } ).to  eq( 
+                                                         [PasteHub::DropboxTodo,
+                                                          PasteHub::NotificationCenter,
+                                                          PasteHub::PluginSample,
+                                                          PasteHub::SendMail])
   end
 end
