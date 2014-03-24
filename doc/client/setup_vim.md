@@ -1,6 +1,7 @@
-Install client software (Vim)
+Install vim plugin
 =======================
-If your vim can handle OS's clipboard, you don't have to install this plug-in.
+> **NOTE**
+> If your vim support OS native clipboard, you don't have to install vim plugin. Please install pastehub gem only.
 
 ## Required platforms
 
