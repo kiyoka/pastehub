@@ -3,8 +3,6 @@ Install emacs client
 > **NOTE**
 > If your emacs support OS native clipboard, you don't have to install emacs-lisp. Please install pastehub gem only.
 
-----
-
 ## Required platforms
 
 - Linux or MacOS X

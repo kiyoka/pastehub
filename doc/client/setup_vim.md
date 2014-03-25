@@ -3,8 +3,6 @@ Install vim plugin
 > **NOTE**
 > If your vim support OS native clipboard, you don't have to install vim plugin. Please install pastehub gem only.
 
-----
-
 ## Required platforms
 
 - Linux or MacOS X
