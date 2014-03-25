@@ -39,6 +39,7 @@ Install ruby gem
 
 ## History
 
++ 0.5.0 Add plugin framework. (first plugins are todo and sendmail)
 + 0.4.2 performance tuning of pastehub.el.
 + 0.4.1 Fixed some bugs.
 + 0.4.0 First release Dropbox cooperation.

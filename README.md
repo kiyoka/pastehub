@@ -1,7 +1,6 @@
 PasteHub
 =======================
 
-
 ## Concept
 
 Cross-platform clipboard (copy and paste) sync tool.
@@ -20,6 +19,7 @@ Linux(gem)     |      not yet   |         OK         |    OK     |
 
 + [Dropbox](./doc/client/dropbox.md)
 + [RubyGems](./doc/client/ruby_gems.md)
++ [Plugins](./doc/client/plugins.md)
 + [Setup Emacs](./doc/client/setup_emacs.md)
 + [Setup Vim](./doc/client/setup_vim.md)
 
