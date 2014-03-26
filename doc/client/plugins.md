@@ -11,6 +11,7 @@ PasteHub plugin can hook to the arrival message from clipboard.
 
 Todo-plugin cooperate with [IFTTT.com](http://ifttt.com "IFTTT").
 If arrival clipboard message includes '#todo' keyword, Todo-plugin save the todo file to ~/Dropbox/Public/pastehub_todo/ directory.
+  ![Todo Plugin](clipboard_todo_plugin.png)
 
 The todo message can be registered to Wunderlist.com and Todoledo.com. by [IFTTT.com](http://ifttt.com "IFTTT").
 
