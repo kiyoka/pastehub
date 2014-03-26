@@ -5,15 +5,16 @@ Install ruby gem
 
 ### Linux
 
-- Ruby 1.9.3
+- Ruby 1.9.3 or later
 
 ### MacOS X
 
-- Ruby 1.9.3
+- Ruby 1.9.3 or later
 
 ### Windows
 
-- Ruby 1.9.3 ( please download from [http://rubyinstaller.org/](http://rubyinstaller.org/) )
+- Ruby 1.9.3 or later
+  ( please download from [http://rubyinstaller.org/](http://rubyinstaller.org/) )
 
   ![siteImage](rubyinstaller_win32.png)
 
