@@ -9,11 +9,11 @@ Cross-platform clipboard (copy and paste) sync tool.
 
 ## Support OS
 
-   type        | OS's clipboard |   Emacs kill-ring  |    vim    |
----------------|----------------|--------------------|-----------|
-MacOSX(gem)    |        OK      |         OK         |    OK     |
-Windows(gem)   |        OK      |      not yet       |  not yet  |
-Linux(gem)     |      not yet   |         OK         |    OK     |
+   OS     | native clipboard |   Emacs kill-ring  |     vim     |
+----------|------------------|--------------------|-------------|
+MacOSX    |        OK        |         OK         |     OK      |
+Windows   |        OK        |      not yet       |   not yet   |
+Linux     |      not yet     |         OK         |     OK      |
 
 ## How to install
 
