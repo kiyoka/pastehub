@@ -26,7 +26,7 @@ begin
                              'README.txt',
                              'bin/*',
                              'lib/*.rb',
-                             'lib/*/*.rb',
+                             'lib/**/*.rb',
                             ].to_a
 #    gemspec.add_dependency(            "json", "1.8.1")
     gemspec.add_dependency(            "clipboard", "1.0.5" )

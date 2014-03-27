@@ -55,7 +55,7 @@ module PasteHub
     end
 
     def register_plugin(obj)
-      STDERR.printf( "Info: plugin [%s] loaded.\n", obj.class.to_s )
+      #STDERR.printf( "Info: plugin [%s] loaded.\n", obj.class.to_s )
       @plugins << obj
     end
 
