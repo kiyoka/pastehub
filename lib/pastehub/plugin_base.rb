@@ -36,6 +36,10 @@ module PasteHub
     def initialize
     end
 
+    # display plugin's config info or status
+    def display_config
+    end
+
     # for customization of newly arraived message.
     def newly_arrived (message)
     end

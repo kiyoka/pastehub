@@ -116,6 +116,10 @@ module PasteHub
       @plugin               = PasteHub::Plugin
       @plugin.load_plugins
     end
+
+    def display_config
+      @plugin.display_config
+    end
  
     def notifyToReceive(message)
       @plugin.distribute_newly_arrived(message)

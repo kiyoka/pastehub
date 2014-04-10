@@ -43,9 +43,14 @@ module PasteHub
         # MacOS X
         @notifier_path = RbConfig::CONFIG['bindir'] + "/" + "terminal-notifier"
         if File.exist?( @notifier_path )
-          STDERR.puts( "Info: found terminal-notifier for MacOS X." )
           @enable = true
         end
+      end
+    end
+
+    def display_config
+      if @enable
+        STDERR.puts( "Info: found terminal-notifier for MacOS X." )
       end
     end
 

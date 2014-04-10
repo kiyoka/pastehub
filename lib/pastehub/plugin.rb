@@ -39,9 +39,17 @@ module PasteHub
       @plugins = []
     end
 
+    def display_config
+      @plugins.each {|x|
+        STDERR.printf( "Info: plugin [%s] loaded.\n", x.class.to_s )
+        x.display_config()
+      }
+    end
+
     def load_plugins
       dir = File.join(File.dirname(__FILE__), "plugin")
       load_plugin_dir(dir)
+      nil
     end
 
     def load_plugin_dir(dir)
@@ -55,7 +63,6 @@ module PasteHub
     end
 
     def register_plugin(obj)
-      #STDERR.printf( "Info: plugin [%s] loaded.\n", obj.class.to_s )
       @plugins << obj
     end
 

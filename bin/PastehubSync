@@ -76,6 +76,7 @@ def main( argv )
 
   # create clientSync
   clientSync = PasteHub::ClientSync.new( hostname, 1.0 )
+  clientSync.display_config()
 
   while true
     signals = 0

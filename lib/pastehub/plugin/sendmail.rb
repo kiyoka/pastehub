@@ -66,6 +66,9 @@ module PasteHub
           nil
         end
       }.select( ) {|x| x}
+    end
+
+    def display_config
       # display settings
       @mail_settings.each { |setting|
         STDERR.printf( "Info: SendMail-plugin   tag:[%s] mail[%s]\n",
