@@ -33,6 +33,7 @@
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #  
 #
+$VERBOSE = nil
 require 'pastehub'
 
 def print_latest( command )
