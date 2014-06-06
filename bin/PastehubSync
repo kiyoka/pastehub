@@ -35,6 +35,7 @@
 #
 require 'thread'
 require 'pastehub'
+require 'optparse'
 
 PasteHub::Config.instance.loadClient
 
