@@ -41,8 +41,8 @@ describe PasteHub, "when Setup API use ... " do
   end
   
   it "should" do
-    expect( File.exist?( "/tmp/home/user1/.pastehub" )).to         be_true
-    expect( File.exist?( "/tmp/home/user1/Dropbox/pastehub" )).to  be_true
+    expect( File.exist?( "/tmp/home/user1/.pastehub" )).to         be true
+    expect( File.exist?( "/tmp/home/user1/Dropbox/pastehub" )).to  be true
   end
   
 end

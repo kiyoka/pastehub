@@ -54,9 +54,9 @@ describe PasteHub::Config, "When on/off verboser mode...  " do
   end
 
   it "should" do
-    expect( @config.getVerbose ).to           be_false
-    expect( @config.setVerbose( true )).to    be_true
-    expect( @config.getVerbose ).to           be_true
+    expect( @config.getVerbose ).to           be false
+    expect( @config.setVerbose( true )).to    be true
+    expect( @config.getVerbose ).to           be true
   end
 end
 

@@ -46,10 +46,10 @@ describe ClientSync, "when file check function use ... " do
   end
   
   it "should" do
-    expect( File.exist?( "/tmp/home/user1/.pastehub" )).to        be_true
-    expect( File.exist?( "/tmp/home/user1/Dropbox/pastehub" )).to be_true
+    expect( File.exist?( "/tmp/home/user1/.pastehub" )).to        be true
+    expect( File.exist?( "/tmp/home/user1/Dropbox/pastehub" )).to be true
     
-    @cs.get_other_hostfiles.should    == []
+    expect( @cs.get_other_hostfiles).to eq([])
   end
 end
 

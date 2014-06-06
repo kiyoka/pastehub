@@ -44,7 +44,7 @@ describe Entry, "When sync entry saved to a file" do
   end
 
   it "should" do
-    expect( @entry.save( "paste data 1" ) ).to  be_true
+    expect( @entry.save( "paste data 1" ) ).to  be true
 
     expect( 
            open( "/tmp/home/user1/Dropbox/pastehub/myhostname.dat" ) { |f|
@@ -90,16 +90,16 @@ describe Entry, "When sync entry loaded from a file" do
   end
 
   it "should" do
-    expect( @entry1.can_load?( ) ).to                      be_true
+    expect( @entry1.can_load?( ) ).to                      be true
     expect( @entry1.load( )[0][ 'hostname' ] ).to          eq( "myhostname1" )
     expect( @entry1.load( )[0][ 'bodySize' ] ).to          eq( 25 )
     expect( @entry1.load( )[0][ 'encodedBodySize' ] ).to   eq( 36 )
-    expect( @entry1.load( )[1].should ).to                 eq( "large paste string ......" )
-    expect( @entry2.can_load?( ) ).to                      be_true
+    expect( @entry1.load( )[1] ).to                        eq( "large paste string ......" )
+    expect( @entry2.can_load?( ) ).to                      be true
     expect( @entry2.load( )[0][ 'hostname' ] ).to          eq( "myhostname2" )
     expect( @entry2.load( )[0][ 'bodySize' ] ).to          eq( 52 )
     expect( @entry2.load( )[0][ 'encodedBodySize' ] ).to   eq( 72 )
-    expect( @entry2.load( )[1].should ).to                 eq( "The quick brown fox jumps over the lazy dog and run\n" )
+    expect( @entry2.load( )[1] ).to                        eq( "The quick brown fox jumps over the lazy dog and run\n" )
   end
 end
 
@@ -132,9 +132,9 @@ describe Entry, "When sync entry is incomplete" do
   end
 
   it "should" do
-    expect( @entry1.can_load?( ) ).to                     be_false
-    expect( @entry2.can_load?( ) ).to                     be_false
-    expect( @entry3.can_load?( ) ).to                     be_false
+    expect( @entry1.can_load?( ) ).to                     be false
+    expect( @entry2.can_load?( ) ).to                     be false
+    expect( @entry3.can_load?( ) ).to                     be false
   end
 end
 
