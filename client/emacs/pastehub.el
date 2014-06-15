@@ -3,7 +3,7 @@
 ;; Copyright (C) 2012-2014 Kiyoka Nishiyama
 ;;
 ;; Author: Kiyoka Nishiyama
-;; Version: 0.9.3
+;; Version: 0.9.4
 ;; URL: https://github.com/kiyoka/pastehub
 ;;
 ;; This file is part of PasteHub.el
@@ -217,10 +217,16 @@
                         (> (prefix-numeric-value arg) 0))))
 
 
-;; enable pastehub-mode
-(setq pastehub-mode t)
-(pastehub-timer-handler) ;; one shot for initializing.
-
+;; Check the pastehubGet binary is installed.
+(let ((exec-name (get-pastehub-client-get)))
+  (if (executable-find exec-name)
+      ;; enable pastehub-mode
+      (progn
+	(message (format "OK: Detected pastehubGet program [%s]" exec-name))
+	(setq pastehub-mode t)
+	(pastehub-timer-handler) ;; one shot for initializing.
+	)
+    (message (format "NG: Couldn't detect pastehubGet program [%s]... disabled pastehub.el" exec-name))))
 
 (provide 'pastehub)
 
