@@ -1,5 +1,6 @@
 PasteHub
 =======================
+[![Build Status](https://travis-ci.org/kiyoka/pastehub.svg?branch=master)](https://travis-ci.org/kiyoka/pastehub)
 
 ## Concept
 
