@@ -40,6 +40,7 @@ Install ruby gem
 
 ## History
 
++ 0.5.2 Fixed bug: Auto disable pastehub.el when pastehub.gem is not installed.
 + 0.5.1 Fixed bug: pastehubGet displays verbose message of plugin loading.
 + 0.5.0 Add plugin framework. (first plugins are todo and sendmail)
 + 0.4.2 performance tuning of pastehub.el.
